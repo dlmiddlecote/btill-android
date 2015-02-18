@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -67,9 +68,17 @@ public class MenuFragment extends Fragment {
             public void onClick(View v) {
                 MenuAdapter adapter = (MenuAdapter)listView.getAdapter();
 
+                // Set connection to server
+                ConnectThread mConnectThread = new ConnectThread();
+                mConnectThread.start();
+                mBTillController.setBluetoothSocket(mConnectThread.getSocket());
+
+                // Launch Order dialog
                 launchOrderDialog(adapter.orders, adapter);
             }
         });
+
+
 
 
     }
@@ -86,13 +95,9 @@ public class MenuFragment extends Fragment {
                 mOrderArrayList.add(order);
         }
 
-        //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        //builder.setTitle(R.string.order_dialog_title)
-
         final Dialog mOrderDialog = new Dialog(getActivity());
+        mOrderDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         mOrderDialog.setContentView(R.layout.custom_order_dialog);
-        mOrderDialog.setTitle(R.string.order_dialog_title);
 
         ListView mOrderListView = (ListView)mOrderDialog.findViewById(R.id.dialogListView);
         mOrderListView.setAdapter(new OrderDialogAdapter(getActivity(), mOrderArrayList));

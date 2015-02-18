@@ -39,7 +39,9 @@ public class MenuAdapter extends ArrayAdapter<Order>{
             plusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    orders[position].setQuantity(orders[position].getQuantity() + 1);
+                    // Max amount is 9 to help with UI
+                    // TODO Fix UI Here (Number overlaps with +)
+                    orders[position].setQuantity(Math.min(orders[position].getQuantity() + 1, 9));
                     quantity.setText(String.valueOf(orders[position].getQuantity()));
                 }
             });
@@ -48,7 +50,7 @@ public class MenuAdapter extends ArrayAdapter<Order>{
             minusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    orders[position].setQuantity(orders[position].getQuantity() - 1);
+                    orders[position].setQuantity(Math.max(orders[position].getQuantity() - 1,0));
                     quantity.setText(String.valueOf(orders[position].getQuantity()));
                 }
             });

@@ -1,6 +1,7 @@
 package com.g1453012.btill;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -33,10 +34,9 @@ public class HomeScreen extends Activity {
 
             // Create new Controller when app loads
             mBTillController = new BTillController();
-            ConnectThread mConnectThread = new ConnectThread();
+            /*ConnectThread mConnectThread = new ConnectThread();
             mConnectThread.start();
-            mBTillController.setBluetoothSocket(mConnectThread.getSocket());
-
+            mBTillController.setBluetoothSocket(mConnectThread.getSocket());*/
 
         }
     }

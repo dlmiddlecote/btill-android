@@ -28,6 +28,7 @@ public class BTillController {
 
     BluetoothSocket mBluetoothSocket = null;
 
+
     public BluetoothSocket getBluetoothSocket() {
         return mBluetoothSocket;
     }
