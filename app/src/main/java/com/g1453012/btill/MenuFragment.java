@@ -72,6 +72,11 @@ public class MenuFragment extends Fragment {
 
         final MenuAdapter mOrderDialogAdapter = adapter;
 
+        String[] orderTitles= new String[orders.length];
+        for (int i = 0; i < orders.length; i++) {
+            orderTitles[i] = orders[i].getTitle();
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle(R.string.order_dialog_title)
@@ -90,11 +95,20 @@ public class MenuFragment extends Fragment {
             }
         });
 
-        builder.setItems()
+
+
+        builder.setItems(orderTitles, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
 
         AlertDialog dialog = builder.create();
 
         dialog.show();
     }
+
+
 
 }

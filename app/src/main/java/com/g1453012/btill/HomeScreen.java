@@ -2,6 +2,8 @@ package com.g1453012.btill;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.Menu;
@@ -19,6 +21,8 @@ public class HomeScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_home_screen);
         if (savedInstanceState==null){
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -29,6 +33,11 @@ public class HomeScreen extends Activity {
 
             // Create new Controller when app loads
             mBTillController = new BTillController();
+            ConnectThread mConnectThread = new ConnectThread();
+            mConnectThread.start();
+            mBTillController.setBluetoothSocket(mConnectThread.getSocket());
+
+
         }
     }
 
