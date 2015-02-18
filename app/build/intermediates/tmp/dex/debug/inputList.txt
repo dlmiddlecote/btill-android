@@ -1,0 +1,14 @@
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/classes/debug
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/jcip-annotations-1.0-9a099866cb34f090ad9035084e1c394db12908f9.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-ac270add93167a0439891f8cf872d6c7a73866d8.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/slf4j-api-1.7.6-4ab858c4e91d2b3ab3d8e5ce972c3480cc4afd0c.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/jsr305-2.0.1-c1ad30114fbd54297ec8c038b742e86a2603b531.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/gson-1.7.2-7a6230e4553ca4baa43f5dbd3720c83d20acc800.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-b6aeea508fecc93c93ad2647d707635add77e87b.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/orchid-1.0-2f64754e2ec36931122ad69aec4b11d22464c9da.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/classes-9adad30fafce78c63a593af596016353b68e58ca.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/protobuf-java-2.5.0-2cec38ea0372243244e8fc68bd859eb301c13878.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/classes-83d508ec47dd7d527b605e22f8ee7c0ebb7c2209.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/bitcoinj-core-0.12.2-7e4fb23cb575b448204f77c114e0a2b444d9cc22.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/guava-16.0.1-6b28da5ab9764e49381f784304d68305ff048e00.jar
+/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/core-1.51.0.0-29f99b4a02c0a5b20e141cffb309a68969861580.jar
