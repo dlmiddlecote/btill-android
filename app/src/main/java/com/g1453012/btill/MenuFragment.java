@@ -1,6 +1,7 @@
 package com.g1453012.btill;
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,8 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MenuFragment extends Fragment {
 
@@ -72,41 +78,53 @@ public class MenuFragment extends Fragment {
 
         final MenuAdapter mOrderDialogAdapter = adapter;
 
-        String[] orderTitles= new String[orders.length];
-        for (int i = 0; i < orders.length; i++) {
-            orderTitles[i] = orders[i].getTitle();
+        ArrayList<Order> mOrderArrayList = new ArrayList<Order>();
+
+        for (Order order: orders)
+        {
+            if (order.getQuantity()!=0)
+                mOrderArrayList.add(order);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle(R.string.order_dialog_title)
-                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mBTillController.sendOrders(mOrderDialogAdapter.orders);
-                    }
-                });
+        //builder.setTitle(R.string.order_dialog_title)
 
+        final Dialog mOrderDialog = new Dialog(getActivity());
+        mOrderDialog.setContentView(R.layout.custom_order_dialog);
+        mOrderDialog.setTitle(R.string.order_dialog_title);
 
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        ListView mOrderListView = (ListView)mOrderDialog.findViewById(R.id.dialogListView);
+        mOrderListView.setAdapter(new OrderDialogAdapter(getActivity(), mOrderArrayList));
+
+        TextView mOrderTotal = (TextView)mOrderDialog.findViewById(R.id.dialogAmountText);
+        double mTotal = 0;
+        for (Order order: mOrderArrayList)
+        {
+            if (order.getQuantity()!=0) {
+                mTotal += order.getPrice()*order.getQuantity();
+            }
+        }
+        mOrderTotal.setText("£"+String.format("%.2f", mTotal));
+
+        Button mConfirmButton = (Button)mOrderDialog.findViewById(R.id.dialogConfirmButton);
+        mConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "Cancel Button Clicked");
+            public void onClick(View v) {
+                mBTillController.sendOrders(mOrderDialogAdapter.orders);
             }
         });
 
-
-
-        builder.setItems(orderTitles, new DialogInterface.OnClickListener() {
+        Button mCancelButton = (Button)mOrderDialog.findViewById(R.id.dialogCancelButton);
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-
+            public void onClick(View v) {
+                mOrderDialog.dismiss();
             }
         });
 
-        AlertDialog dialog = builder.create();
+        mOrderDialog.show();
 
-        dialog.show();
     }
 
 

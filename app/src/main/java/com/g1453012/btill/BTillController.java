@@ -74,16 +74,20 @@ public class BTillController {
 
     public String formatOrders(Order[] orders) {
         Gson gson = new Gson();
+        double mTotal = 0;
         List<Order> nonZeroOrders = new ArrayList<Order>();
 
         for (Order order: orders)
         {
-            if (order.getQuantity()!=0)
+            if (order.getQuantity()!=0) {
                 nonZeroOrders.add(order);
+                //TODO this is where our total price is
+                //mTotal += order.getPrice()*order.getQuantity();
+            }
+
         }
 
         String json = gson.toJson(nonZeroOrders, new TypeToken <ArrayList<Order>>(){}.getType());
-
         Log.d(TAG, json);
 
         return json;

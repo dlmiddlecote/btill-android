@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/dialogCancelButton"
+        android:layout_alignParentBottom="true"
+        style="?android:borderlessButtonStyle"
+        android:layout_toStartOf="@+id/dialogConfirmButton"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:id="@+id/dialogConfirmButton"
+        android:layout_alignParentBottom="true"
+        style="?android:borderlessButtonStyle"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="TotalPrice"
+        android:id="@+id/dialogAmountText"
+        android:layout_above="@+id/dialogCancelButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Total"
+        android:id="@+id/dialogTotalText"
+        android:layout_above="@+id/dialogCancelButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="10dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/dialogAmountText">
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/dialogListView"
+            android:layout_above="@+id/dialogAmountText"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentEnd="false"/>
+    </FrameLayout>
+
+</RelativeLayout>
