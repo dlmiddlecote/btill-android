@@ -8,10 +8,12 @@ import org.bitcoinj.core.PeerAddress;
 import org.bitcoinj.core.PeerGroup;
 import org.bitcoinj.core.VersionMessage;
 import org.bitcoinj.core.Wallet;
+import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.store.MemoryBlockStore;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.interfaces.ECKey;
@@ -28,33 +30,32 @@ public class WalletWrapper {
 
     private Wallet mWallet = null;
     private final TestNet3Params mNetParams = TestNet3Params.get();
-    private BlockChain mChain = null;
-    private PeerGroup mPeerGroup = null;
+
+    private final WalletAppKit mWalletAppKit;
+
+
 
 
     Peer mPeer = null;
 
-    public WalletWrapper(Wallet wallet) {
+    public WalletWrapper(Wallet wallet, File file) {
         mWallet = wallet;
         Log.d(TAG, "Loaded Wallet");
-        try {
-            mChain = new BlockChain(mNetParams, mWallet, new MemoryBlockStore(mNetParams));
-            Log.d(TAG, "Loaded Blockchain");
-        } catch (BlockStoreException e) {
-            Log.e(TAG, "Error creating blockchain");
-        }
-        mPeerGroup = new PeerGroup(mNetParams,mChain);
-        Log.d(TAG, "Loaded Peergroup");
-        mPeerGroup.addWallet(mWallet);
-        Log.d(TAG, "Added wallet");
-        mPeerGroup.startAsync();
-        Log.d(TAG, "Started Peergroup");
-        Log.d(TAG, mWallet.toString());
-        Log.d(TAG, "New address: " + mWallet.freshReceiveAddress().toString());
-        //mWallet.importKey(new org.bitcoinj.core.ECKey());
 
-        //Log.d(TAG, "Imported Keys: " + mWallet.getImportedKeys().get(0).toAddress(mNetParams).toString());
 
+        mWalletAppKit = new WalletAppKit(mNetParams, file, "bitcoinj-test") {
+            @Override
+            protected void onSetupCompleted() {
+                super.onSetupCompleted();
+                if (wallet().getKeychainSize() < 1)
+                    wallet().importKey(new org.bitcoinj.core.ECKey());
+            }
+        };
+
+        Log.d(TAG, "Wallet App Kit");
+
+        //mWalletAppKit.startAndWait();
+        Log.d(TAG, "Started");
     }
 
 

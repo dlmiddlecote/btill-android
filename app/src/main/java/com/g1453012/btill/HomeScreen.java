@@ -25,6 +25,8 @@ public class HomeScreen extends Activity {
 
     private BTillController mBTillController = null;
 
+    private File mFile;
+
     public BTillController getBTillController() {
         return mBTillController;
     }
@@ -43,11 +45,11 @@ public class HomeScreen extends Activity {
             ConnectThread mConnectThread = new ConnectThread();
             mConnectThread.start();
             mBTillController.setBluetoothSocket(mConnectThread.getSocket());
+            mFile = new File(this.getFilesDir(), "wallet.dat");
 
             try {
-                mBTillController.setWallet(Wallet.loadFromFile(new File(this.getFilesDir(), "wallet.dat")));
-                Log.d(TAG, "Loaded Wallet");
-                mBTillController.setWalletWrapper(new WalletWrapper(mBTillController.getWallet()));
+                mBTillController.setWallet(Wallet.loadFromFile(mFile));
+                mBTillController.setWalletWrapper(new WalletWrapper(mBTillController.getWallet(), mFile));
                 Log.d(TAG, "Created Wallet Wrapper");
             } catch (UnreadableWalletException e) {
                 mBTillController.setWallet(new Wallet(TestNet3Params.get()));
