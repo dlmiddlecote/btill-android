@@ -73,5 +73,9 @@ public class ConnectThread extends Thread {
         if (mConnectedThread != null) {
             Log.d(TAG, "Makes connected thread");
         }
+
+
     }
+
+
 }

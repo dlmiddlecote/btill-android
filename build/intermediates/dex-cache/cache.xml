@@ -37,6 +37,13 @@
         <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/classes-9adad30fafce78c63a593af596016353b68e58ca.jar" />
     </item>
     <item
+        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.3.2/90a3822c38ec8c996e84c16a3477ef632cbc87a3/commons-lang3-3.3.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="90a3822c38ec8c996e84c16a3477ef632cbc87a3">
+        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/commons-lang3-3.3.2-2834096bbf5f5d1c342b47f0ce4faae17c7ea378.jar" />
+    </item>
+    <item
         jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.6/562424e36df3d2327e8e9301a76027fca17d54ea/slf4j-api-1.7.6.jar"
         jumboMode="false"
         revision="21.1.2"

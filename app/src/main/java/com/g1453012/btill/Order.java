@@ -1,6 +1,5 @@
 package com.g1453012.btill;
 
-import org.bitcoinj.uri.BitcoinURI;
 
 public class Order {
     private String title;

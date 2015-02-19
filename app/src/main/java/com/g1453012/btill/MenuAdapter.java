@@ -6,18 +6,39 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MenuAdapter extends ArrayAdapter<Order>{
+import com.g1453012.btill.Shared.Menu;
 
-    Context context;
-    Order[] orders;
+public class MenuAdapter extends BaseAdapter {
 
-    public MenuAdapter(Context context, Order[] orders) {
-        super(context, R.layout.menu_list_item, orders);
-        this.context = context;
-        this.orders = orders;
+    private LayoutInflater mLayoutInflater;
+    private Menu mMenu;
+
+    public Menu getMenu() {
+        return mMenu;
+    }
+
+    public MenuAdapter(Context context, Menu menu) {
+        mLayoutInflater = LayoutInflater.from(context);
+        mMenu = menu;
+    }
+
+    @Override
+    public int getCount() {
+        return mMenu.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mMenu.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -26,14 +47,13 @@ public class MenuAdapter extends ArrayAdapter<Order>{
 
         if (rowView == null)
         {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            rowView = inflater.inflate(R.layout.menu_list_item, parent, false);
+            rowView = mLayoutInflater.inflate(R.layout.menu_list_item, parent, false);
 
             TextView title = (TextView)rowView.findViewById(R.id.itemTitle);
-            title.setText(orders[position].getTitle());
+            title.setText(mMenu.get(position).getName());
 
             final TextView quantity = (TextView)rowView.findViewById(R.id.quantity);
-            quantity.setText(String.valueOf(orders[position].getQuantity()));
+            quantity.setText(String.valueOf(mMenu.get(position).getQuantity()));
 
             Button plusButton = (Button)rowView.findViewById(R.id.plusButton);
             plusButton.setOnClickListener(new View.OnClickListener() {
@@ -41,8 +61,8 @@ public class MenuAdapter extends ArrayAdapter<Order>{
                 public void onClick(View v) {
                     // Max amount is 9 to help with UI
                     // TODO Fix UI Here (Number overlaps with +)
-                    orders[position].setQuantity(Math.min(orders[position].getQuantity() + 1, 9));
-                    quantity.setText(String.valueOf(orders[position].getQuantity()));
+                    mMenu.get(position).setQuantity(Math.min(mMenu.get(position).getQuantity() + 1, 9));
+                    quantity.setText(String.valueOf(mMenu.get(position).getQuantity()));
                 }
             });
 
@@ -50,14 +70,13 @@ public class MenuAdapter extends ArrayAdapter<Order>{
             minusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    orders[position].setQuantity(Math.max(orders[position].getQuantity() - 1,0));
-                    quantity.setText(String.valueOf(orders[position].getQuantity()));
+                    mMenu.get(position).setQuantity(Math.max(mMenu.get(position).getQuantity() - 1, 0));
+                    quantity.setText(String.valueOf(mMenu.get(position).getQuantity()));
                 }
             });
 
             TextView price = (TextView)rowView.findViewById(R.id.price);
-            String priceString = String.format("%.2f", orders[position].getPrice());
-            price.setText("£" + priceString);
+            price.setText(mMenu.get(position).getPrice().toString());
         }
 
         return rowView;

@@ -7,11 +7,21 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.bitcoinj.core.Wallet;
+import org.bitcoinj.params.TestNet3Params;
+import org.bitcoinj.store.UnreadableWalletException;
+
+import java.io.File;
+import java.io.IOException;
+
 
 public class HomeScreen extends Activity {
+
+    private final static String TAG = "HomeScreen";
 
     private BTillController mBTillController = null;
 
@@ -28,15 +38,25 @@ public class HomeScreen extends Activity {
         if (savedInstanceState==null){
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
+            // Create new Controller when app loads
+            mBTillController = new BTillController();
+            ConnectThread mConnectThread = new ConnectThread();
+            mConnectThread.start();
+            mBTillController.setBluetoothSocket(mConnectThread.getSocket());
+
+            try {
+                mBTillController.setWallet(Wallet.loadFromFile(new File(this.getFilesDir(), "wallet.dat")));
+                Log.d(TAG, "Loaded Wallet");
+                mBTillController.setWalletWrapper(new WalletWrapper(mBTillController.getWallet()));
+                Log.d(TAG, "Created Wallet Wrapper");
+            } catch (UnreadableWalletException e) {
+                mBTillController.setWallet(new Wallet(TestNet3Params.get()));
+                Log.d(TAG, "Created Wallet");
+            }
+
             Fragment fragment = new MenuFragment();
             transaction.add(R.id.fragmentFrame, fragment);
             transaction.commit();
-
-            // Create new Controller when app loads
-            mBTillController = new BTillController();
-            /*ConnectThread mConnectThread = new ConnectThread();
-            mConnectThread.start();
-            mBTillController.setBluetoothSocket(mConnectThread.getSocket());*/
 
         }
     }
@@ -62,5 +82,21 @@ public class HomeScreen extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            mBTillController.getWallet().saveToFile(new File(this.getFilesDir(), "wallet.dat"));
+
+            Log.d(TAG, "Saved file");
+        } catch (IOException e) {
+            Log.e(TAG, "Error saving file");
+        }
+        //File mFile = new File(this.getFilesDir(), "wallet.dat");
+        //mFile.delete();
+
+
     }
 }
