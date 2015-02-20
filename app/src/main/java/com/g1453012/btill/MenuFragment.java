@@ -17,15 +17,20 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.g1453012.btill.Shared.GBP;
+import com.g1453012.btill.Shared.Menu;
+import com.g1453012.btill.Shared.MenuItem;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MenuFragment extends Fragment {
 
     private static final String TAG = "MenuFragment";
 
-    private Order[] orders;
     private Activity mParentActivity;
     private BTillController mBTillController;
 
@@ -51,59 +56,51 @@ public class MenuFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final ListView listView = (ListView)getActivity().findViewById(R.id.listView);
-        this.orders = new Order[4];// = getOrders();
-        this.orders[0] = new Order("Chicken", 2);
-        this.orders[1] = new Order("Burger", 1);
-        this.orders[2] = new Order("Onion Rings", 1);
-        this.orders[3] = new Order("Coca-cola", 3);
+        ArrayList<MenuItem> mMenuItems = new ArrayList<MenuItem>();
+        //Menu mMenu = getOrders();
+        mMenuItems.add(new MenuItem("Chicken", new GBP(200)));
+        mMenuItems.add(new MenuItem("More Chicken", new GBP(100)));
+        mMenuItems.add(new MenuItem("Hot Wings", new GBP(250)));
+        mMenuItems.add(new MenuItem("Chicken Burger", new GBP(300)));
+        mMenuItems.add(new MenuItem("Popcorn Chicken", new GBP(150)));
+        Menu mMenu = new Menu(mMenuItems);
 
 
 
-        listView.setAdapter(new MenuAdapter(getActivity(), this.orders));
+        listView.setAdapter(new MenuAdapter(getActivity(), mMenu));
 
         Button nextButton = (Button)getActivity().findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MenuAdapter adapter = (MenuAdapter)listView.getAdapter();
-
-                launchOrderDialog(adapter.orders, adapter);
+                // Launch Order dialog
+                launchOrderDialog(adapter.getMenu());
             }
         });
 
 
+
+
     }
 
-    private void launchOrderDialog(Order[] orders, MenuAdapter adapter) {
+    private void launchOrderDialog(Menu menu) {
 
-        final MenuAdapter mOrderDialogAdapter = adapter;
+        final Menu nonZeroMenu = removeNonZero(menu);
 
-        ArrayList<Order> mOrderArrayList = new ArrayList<Order>();
-
-        for (Order order: orders)
-        {
-            if (order.getQuantity()!=0)
-                mOrderArrayList.add(order);
-        }
-
-        //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        //builder.setTitle(R.string.order_dialog_title)
 
         final Dialog mOrderDialog = new Dialog(getActivity());
+        mOrderDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         mOrderDialog.setContentView(R.layout.custom_order_dialog);
-        mOrderDialog.setTitle(R.string.order_dialog_title);
 
         ListView mOrderListView = (ListView)mOrderDialog.findViewById(R.id.dialogListView);
-        mOrderListView.setAdapter(new OrderDialogAdapter(getActivity(), mOrderArrayList));
+        mOrderListView.setAdapter(new OrderDialogAdapter(getActivity(), nonZeroMenu));
 
         TextView mOrderTotal = (TextView)mOrderDialog.findViewById(R.id.dialogAmountText);
         double mTotal = 0;
-        for (Order order: mOrderArrayList)
+        for (MenuItem item: nonZeroMenu)
         {
-            if (order.getQuantity()!=0) {
-                mTotal += order.getPrice()*order.getQuantity();
-            }
+            mTotal += item.getPrice().getPence()*item.getQuantity()/100;
         }
         mOrderTotal.setText("£"+String.format("%.2f", mTotal));
 
@@ -111,7 +108,12 @@ public class MenuFragment extends Fragment {
         mConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBTillController.sendOrders(mOrderDialogAdapter.orders);
+
+                // Set connection to server
+                /*ConnectThread mConnectThread = new ConnectThread();
+                mConnectThread.start();
+                mBTillController.setBluetoothSocket(mConnectThread.getSocket());*/
+                mBTillController.sendOrders(nonZeroMenu);
             }
         });
 
@@ -127,6 +129,15 @@ public class MenuFragment extends Fragment {
 
     }
 
+    public Menu removeNonZero(Menu menu)
+    {
+        Menu retMenu = new Menu();
+        for (MenuItem item: menu)
+        {
+            if (item.getQuantity()!=0)
+                retMenu.add(item);
+        }
 
-
+        return retMenu;
+    }
 }

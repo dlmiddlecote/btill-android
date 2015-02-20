@@ -1,5 +1,6 @@
 package com.g1453012.btill;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -15,7 +16,7 @@ import java.util.UUID;
 public class ConnectThread extends Thread {
 
     private static final String TAG = "ConnectThread";
-    private final BluetoothSocket mSocket;
+    private BluetoothSocket mSocket = null;
     private static UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
     private static final String MAC = "00:15:83:64:83:DE";
     private ConnectedThread mConnectedThread;
@@ -72,5 +73,9 @@ public class ConnectThread extends Thread {
         if (mConnectedThread != null) {
             Log.d(TAG, "Makes connected thread");
         }
+
+
     }
+
+
 }

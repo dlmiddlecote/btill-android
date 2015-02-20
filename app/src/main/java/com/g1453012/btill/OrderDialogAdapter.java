@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.g1453012.btill.Shared.Menu;
+
 import java.util.ArrayList;
 
 /**
@@ -19,21 +21,21 @@ import java.util.ArrayList;
 public class OrderDialogAdapter extends BaseAdapter {
 
     private LayoutInflater mLayoutInflater;
-    private ArrayList<Order> mOrders;
+    private Menu mMenu;
 
-    public OrderDialogAdapter(Context context, ArrayList<Order> orders) {
+    public OrderDialogAdapter(Context context, Menu menu) {
         mLayoutInflater = LayoutInflater.from(context);
-        mOrders = orders;
+        mMenu = menu;
     }
 
     @Override
     public int getCount() {
-        return mOrders.size();
+        return mMenu.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mOrders.get(position);
+        return mMenu.get(position);
     }
 
     @Override
@@ -50,10 +52,10 @@ public class OrderDialogAdapter extends BaseAdapter {
 
             rowView = mLayoutInflater.inflate(R.layout.order_dialog_item, parent, false);
             TextView mDialogTitle = (TextView)rowView.findViewById(R.id.orderDialogTitle);
-            mDialogTitle.setText(mOrders.get(position).getTitle());
+            mDialogTitle.setText(mMenu.get(position).getName());
 
             TextView mDialogQuantity = (TextView)rowView.findViewById(R.id.orderDialogQuantity);
-            mDialogQuantity.setText("x" + mOrders.get(position).getQuantity());
+            mDialogQuantity.setText("x" + mMenu.get(position).getQuantity());
         }
 
         return rowView;
