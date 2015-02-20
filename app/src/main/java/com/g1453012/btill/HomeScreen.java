@@ -1,12 +1,9 @@
 package com.g1453012.btill;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +46,6 @@ public class HomeScreen extends Activity {
 
             try {
                 mBTillController.setWallet(Wallet.loadFromFile(mFile));
-                mBTillController.setWalletWrapper(new WalletWrapper(mBTillController.getWallet(), mFile));
                 Log.d(TAG, "Created Wallet Wrapper");
             } catch (UnreadableWalletException e) {
                 mBTillController.setWallet(new Wallet(TestNet3Params.get()));
@@ -90,7 +86,7 @@ public class HomeScreen extends Activity {
     protected void onPause() {
         super.onPause();
         try {
-            mBTillController.getWallet().saveToFile(new File(this.getFilesDir(), "wallet.dat"));
+            mBTillController.getWallet().saveToFile(mFile);
 
             Log.d(TAG, "Saved file");
         } catch (IOException e) {
