@@ -1,31 +1,21 @@
 package com.g1453012.btill;
 
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MenuFragment extends Fragment {
 
@@ -56,14 +46,8 @@ public class MenuFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final ListView listView = (ListView)getActivity().findViewById(R.id.listView);
-        ArrayList<MenuItem> mMenuItems = new ArrayList<MenuItem>();
-        //Menu mMenu = getOrders();
-        mMenuItems.add(new MenuItem("Chicken", new GBP(200)));
-        mMenuItems.add(new MenuItem("More Chicken", new GBP(100)));
-        mMenuItems.add(new MenuItem("Hot Wings", new GBP(250)));
-        mMenuItems.add(new MenuItem("Chicken Burger", new GBP(300)));
-        mMenuItems.add(new MenuItem("Popcorn Chicken", new GBP(150)));
-        Menu mMenu = new Menu(mMenuItems);
+
+        Menu mMenu = mBTillController.getMenu();
 
 
 
@@ -97,12 +81,14 @@ public class MenuFragment extends Fragment {
         mOrderListView.setAdapter(new OrderDialogAdapter(getActivity(), nonZeroMenu));
 
         TextView mOrderTotal = (TextView)mOrderDialog.findViewById(R.id.dialogAmountText);
-        double mTotal = 0;
+        //double mTotal = 0;
+        GBP mTotal = new GBP(0);
         for (MenuItem item: nonZeroMenu)
         {
-            mTotal += item.getPrice().getPence()*item.getQuantity()/100;
+            //mTotal += item.getPrice().getPence()*item.getQuantity()/100;
+            mTotal = mTotal.plus(item.getPrice().times(item.getQuantity()));
         }
-        mOrderTotal.setText("£"+String.format("%.2f", mTotal));
+        mOrderTotal.setText(mTotal.toString());
 
         Button mConfirmButton = (Button)mOrderDialog.findViewById(R.id.dialogConfirmButton);
         mConfirmButton.setOnClickListener(new View.OnClickListener() {

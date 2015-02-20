@@ -1,6 +1,5 @@
 package com.g1453012.btill;
 
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -60,6 +59,7 @@ public class ConnectThread extends Thread {
             Log.d(TAG, "Connected through Socket");
         } catch (IOException connectException) {
             try {
+
                 Log.d(TAG, "Inside Catch");
                 // If cannot connect, close the socket
                 mSocket.close();

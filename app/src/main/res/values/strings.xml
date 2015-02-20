@@ -9,4 +9,6 @@
     <string name="confirm">OK</string>
     <string name="cancel">Cancel</string>
 
+    <string name="transaction_confirmed">Transaction Confirmed!</string>
+
 </resources>
