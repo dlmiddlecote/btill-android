@@ -55,19 +55,16 @@
         android:text="Cancel"
         android:id="@+id/dialogCancelButton"
         style="?android:borderlessButtonStyle"
-        android:layout_toStartOf="@id/dialogAmountText"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/dialogConfirmButton"/>
+        android:layout_toStartOf="@+id/dialogConfirmButton"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OK"
         android:id="@+id/dialogConfirmButton"
-        android:layout_alignParentBottom="false"
         style="?android:borderlessButtonStyle"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/dialogCancelButton"
-        android:layout_alignParentRight="true"/>
+        android:layout_below="@+id/dialogAmountText"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

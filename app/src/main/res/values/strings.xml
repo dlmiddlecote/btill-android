@@ -11,4 +11,8 @@
 
     <string name="transaction_confirmed">Transaction Confirmed!</string>
 
+    <string name="balance">Balance</string>
+
+
+
 </resources>
