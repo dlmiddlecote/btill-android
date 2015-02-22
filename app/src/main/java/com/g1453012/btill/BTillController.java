@@ -9,7 +9,6 @@ import com.g1453012.btill.Shared.MenuItem;
 import com.google.gson.Gson;
 
 import org.bitcoinj.core.Wallet;
-import org.bitcoinj.kits.WalletAppKit;
 
 import java.util.ArrayList;
 
@@ -22,18 +21,7 @@ public class BTillController {
 
     private Wallet mWallet;
 
-    private WalletAppKit mWalletAppKit = null;
-
     private BluetoothSocket mBluetoothSocket = null;
-
-
-    public WalletAppKit getWalletAppKit() {
-        return mWalletAppKit;
-    }
-
-    public void setWalletAppKit(WalletAppKit walletAppKit) {
-        mWalletAppKit = walletAppKit;
-    }
 
     public Wallet getWallet() {
         return mWallet;

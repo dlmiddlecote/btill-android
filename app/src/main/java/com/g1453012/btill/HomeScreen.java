@@ -116,7 +116,7 @@ public class HomeScreen extends Activity {
                 Log.d(TAG, "Loaded Wallet");
                 Log.d(TAG, "Wallet Address: " + mBTillController.getWallet().currentReceiveAddress().toString());
                 Log.d(TAG, "Wallet Balance: " + mBTillController.getWallet().getBalance().toFriendlyString());
-                Log.d(TAG, "Wallet: " + mBTillController.getWallet().toString());
+                //Log.d(TAG, "Wallet: " + mBTillController.getWallet().toString());
             } catch (UnreadableWalletException e) {
                 Log.d(TAG, "Error reading the wallet");
             }

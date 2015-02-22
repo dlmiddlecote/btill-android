@@ -52,7 +52,6 @@ public class WalletKitThread extends Thread {
         Log.d(TAG, "WalletAppKit has started");
         mWalletAppKit.awaitRunning();
         Log.d(TAG, "WalletAppKit is running");
-        //mBTillController.setWalletAppKit(mWalletAppKit);
 
     }
 

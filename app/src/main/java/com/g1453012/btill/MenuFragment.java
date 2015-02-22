@@ -2,11 +2,14 @@ package com.g1453012.btill;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.g1453012.btill.Shared.GBP;
@@ -34,6 +38,9 @@ public class MenuFragment extends Fragment {
     private Activity mParentActivity;
     private BTillController mBTillController;
 
+    // TODO -- make sure we need this
+    Handler mHandler;
+
     public MenuFragment() {
     }
 
@@ -43,6 +50,7 @@ public class MenuFragment extends Fragment {
         this.mParentActivity = activity;
         HomeScreen screen = (HomeScreen) mParentActivity;
         mBTillController = screen.getBTillController();
+        mHandler = new Handler();
     }
 
     @Override
@@ -161,7 +169,9 @@ public class MenuFragment extends Fragment {
         mConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBTillController.sendOrders(nonZeroMenu);
+                //mBTillController.sendOrders(nonZeroMenu);
+                loadingDialog(nonZeroMenu);
+                mOrderDialog.dismiss();
             }
         });
 
@@ -175,6 +185,82 @@ public class MenuFragment extends Fragment {
 
         mOrderDialog.show();
 
+    }
+
+    private void loadingDialog(Menu nonZeroMenu) {
+
+        final Dialog mLoadingDialog = new Dialog(getActivity());
+        mLoadingDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        mLoadingDialog.setContentView(R.layout.custom_loading_dialog);
+
+        ProgressBar mProgressBar = (ProgressBar) mLoadingDialog.findViewById(R.id.loadingProgressBar);
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        //mLoadingDialog.setCanceledOnTouchOutside(false);
+        mLoadingDialog.show();
+
+        //mBTillController.sendOrders(nonZeroMenu);
+        /* TODO this will currently dismiss the dialog if the order doesn't send
+         * Update this!
+         */
+        if (!mBTillController.sendOrders(nonZeroMenu)) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        if (true) {
+                            mLoadingDialog.dismiss();
+                            Log.d(TAG, "Loading Dialog dismissed");
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    launchPaymentRequestDialog();
+                                }
+                            });
+
+
+                        }
+                    } catch (Exception e) {
+
+                    }
+
+                }
+            }).start();
+            //mLoadingDialog.dismiss();
+
+        }
+
+    }
+
+
+    // TODO -- this!
+    private void launchPaymentRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Test Payment").setMessage("This is a Test Payment")
+                .setPositiveButton("Sign", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+
+                            builder1.setTitle("Success!").setMessage("Payment Successful");
+
+                            builder1.create().show();
+                            //mBTillController.getMenu().resetQuantities();
+
+                        }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+        Log.d(TAG, "Payment shown");
     }
 
     public Menu removeNonZero(Menu menu)
