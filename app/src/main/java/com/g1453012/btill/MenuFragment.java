@@ -196,14 +196,14 @@ public class MenuFragment extends Fragment {
         ProgressBar mProgressBar = (ProgressBar) mLoadingDialog.findViewById(R.id.loadingProgressBar);
         mProgressBar.setVisibility(View.VISIBLE);
 
-        //mLoadingDialog.setCanceledOnTouchOutside(false);
+        mLoadingDialog.setCanceledOnTouchOutside(false);
         mLoadingDialog.show();
 
         //mBTillController.sendOrders(nonZeroMenu);
         /* TODO this will currently dismiss the dialog if the order doesn't send
          * Update this!
          */
-        if (!mBTillController.sendOrders(nonZeroMenu)) {
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -229,7 +229,7 @@ public class MenuFragment extends Fragment {
             }).start();
             //mLoadingDialog.dismiss();
 
-        }
+
 
     }
 
