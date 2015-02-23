@@ -29,6 +29,7 @@ public class Bill implements Serializable {
     private transient Coin coinAmount = null;
     private transient Wallet wallet = null;
     private transient Builder requestBuilder = null;
+
     // PaymentRequest IS SENT TO PHONE
     private PaymentRequest request = null;
 

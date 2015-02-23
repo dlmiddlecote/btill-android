@@ -1,31 +1,35 @@
 package com.g1453012.btill;
 
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.bitcoinj.core.Wallet;
 
 public class MenuFragment extends Fragment {
 
@@ -33,6 +37,9 @@ public class MenuFragment extends Fragment {
 
     private Activity mParentActivity;
     private BTillController mBTillController;
+
+    // TODO -- make sure we need this
+    Handler mHandler;
 
     public MenuFragment() {
     }
@@ -43,6 +50,7 @@ public class MenuFragment extends Fragment {
         this.mParentActivity = activity;
         HomeScreen screen = (HomeScreen) mParentActivity;
         mBTillController = screen.getBTillController();
+        mHandler = new Handler();
     }
 
     @Override
@@ -55,34 +63,86 @@ public class MenuFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final ListView listView = (ListView)getActivity().findViewById(R.id.listView);
-        ArrayList<MenuItem> mMenuItems = new ArrayList<MenuItem>();
-        //Menu mMenu = getOrders();
-        mMenuItems.add(new MenuItem("Chicken", new GBP(200)));
-        mMenuItems.add(new MenuItem("More Chicken", new GBP(100)));
-        mMenuItems.add(new MenuItem("Hot Wings", new GBP(250)));
-        mMenuItems.add(new MenuItem("Chicken Burger", new GBP(300)));
-        mMenuItems.add(new MenuItem("Popcorn Chicken", new GBP(150)));
-        Menu mMenu = new Menu(mMenuItems);
+        final ListView listView = (ListView) getActivity().findViewById(R.id.listView);
 
-
+        Menu mMenu = mBTillController.getMenu();
 
         listView.setAdapter(new MenuAdapter(getActivity(), mMenu));
 
-        Button nextButton = (Button)getActivity().findViewById(R.id.nextButton);
+        Button nextButton = (Button) getActivity().findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MenuAdapter adapter = (MenuAdapter)listView.getAdapter();
+                MenuAdapter adapter = (MenuAdapter) listView.getAdapter();
                 // Launch Order dialog
                 launchOrderDialog(adapter.getMenu());
             }
         });
 
+        Button balanceButton = (Button) getActivity().findViewById(R.id.balanceButton);
+        balanceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(getActivity());
 
+                mDialogBuilder.setTitle("Balance").
+                        setMessage(mBTillController.getWallet().getBalance().toFriendlyString()).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                });
+
+                mDialogBuilder.create().show();*/
+                launchBalanceDialog();
+            }
+        });
+    }
+
+    private void launchBalanceDialog() {
+
+        final Dialog mBalanceDialog = new Dialog(getActivity());
+        mBalanceDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        mBalanceDialog.setContentView(R.layout.custom_balance_dialog);
+
+        TextView mBalanceTotal = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogBalance);
+        mBalanceTotal.setText(mBTillController.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+
+        ImageView mBalanceQR = (ImageView) mBalanceDialog.findViewById(R.id.balanceDialogQR);
+        QRCodeWriter writer = new QRCodeWriter();
+        try {
+            BitMatrix bitMatrix = writer.encode("bitcoin:" + mBTillController.getWallet().currentReceiveAddress().toString(), BarcodeFormat.QR_CODE, 512, 512);
+            Bitmap mBitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+            for (int x = 0; x < 512; x++) {
+                for (int y = 0; y < 512; y++) {
+                    if (bitMatrix.get(x, y))
+                        mBitmap.setPixel(x, y, Color.BLACK);
+                    else
+                        mBitmap.setPixel(x, y, Color.WHITE);
+                }
+            }
+            mBalanceQR.setImageBitmap(mBitmap);
+            mBalanceQR.setVisibility(View.VISIBLE);
+        } catch (WriterException e) {
+            Log.e(TAG, "QR Error");
+        }
+
+        TextView mBalanceAddress = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogAddress);
+        mBalanceAddress.setText(mBTillController.getWallet().currentReceiveAddress().toString());
+
+        Button mBalanceOKButton = (Button) mBalanceDialog.findViewById(R.id.balanceDialogButton);
+        mBalanceOKButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBalanceDialog.dismiss();
+            }
+        });
+
+        mBalanceDialog.show();
 
     }
+
+
 
     private void launchOrderDialog(Menu menu) {
 
@@ -97,23 +157,21 @@ public class MenuFragment extends Fragment {
         mOrderListView.setAdapter(new OrderDialogAdapter(getActivity(), nonZeroMenu));
 
         TextView mOrderTotal = (TextView)mOrderDialog.findViewById(R.id.dialogAmountText);
-        double mTotal = 0;
+        //double mTotal = 0;
+        GBP mTotal = new GBP(0);
         for (MenuItem item: nonZeroMenu)
         {
-            mTotal += item.getPrice().getPence()*item.getQuantity()/100;
+            mTotal = mTotal.plus(item.getPrice().times(item.getQuantity()));
         }
-        mOrderTotal.setText("£"+String.format("%.2f", mTotal));
+        mOrderTotal.setText(mTotal.toString());
 
         Button mConfirmButton = (Button)mOrderDialog.findViewById(R.id.dialogConfirmButton);
         mConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // Set connection to server
-                /*ConnectThread mConnectThread = new ConnectThread();
-                mConnectThread.start();
-                mBTillController.setBluetoothSocket(mConnectThread.getSocket());*/
-                mBTillController.sendOrders(nonZeroMenu);
+                //mBTillController.sendOrders(nonZeroMenu);
+                loadingDialog(nonZeroMenu);
+                mOrderDialog.dismiss();
             }
         });
 
@@ -127,6 +185,82 @@ public class MenuFragment extends Fragment {
 
         mOrderDialog.show();
 
+    }
+
+    private void loadingDialog(Menu nonZeroMenu) {
+
+        final Dialog mLoadingDialog = new Dialog(getActivity());
+        mLoadingDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        mLoadingDialog.setContentView(R.layout.custom_loading_dialog);
+
+        ProgressBar mProgressBar = (ProgressBar) mLoadingDialog.findViewById(R.id.loadingProgressBar);
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        //mLoadingDialog.setCanceledOnTouchOutside(false);
+        mLoadingDialog.show();
+
+        //mBTillController.sendOrders(nonZeroMenu);
+        /* TODO this will currently dismiss the dialog if the order doesn't send
+         * Update this!
+         */
+        if (!mBTillController.sendOrders(nonZeroMenu)) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        if (true) {
+                            mLoadingDialog.dismiss();
+                            Log.d(TAG, "Loading Dialog dismissed");
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    launchPaymentRequestDialog();
+                                }
+                            });
+
+
+                        }
+                    } catch (Exception e) {
+
+                    }
+
+                }
+            }).start();
+            //mLoadingDialog.dismiss();
+
+        }
+
+    }
+
+
+    // TODO -- this!
+    private void launchPaymentRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Test Payment").setMessage("This is a Test Payment")
+                .setPositiveButton("Sign", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+
+                            builder1.setTitle("Success!").setMessage("Payment Successful");
+
+                            builder1.create().show();
+                            //mBTillController.getMenu().resetQuantities();
+
+                        }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+        Log.d(TAG, "Payment shown");
     }
 
     public Menu removeNonZero(Menu menu)
