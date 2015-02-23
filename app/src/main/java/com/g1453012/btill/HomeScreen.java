@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.params.TestNet3Params;
@@ -17,7 +18,6 @@ import org.bitcoinj.store.UnreadableWalletException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,19 +46,21 @@ public class HomeScreen extends Activity {
 
     private final ExecutorService pool = Executors.newFixedThreadPool(10);
 
-    //private final Handler mHandler = new Handler();
+    private Bundle mSavedInstanceState;
 
     public BTillController getBTillController() {
         return mBTillController;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mBTillController = new BTillController();
+        mSavedInstanceState = savedInstanceState;
 
-        /*if (mBluetoothAdapter == null) {
+
+        if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.no_bluetooth, Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -67,59 +69,11 @@ public class HomeScreen extends Activity {
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }*/
-
-
-        //mWalletKitThread.start();
-        mWalletKitThread = new WalletKitThread(getApplicationContext(), mBTillController);
-        mWalletKitThread.start();
-
-        setContentView(R.layout.activity_home_screen);
-        if (savedInstanceState==null) {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-            // Create new Controller when app loads
-            mBTillController = new BTillController();
-            if (mBluetoothAdapter.isEnabled()) {
-                ConnectThread mConnectThread = new ConnectThread(mBluetoothAdapter);
-                mConnectThread.start();
-                mBTillController.setBluetoothSocket(mConnectThread.getSocket());
-            }
-            else {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                //Future<Boolean> bluetoothOn = turnBluetoothOn();
-                if (mBluetoothAdapter.isEnabled()) {
-                    ConnectThread mConnectThread = new ConnectThread(mBluetoothAdapter);
-                    mConnectThread.start();
-                    mBTillController.setBluetoothSocket(mConnectThread.getSocket());
-                }
-            }
-            mFile = new File(this.getExternalFilesDir("/wallet/"), filePrefix + ".wallet");
-            mCheckpointFile = new File(this.getExternalFilesDir("/wallet/"), "checkpoints");
-            try {
-                mCheckpointStream = new FileInputStream(mCheckpointFile);
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "Couldn't find checkpoint file");
-            }
-
-            try {
-                mBTillController.setWallet(Wallet.loadFromFile(mFile));
-                Log.d(TAG, "Loaded Wallet");
-                Log.d(TAG, "Wallet Address: " + mBTillController.getWallet().currentReceiveAddress().toString());
-                Log.d(TAG, "Wallet Balance: " + mBTillController.getWallet().getBalance().toFriendlyString());
-                //Log.d(TAG, "Wallet: " + mBTillController.getWallet().toString());
-            } catch (UnreadableWalletException e) {
-                Log.d(TAG, "Error reading the wallet");
-            }
-            // TODO Add listenable future to make sure wallet kit is running
-            //Log.d(TAG, mBTillController.getWalletAppKit().wallet().toString());
-
-            Fragment fragment = new MenuFragment();
-            transaction.add(R.id.fragmentFrame, fragment);
-            transaction.commit();
-
         }
+        else {
+            onBluetoothEnabled();
+        }
+
     }
 
 
@@ -146,18 +100,57 @@ public class HomeScreen extends Activity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        try {
-            mBTillController.getWallet().saveToFile(mFile);
-
-            Log.d(TAG, "Saved file");
-        } catch (IOException e) {
-            Log.e(TAG, "Error saving file");
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode == RESULT_OK) {
+                onBluetoothEnabled();
+            }
+            else {
+                finish();
+                return;
+            }
         }
-        //File mFile = new File(this.getFilesDir(), "wallet.dat");
-        //mFile.delete();
+    }
 
+    private void onBluetoothEnabled() {
+        ConnectThread mConnectThread = new ConnectThread(mBluetoothAdapter);
+        mConnectThread.start();
+        mBTillController.setBluetoothSocket(mConnectThread.getSocket());
 
+        setWallet();
+        generateViews();
+    }
+
+    private void setWallet() {
+        mWalletKitThread = new WalletKitThread(getApplicationContext(), mBTillController, mFile);
+        mWalletKitThread.start();
+
+        mFile = new File(this.getExternalFilesDir("/wallet/"), filePrefix + ".wallet");
+        mCheckpointFile = new File(this.getExternalFilesDir("/wallet/"), "checkpoints");
+        try {
+            mCheckpointStream = new FileInputStream(mCheckpointFile);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Couldn't find checkpoint file");
+        }
+
+        try {
+            mBTillController.setWallet(Wallet.loadFromFile(mFile));
+            Log.d(TAG, "Loaded Wallet");
+            Log.d(TAG, "Wallet Address: " + mBTillController.getWallet().currentReceiveAddress().toString());
+            Log.d(TAG, "Wallet Balance: " + mBTillController.getWallet().getBalance().toFriendlyString());
+            //Log.d(TAG, "Wallet: " + mBTillController.getWallet().toString());
+        } catch (UnreadableWalletException e) {
+            Log.d(TAG, "Error reading the wallet");
+        }
+    }
+
+    private void generateViews() {
+        setContentView(R.layout.activity_home_screen);
+        if (mSavedInstanceState==null) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            Fragment fragment = new MenuFragment();
+            transaction.add(R.id.fragmentFrame, fragment);
+            transaction.commit();
+        }
     }
 }
