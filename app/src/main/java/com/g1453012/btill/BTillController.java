@@ -54,11 +54,31 @@ public class BTillController {
         return new Menu(mMenuItems);
     }
 
+    // TODO Maybe change this functions name
+    /*public boolean confirmTransaction(Protos.PaymentRequest paymentRequest) throws PaymentProtocolException {
+        Protos.Payment mPayment = null;
+        PaymentSession mPaymentSession = new PaymentSession(paymentRequest, false);
+        Wallet.SendRequest mSendRequest = mPaymentSession.getSendRequest();
+        try {
+            mWallet.completeTx(mSendRequest);
+        } catch (InsufficientMoneyException e) {
+            // TODO What to do when we don't have enough money
+        }
+
+        try {
+            mPayment = mPaymentSession.getPayment(ImmutableList.of(mSendRequest.tx), mWallet.freshReceiveAddress(), null);
+        } catch (IOException e) {
+            // TODO this
+        }
+        if (mPayment != null) {
+            mPayment.toByteArray();
+        }
+
+
+
+    }*/
+
     /*
-    public boolean confirmTransaction(Protos.Transaction trans){
-
-    }
-
     public void cancelTransaction(Protos.Transaction trans) {
 
     }*/

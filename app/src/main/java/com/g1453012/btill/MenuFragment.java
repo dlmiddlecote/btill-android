@@ -83,17 +83,6 @@ public class MenuFragment extends Fragment {
         balanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(getActivity());
-
-                mDialogBuilder.setTitle("Balance").
-                        setMessage(mBTillController.getWallet().getBalance().toFriendlyString()).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-                mDialogBuilder.create().show();*/
                 launchBalanceDialog();
             }
         });
@@ -227,7 +216,6 @@ public class MenuFragment extends Fragment {
 
                 }
             }).start();
-            //mLoadingDialog.dismiss();
 
 
 
