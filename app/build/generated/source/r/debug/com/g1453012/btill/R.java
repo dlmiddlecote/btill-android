@@ -1454,7 +1454,7 @@ containing a value of this type.
         public static final int balance=0x7f0a0012;
         public static final int cancel=0x7f0a0013;
         public static final int confirm=0x7f0a0014;
-        public static final int hello_world=0x7f0a0015;
+        public static final int no_bluetooth=0x7f0a0015;
         public static final int order_dialog_title=0x7f0a0016;
         public static final int transaction_confirmed=0x7f0a0017;
     }

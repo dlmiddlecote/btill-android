@@ -21,14 +21,16 @@ public class ConnectThread extends Thread {
     private ConnectedThread mConnectedThread;
 
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    //private BluetoothAdapter mBluetoothAdapter;
 
     public BluetoothSocket getSocket() {
         return mSocket;
     }
 
-    public ConnectThread() {
+    public ConnectThread(BluetoothAdapter bluetoothAdapter) {
 
         BluetoothDevice device = null;
+        //mBluetoothAdapter = bluetoothAdapter;
 
         Set<BluetoothDevice> mPairedDevices = mBluetoothAdapter.getBondedDevices();
         for (BluetoothDevice bt: mPairedDevices) {
@@ -51,6 +53,8 @@ public class ConnectThread extends Thread {
 
     // What to do when the ConnectThread is started
     public void run() {
+
+
         // Stop discovery
         mBluetoothAdapter.cancelDiscovery();
         try {
