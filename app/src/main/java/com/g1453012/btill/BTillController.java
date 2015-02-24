@@ -3,6 +3,7 @@ package com.g1453012.btill;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+import com.g1453012.btill.Shared.BTMessage;
 import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
@@ -35,6 +36,8 @@ public class BTillController {
 
     private BluetoothSocket mBluetoothSocket = null;
 
+    private Bill mBill = null;
+
     public Wallet getWallet() {
         return mWallet;
     }
@@ -65,12 +68,25 @@ public class BTillController {
         mMenuItems.add(new MenuItem("Chicken Burger", new GBP(300)));
         mMenuItems.add(new MenuItem("Popcorn Chicken", new GBP(150)));
         return new Menu(mMenuItems);
+
+        // sendMenuRequest();
+        // return receiveMenu();
+    }
+
+    public boolean sendMenuRequest() {
+        return write(new BTMessage("REQUEST_MENU"));
+    }
+
+    public Menu receiveMenu() {
+        BTMessage menuMessage = read();
+        return new Gson().fromJson(menuMessage.getBodyString(), Menu.class);
     }
 
     /*public boolean confirmTransaction(Protos.PaymentRequest paymentRequest) {
 
     }*/
 
+    // TODO remove this
     public Protos.PaymentRequest getRequest(String uri) {
         BitcoinURI mUri = null;
         try {
@@ -84,8 +100,8 @@ public class BTillController {
         String memo = mUri.getMessage();
         String url = mUri.getPaymentRequestUrl();
         Log.d(TAG, url);
-        Protos.PaymentRequest.Builder requestbuilder = PaymentProtocol.createPaymentRequest(TestNet3Params.get(), amount, address, memo, url, null);
-        Protos.PaymentRequest request = requestbuilder.build();
+        Protos.PaymentRequest.Builder requestBuilder = PaymentProtocol.createPaymentRequest(TestNet3Params.get(), amount, address, memo, url, null);
+        Protos.PaymentRequest request = requestBuilder.build();
         return request;
     }
 
@@ -98,7 +114,7 @@ public class BTillController {
         else {
             Wallet.SendRequest mSendRequest = mPaymentSession.getSendRequest();
             //mWallet.signTransaction(Wallet.SendRequest.forTx(mSendRequest.tx));
-            Log.d(TAG, mPaymentSession.getPaymentDetails().toString());
+            //Log.d(TAG, mPaymentSession.getPaymentDetails().toString());
             try {
                 mWallet.completeTx(Wallet.SendRequest.forTx(mSendRequest.tx));
                 //mWallet.commitTx(mSendRequest.tx);
@@ -108,13 +124,13 @@ public class BTillController {
             }
             try {
                 mPayment = mPaymentSession.getPayment(ImmutableList.of(mSendRequest.tx), mWallet.freshReceiveAddress(), "Hi");
-
+                /*
                 if (mPayment == null) {
                     Log.e(TAG, "Payment is null");
                 }
                 else {
-                    Log.d(TAG, mPayment.toString());
-                }
+                    //Log.d(TAG, mPayment.toString());
+                }*/
             } catch (IOException e) {
                 // TODO this
                 Log.e(TAG, "Error making payment");
@@ -134,37 +150,39 @@ public class BTillController {
     }*/
 
     public boolean sendOrders(Menu menu) {
-        String jsonFormatted = formatOrders(menu);
-
-        ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
-        mConnectedThread.start();
-        return mConnectedThread.write(jsonFormatted);
+        return write(formatOrders(menu));
     }
 
-    public String formatOrders(Menu menu) {
+    public BTMessage formatOrders(Menu menu) {
         Gson gson = new Gson();
         String json = gson.toJson(menu, Menu.class);
         Log.d(TAG, json);
 
-        return json;
+        return new BTMessage("MAKE_ORDER", json);
     }
 
-    public Bill getBill(){
-        ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
-        String json = mConnectedThread.read();
-        Gson gson = new Gson();
-
-       return gson.fromJson(json ,Bill.class);
-
+    public void getBill(){
+       BTMessage billMessage = read();
+       mBill = new Gson().fromJson(billMessage.getBodyString(), Bill.class);
     }
 
+    // TODO remember to change this
     public Protos.PaymentRequest getPaymentRequest(){
+        return getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com");
+        //return mBill.getRequest();
 
-        Bill mBill =  getBill();
+    }
 
-        return mBill.getRequest();
+    public BTMessage read() {
+        ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
+        mConnectedThread.start();
+        return new Gson().fromJson(mConnectedThread.read(), BTMessage.class);
+    }
 
-
+    public boolean write(BTMessage message) {
+        ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
+        mConnectedThread.start();
+        return mConnectedThread.write(message);
     }
 
 

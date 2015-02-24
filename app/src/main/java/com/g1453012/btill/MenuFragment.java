@@ -160,7 +160,6 @@ public class MenuFragment extends Fragment {
         mConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //mBTillController.sendOrders(nonZeroMenu);
                 loadingDialog(nonZeroMenu);
                 mOrderDialog.dismiss();
             }
@@ -178,7 +177,7 @@ public class MenuFragment extends Fragment {
 
     }
 
-    private void loadingDialog(Menu nonZeroMenu) {
+    private void loadingDialog(final Menu nonZeroMenu) {
 
         final Dialog mLoadingDialog = new Dialog(getActivity());
         mLoadingDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -199,14 +198,16 @@ public class MenuFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(1000);
+                    //Thread.sleep(1000);
+                    mBTillController.sendOrders(nonZeroMenu);
+                    final Protos.PaymentRequest request = mBTillController.getPaymentRequest();
                     if (true) {
                         mLoadingDialog.dismiss();
                         Log.d(TAG, "Loading Dialog dismissed");
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                launchPaymentRequestDialog();
+                                launchPaymentRequestDialog(request);
                             }
                         });
 
@@ -223,22 +224,17 @@ public class MenuFragment extends Fragment {
 
 
     // TODO -- this!
-    private void launchPaymentRequestDialog() {
+    private void launchPaymentRequestDialog(final Protos.PaymentRequest request) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Test Payment").setMessage("This is a Test Payment")
                 .setPositiveButton("Sign", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                            /*AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
 
-                            builder1.setTitle("Success!").setMessage("Payment Successful");
-
-                            builder1.create().show();*/
-
-                        Protos.PaymentRequest request = mBTillController.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com");
+                        Protos.Payment payment = null;
                         try {
-                            Protos.Payment payment = mBTillController.transactionSigner(request);
+                            payment = mBTillController.transactionSigner(request);
                             Log.d(TAG, "Transaction Signed");
                         } catch (PaymentProtocolException e) {
                             //TODO error
@@ -247,11 +243,19 @@ public class MenuFragment extends Fragment {
                         ConnectedThread mConnectedThread = new ConnectedThread(mBTillController.getBluetoothSocket());
                         mConnectedThread.start();
 
-                        /*if (mConnectedThread.write(payment)) {
+                        if (mConnectedThread.write(payment)) {
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
 
+                            builder1.setTitle("Success!").setMessage("Payment Successful");
+
+                            builder1.create().show();
                         } else {
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
 
-                        }*/
+                            builder1.setTitle("Uh Oh!").setMessage("Payment Unsuccessful");
+
+                            builder1.create().show();
+                        }
 
                         //mBTillController.getMenu().resetQuantities();
 
