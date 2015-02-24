@@ -3,6 +3,8 @@ package com.g1453012.btill;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+import org.bitcoin.protocols.payments.Protos;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -85,6 +87,17 @@ public class ConnectedThread extends Thread {
         }
     }
 
+    public boolean write(Protos.Payment mPayment) {
+        try {
+            // Take to input string and convert to bytes, and send
+            mOutStream.write(mPayment.toByteArray());
+            Log.i(TAG, "Written Payment");
+            return true;
+        } catch (IOException e) {
+            Log.i(TAG, "Couldn't Write Payment");
+            return false;
+        }
+    }
 
     // Cancel ConnectedThread method
     public void cancel() {
