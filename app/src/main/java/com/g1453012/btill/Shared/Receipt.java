@@ -28,6 +28,7 @@ public class Receipt {
     }
 
     private final Date date;
+
     private final GBP gbp;
     private final Coin bitcoins;
     private final String memo;
