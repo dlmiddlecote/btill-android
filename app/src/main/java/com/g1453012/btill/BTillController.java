@@ -166,11 +166,18 @@ public class BTillController {
        mBill = new Gson().fromJson(billMessage.getBodyString(), Bill.class);
     }
 
+
+
     // TODO remember to change this
     public Protos.PaymentRequest getPaymentRequest(){
         return getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com");
         //return mBill.getRequest();
 
+    }
+    public String getAckMessage(){
+        BTMessage AckMessage = read();
+        PaymentProtocol.Ack Ack = new Gson().fromJson(AckMessage.getBodyString(), PaymentProtocol.Ack.class);
+        return Ack.getMemo();
     }
 
     public BTMessage read() {
