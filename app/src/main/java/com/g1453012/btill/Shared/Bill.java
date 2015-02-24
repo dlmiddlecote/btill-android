@@ -30,6 +30,11 @@ public class Bill implements Serializable {
     private transient Wallet wallet = null;
     private transient Builder requestBuilder = null;
 
+    public PaymentRequest getRequest() {
+        return request;
+    }
+
+
     // PaymentRequest IS SENT TO PHONE
     private PaymentRequest request = null;
 

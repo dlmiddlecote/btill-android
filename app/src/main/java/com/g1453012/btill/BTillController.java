@@ -3,6 +3,7 @@ package com.g1453012.btill;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
@@ -148,7 +149,23 @@ public class BTillController {
         return json;
     }
 
+    public Bill getBill(){
+        ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
+        String json = mConnectedThread.read();
+        Gson gson = new Gson();
 
+       return gson.fromJson(json ,Bill.class);
+
+    }
+
+    public Protos.PaymentRequest getPaymentRequest(){
+
+        Bill mBill =  getBill();
+
+        return mBill.getRequest();
+
+
+    }
 
 
 }
