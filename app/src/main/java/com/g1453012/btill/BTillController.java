@@ -51,7 +51,6 @@ public class BTillController {
         mBluetoothSocket = bluetoothSocket;
     }
 
-
     public BTillController() {
     }
 
