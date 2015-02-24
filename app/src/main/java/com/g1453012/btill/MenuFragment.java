@@ -68,6 +68,7 @@ public class MenuFragment extends Fragment {
         final ListView listView = (ListView) getActivity().findViewById(R.id.listView);
 
         Menu mMenu = mBTillController.getMenu();
+        Log.d(TAG, "Gets Menu");
 
         listView.setAdapter(new MenuAdapter(getActivity(), mMenu));
 
@@ -200,7 +201,9 @@ public class MenuFragment extends Fragment {
                 try {
                     //Thread.sleep(1000);
                     mBTillController.sendOrders(nonZeroMenu);
+                    Log.d(TAG, "Sent orders");
                     final Protos.PaymentRequest request = mBTillController.getPaymentRequest();
+                    Log.d(TAG, "Got payment request");
                     if (true) {
                         mLoadingDialog.dismiss();
                         Log.d(TAG, "Loading Dialog dismissed");
@@ -240,10 +243,8 @@ public class MenuFragment extends Fragment {
                             //TODO error
                         }
 
-                        ConnectedThread mConnectedThread = new ConnectedThread(mBTillController.getBluetoothSocket());
-                        mConnectedThread.start();
 
-                        if (mConnectedThread.write(payment)) {
+                        if (mBTillController.sendPayment(payment)) {
                             AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
 
                             builder1.setTitle("Success!").setMessage("Payment Successful");
