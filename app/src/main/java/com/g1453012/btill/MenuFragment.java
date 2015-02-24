@@ -221,6 +221,7 @@ public class MenuFragment extends Fragment {
     }
 
 
+
     // TODO -- this!
     private void launchPaymentRequestDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
