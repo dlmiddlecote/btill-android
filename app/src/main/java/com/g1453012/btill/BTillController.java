@@ -8,6 +8,7 @@ import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
+import com.g1453012.btill.Shared.Receipt;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
@@ -174,10 +175,10 @@ public class BTillController {
         //return mBill.getRequest();
 
     }
-    public String getAckMessage(){
+    public Receipt getReceipt(){
         BTMessage AckMessage = read();
-        PaymentProtocol.Ack Ack = new Gson().fromJson(AckMessage.getBodyString(), PaymentProtocol.Ack.class);
-        return Ack.getMemo();
+        Receipt mReceipt = new Gson().fromJson(AckMessage.getBodyString(), Receipt.class);
+        return mReceipt ;
     }
 
     public BTMessage read() {
