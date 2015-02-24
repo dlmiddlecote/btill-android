@@ -163,10 +163,12 @@
     <eat-comment/>
     <string name="action_settings">Settings</string>
     <string name="app_name">BTill</string>
+    <string name="balance">Balance</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">OK</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="no_bluetooth">Device does not support Bluetooth</string>
     <string name="order_dialog_title">Confirm Your Order</string>
+    <string name="transaction_confirmed">Transaction Confirmed!</string>
     <!-- From: file:/Volumes/Nifty/AndroidDevelopment/BTill/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
