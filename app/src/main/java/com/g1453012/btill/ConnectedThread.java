@@ -2,9 +2,6 @@ package com.g1453012.btill;
 
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
-import android.widget.Toast;
-
-import org.bitcoinj.protocols.payments.PaymentSession;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +51,7 @@ public class ConnectedThread extends Thread {
     }
 
     // How to read from server
-    public void read() {
+    public String read() {
         Log.d(TAG, "Inside Connected Run");
         // Set up a byte buffer
         final int BUFFER_SIZE = 1024;
@@ -71,6 +68,7 @@ public class ConnectedThread extends Thread {
         }
         final String message = new String(buffer, 0, bytes);
         Log.d(TAG, message);
+        return message;
     }
 
 
