@@ -2,6 +2,20 @@
 <items version="2" >
 
     <item
+        jar="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/exploded-aar/org.altbeacon/android-beacon-library/2.1.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="54ff0c82277895632a46392a3663e73645ac2b0d">
+        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/classes-628170c55da2c1c0644ea33203e307a37b2f0825.jar" />
+    </item>
+    <item
+        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.2.0/e019d15a13a9786f881141d2df6654b8510bce8b/core-3.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e019d15a13a9786f881141d2df6654b8510bce8b">
+        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/core-3.2.0-7e70eba49081506f8a560818e6fbf60539314591.jar" />
+    </item>
+    <item
         jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/2.5.0/a10732c76bfacdbd633a7eb0f7968b1059a65dfa/protobuf-java-2.5.0.jar"
         jumboMode="false"
         revision="21.1.2"

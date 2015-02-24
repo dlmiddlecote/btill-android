@@ -5,7 +5,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class Menu implements Iterable<MenuItem> {
     private ArrayList<MenuItem> items = new ArrayList<MenuItem>();
@@ -48,4 +47,10 @@ public class Menu implements Iterable<MenuItem> {
     public int size() {
         return items.size();
     }
+
+    /*public void resetQuantities() {
+        for (MenuItem item : items) {
+            item.setQuantity(0);
+        }
+    }*/
 }
