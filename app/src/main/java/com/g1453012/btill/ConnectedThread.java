@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import com.g1453012.btill.Shared.BTMessage;
+import com.g1453012.btill.Shared.BTMessageBuilder;
 
 import org.bitcoin.protocols.payments.Protos;
 
@@ -102,7 +103,7 @@ public class ConnectedThread extends Thread {
     }
 
     public boolean write(Protos.Payment mPayment) {
-        BTMessage message = new BTMessage(mPayment);
+        BTMessage message = new BTMessageBuilder(mPayment).build();
 
         if (write(message)) {
             return true;

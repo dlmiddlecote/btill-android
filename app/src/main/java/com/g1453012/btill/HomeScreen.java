@@ -114,6 +114,7 @@ public class HomeScreen extends Activity {
     }
 
     private void onBluetoothEnabled() {
+
         ConnectThread mConnectThread = new ConnectThread(mBluetoothAdapter);
         mConnectThread.start();
         mBTillController.setBluetoothSocket(mConnectThread.getSocket());
