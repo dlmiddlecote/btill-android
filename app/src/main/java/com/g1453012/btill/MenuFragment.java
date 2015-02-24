@@ -29,7 +29,9 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.Wallet;
+import org.bitcoinj.protocols.payments.PaymentProtocolException;
 
 public class MenuFragment extends Fragment {
 
@@ -193,52 +195,67 @@ public class MenuFragment extends Fragment {
          * Update this!
          */
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(5000);
-                        if (true) {
-                            mLoadingDialog.dismiss();
-                            Log.d(TAG, "Loading Dialog dismissed");
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    launchPaymentRequestDialog();
-                                }
-                            });
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    if (true) {
+                        mLoadingDialog.dismiss();
+                        Log.d(TAG, "Loading Dialog dismissed");
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                launchPaymentRequestDialog();
+                            }
+                        });
 
-
-                        }
-                    } catch (Exception e) {
 
                     }
+                } catch (Exception e) {
 
                 }
-            }).start();
 
-
-
+            }
+        }).start();
     }
 
 
     // TODO -- this!
     private void launchPaymentRequestDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Test Payment").setMessage("This is a Test Payment")
                 .setPositiveButton("Sign", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                            /*AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
 
                             builder1.setTitle("Success!").setMessage("Payment Successful");
 
-                            builder1.create().show();
-                            //mBTillController.getMenu().resetQuantities();
+                            builder1.create().show();*/
 
+                        Protos.PaymentRequest request = mBTillController.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com");
+                        try {
+                            Protos.Payment payment = mBTillController.transactionSigner(request);
+                            Log.d(TAG, "Transaction Signed");
+                        } catch (PaymentProtocolException e) {
+                            //TODO error
                         }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                        ConnectedThread mConnectedThread = new ConnectedThread(mBTillController.getBluetoothSocket());
+                        mConnectedThread.start();
+
+                        /*if (mConnectedThread.write(payment)) {
+
+                        } else {
+
+                        }*/
+
+                        //mBTillController.getMenu().resetQuantities();
+
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

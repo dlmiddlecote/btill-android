@@ -18,6 +18,7 @@ import org.bitcoinj.store.UnreadableWalletException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -151,6 +152,17 @@ public class HomeScreen extends Activity {
             Fragment fragment = new MenuFragment();
             transaction.add(R.id.fragmentFrame, fragment);
             transaction.commit();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            mBTillController.getWallet().saveToFile(mFile);
+            Log.d(TAG, "Wallet Saved");
+        } catch (IOException e) {
+            Log.e(TAG, "Error saving file");
         }
     }
 }
