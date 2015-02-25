@@ -69,10 +69,6 @@ public class BTillController {
         mMenuItems.add(new MenuItem("Chicken Burger", new GBP(300)));
         mMenuItems.add(new MenuItem("Popcorn Chicken", new GBP(150)));
         return new Menu(mMenuItems);
-
-        /*sendMenuRequest();
-        Log.d(TAG, "Sends Menu Request");
-        return receiveMenu();*/
     }
 
     public boolean sendMenuRequest() {
