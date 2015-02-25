@@ -5,10 +5,15 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.bitcoinj.core.Wallet;
@@ -113,9 +118,8 @@ public class HomeScreen extends Activity {
 
     private void onBluetoothEnabled() {
         int connectionTries = 0;
-        int MAX_ATTEMPTS = 50;
+        int MAX_ATTEMPTS = 25;
         ConnectThread mConnectThread = new ConnectThread(mBluetoothAdapter);
-        mConnectThread.start();
         try {
             while (connectionTries < MAX_ATTEMPTS) {
                 Future<Boolean> connectionFuture = mConnectThread.runFuture();
@@ -135,10 +139,11 @@ public class HomeScreen extends Activity {
         }
         if (connectionTries < MAX_ATTEMPTS) {
             setWallet();
-            generateViews();
+            generateMenuView();
         } else {
             Log.e(TAG, "Connection Timed out... Quitting...");
-            finish();
+            setWallet();
+            generateServerNotFoundView(0);
         }
     }
 
@@ -165,7 +170,7 @@ public class HomeScreen extends Activity {
         }
     }
 
-    private void generateViews() {
+    private void generateMenuView() {
         setContentView(R.layout.activity_home_screen);
         if (mSavedInstanceState==null) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -173,6 +178,30 @@ public class HomeScreen extends Activity {
             transaction.add(R.id.fragmentFrame, fragment);
             transaction.commit();
         }
+    }
+
+    public void generateServerNotFoundView(int type) {
+        setContentView(R.layout.server_not_found_home);
+
+        TextView mBalanceTotal = (TextView) findViewById(R.id.serverNotFoundBalanceAmount);
+        mBalanceTotal.setText(mBTillController.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+
+        ImageView mBalanceQR = (ImageView) findViewById(R.id.serverNotFoundQR);
+        Bitmap mBitmap = mBTillController.generateQR();
+        mBalanceQR.setImageBitmap(mBitmap);
+        mBalanceQR.setVisibility(View.VISIBLE);
+
+        TextView mWalletAddress = (TextView) findViewById(R.id.serverNotFoundWalletAddress);
+        mWalletAddress.setText(mBTillController.getWallet().currentReceiveAddress().toString());
+
+        Button mServerNotFoundButton = (Button) findViewById(R.id.serverNotFoundRetryButton);
+        mServerNotFoundButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBluetoothEnabled();
+            }
+        });
+
     }
 
     @Override

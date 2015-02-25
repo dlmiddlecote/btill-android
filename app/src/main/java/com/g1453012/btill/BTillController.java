@@ -1,6 +1,9 @@
 package com.g1453012.btill;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.g1453012.btill.Shared.BTMessage;
@@ -10,6 +13,10 @@ import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.Status;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.Coin;
@@ -40,6 +47,8 @@ public class BTillController {
 
     private BluetoothSocket mBluetoothSocket = null;
 
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
     private Bill mBill = null;
 
     private final ExecutorService pool = Executors.newFixedThreadPool(10);
@@ -58,6 +67,10 @@ public class BTillController {
 
     public void setBluetoothSocket(BluetoothSocket bluetoothSocket) {
         mBluetoothSocket = bluetoothSocket;
+    }
+
+    public BluetoothAdapter getBluetoothAdapter() {
+        return mBluetoothAdapter;
     }
 
     public BTillController() {
@@ -164,11 +177,6 @@ public class BTillController {
         return write(new BTMessageBuilder(payment).build());
     }
 
-    /*
-    public void cancelTransaction(Protos.Transaction trans) {
-
-    }*/
-
     public boolean sendOrders(Menu menu) {
         return write(new BTMessageBuilder(menu).build());
     }
@@ -196,6 +204,7 @@ public class BTillController {
         }
     }
 
+
     public BTMessage read() {
         ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
         mConnectedThread.start();
@@ -218,6 +227,27 @@ public class BTillController {
         ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
         mConnectedThread.start();
         return mConnectedThread.write(message);
+    }
+
+    public Bitmap generateQR() {
+        QRCodeWriter writer = new QRCodeWriter();
+        BitMatrix bitMatrix = null;
+        Bitmap mBitmap = null;
+        try {
+            bitMatrix = writer.encode("bitcoin:" + mWallet.currentReceiveAddress().toString(), BarcodeFormat.QR_CODE, 512, 512);
+            mBitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+            for (int x = 0; x < 512; x++) {
+                for (int y = 0; y < 512; y++) {
+                    if (bitMatrix.get(x, y))
+                        mBitmap.setPixel(x, y, Color.BLACK);
+                    else
+                        mBitmap.setPixel(x, y, Color.WHITE);
+                }
+            }
+        } catch (WriterException e) {
+            Log.e(TAG, "QRWriter error");
+        }
+        return mBitmap;
     }
 
 

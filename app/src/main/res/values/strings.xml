@@ -6,6 +6,9 @@
 
     <string name="no_bluetooth">Device does not support Bluetooth</string>
 
+    <string name="server_not_found_title">No server was found</string>
+
+
     <string name="order_dialog_title">Confirm Your Order</string>
     <string name="confirm">OK</string>
     <string name="cancel">Cancel</string>
@@ -13,7 +16,9 @@
     <string name="transaction_confirmed">Transaction Confirmed!</string>
 
     <string name="balance">Balance</string>
-
+    <string name="topup">Top-Up</string>
+    <string name="retry">Retry</string>
+    <string name="balance_topup_title">Balance/ Top-Up</string>
 
 
 </resources>

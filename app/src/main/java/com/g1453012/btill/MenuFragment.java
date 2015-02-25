@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,15 +23,12 @@ import android.widget.TextView;
 import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -81,7 +77,11 @@ public class MenuFragment extends Fragment {
             Log.e(TAG, "Getting the Menu had an Execution Exception");
         }
         Log.d(TAG, "Gets Menu");
-
+        try {
+            mBTillController.getBluetoothSocket().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         listView.setAdapter(new MenuAdapter(getActivity(), mMenu));
 
         Button nextButton = (Button) getActivity().findViewById(R.id.nextButton);
@@ -101,6 +101,7 @@ public class MenuFragment extends Fragment {
                 launchBalanceDialog();
             }
         });
+
     }
 
     private void launchBalanceDialog() {
@@ -113,23 +114,9 @@ public class MenuFragment extends Fragment {
         mBalanceTotal.setText(mBTillController.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
 
         ImageView mBalanceQR = (ImageView) mBalanceDialog.findViewById(R.id.balanceDialogQR);
-        QRCodeWriter writer = new QRCodeWriter();
-        try {
-            BitMatrix bitMatrix = writer.encode("bitcoin:" + mBTillController.getWallet().currentReceiveAddress().toString(), BarcodeFormat.QR_CODE, 512, 512);
-            Bitmap mBitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
-            for (int x = 0; x < 512; x++) {
-                for (int y = 0; y < 512; y++) {
-                    if (bitMatrix.get(x, y))
-                        mBitmap.setPixel(x, y, Color.BLACK);
-                    else
-                        mBitmap.setPixel(x, y, Color.WHITE);
-                }
-            }
-            mBalanceQR.setImageBitmap(mBitmap);
-            mBalanceQR.setVisibility(View.VISIBLE);
-        } catch (WriterException e) {
-            Log.e(TAG, "QR Error");
-        }
+        Bitmap mBitmap = mBTillController.generateQR();
+        mBalanceQR.setImageBitmap(mBitmap);
+        mBalanceQR.setVisibility(View.VISIBLE);
 
         TextView mBalanceAddress = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogAddress);
         mBalanceAddress.setText(mBTillController.getWallet().currentReceiveAddress().toString());
@@ -212,17 +199,29 @@ public class MenuFragment extends Fragment {
             public void run() {
                 try {
                     //Thread.sleep(1000);
-                    mBTillController.sendOrders(nonZeroMenu);
-                    Log.d(TAG, "Sent orders");
-                    final Protos.PaymentRequest request = mBTillController.getPaymentRequest();
-                    Log.d(TAG, "Got payment request");
+                    Protos.PaymentRequest request = null;
+                    ConnectThread mConnectThread = new ConnectThread(mBTillController.getBluetoothAdapter());
+                    Future<Boolean> connectionFuture = mConnectThread.runFuture();
+                    if(connectionFuture.get()) {
+                        mBTillController.setBluetoothSocket(mConnectThread.getSocket());
+                        mBTillController.sendOrders(nonZeroMenu);
+                        Log.d(TAG, "Sent orders");
+                        request = mBTillController.getPaymentRequest();
+                        Log.d(TAG, "Got payment request");
+                    }
+                    final Protos.PaymentRequest receivedRequest = request;
                     if (true) {
                         mLoadingDialog.dismiss();
                         Log.d(TAG, "Loading Dialog dismissed");
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                launchPaymentRequestDialog(request);
+                                launchPaymentRequestDialog(receivedRequest);
+                                try {
+                                    mBTillController.getBluetoothSocket().close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
 
@@ -282,6 +281,7 @@ public class MenuFragment extends Fragment {
 
         AlertDialog dialog = builder.create();
 
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         Log.d(TAG, "Payment shown");
     }

@@ -1315,7 +1315,7 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f08002e;
         public static final int action_mode_bar_stub=0x7f08002d;
         public static final int action_mode_close_button=0x7f080020;
-        public static final int action_settings=0x7f080059;
+        public static final int action_settings=0x7f080060;
         public static final int activity_chooser_view_content=0x7f080021;
         public static final int always=0x7f080016;
         public static final int balanceButton=0x7f080050;
@@ -1380,6 +1380,13 @@ containing a value of this type.
         public static final int search_plate=0x7f080039;
         public static final int search_src_text=0x7f08003a;
         public static final int search_voice_btn=0x7f08003e;
+        public static final int serverNotFoundBalanceAmount=0x7f08005b;
+        public static final int serverNotFoundBalanceTitle=0x7f08005a;
+        public static final int serverNotFoundQR=0x7f08005d;
+        public static final int serverNotFoundRetryButton=0x7f08005f;
+        public static final int serverNotFoundTitle=0x7f080059;
+        public static final int serverNotFoundTopUpTitle=0x7f08005c;
+        public static final int serverNotFoundWalletAddress=0x7f08005e;
         public static final int shortcut=0x7f08002a;
         public static final int showCustom=0x7f08000f;
         public static final int showHome=0x7f080010;
@@ -1427,7 +1434,8 @@ containing a value of this type.
         public static final int menu_fragment=0x7f03001b;
         public static final int menu_list_item=0x7f03001c;
         public static final int order_dialog_item=0x7f03001d;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001e;
+        public static final int server_not_found_home=0x7f03001e;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001f;
     }
     public static final class menu {
         public static final int menu_home_screen=0x7f0c0000;
@@ -1452,11 +1460,15 @@ containing a value of this type.
         public static final int action_settings=0x7f0a0010;
         public static final int app_name=0x7f0a0011;
         public static final int balance=0x7f0a0012;
-        public static final int cancel=0x7f0a0013;
-        public static final int confirm=0x7f0a0014;
-        public static final int no_bluetooth=0x7f0a0015;
-        public static final int order_dialog_title=0x7f0a0016;
-        public static final int transaction_confirmed=0x7f0a0017;
+        public static final int balance_topup_title=0x7f0a0013;
+        public static final int cancel=0x7f0a0014;
+        public static final int confirm=0x7f0a0015;
+        public static final int no_bluetooth=0x7f0a0016;
+        public static final int order_dialog_title=0x7f0a0017;
+        public static final int retry=0x7f0a0018;
+        public static final int server_not_found_title=0x7f0a0019;
+        public static final int topup=0x7f0a001a;
+        public static final int transaction_confirmed=0x7f0a001b;
     }
     public static final class style {
         /**  Customize your theme here. 
