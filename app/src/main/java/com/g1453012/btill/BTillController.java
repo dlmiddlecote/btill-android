@@ -6,9 +6,7 @@ import android.util.Log;
 import com.g1453012.btill.Shared.BTMessage;
 import com.g1453012.btill.Shared.BTMessageBuilder;
 import com.g1453012.btill.Shared.Bill;
-import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
-import com.g1453012.btill.Shared.MenuItem;
 import com.g1453012.btill.Shared.Status;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
@@ -25,7 +23,6 @@ import org.bitcoinj.uri.BitcoinURI;
 import org.bitcoinj.uri.BitcoinURIParseException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by dlmiddlecote on 18/02/15.
@@ -62,17 +59,9 @@ public class BTillController {
     // TODO Update get Menu to pull menu from Till.
     public Menu getMenu() {
 
-        ArrayList<MenuItem> mMenuItems = new ArrayList<MenuItem>();
-        mMenuItems.add(new MenuItem("Chicken", new GBP(200)));
-        mMenuItems.add(new MenuItem("More Chicken", new GBP(100)));
-        mMenuItems.add(new MenuItem("Hot Wings", new GBP(250)));
-        mMenuItems.add(new MenuItem("Chicken Burger", new GBP(300)));
-        mMenuItems.add(new MenuItem("Popcorn Chicken", new GBP(150)));
-        return new Menu(mMenuItems);
-
-        /*sendMenuRequest();
+        sendMenuRequest();
         Log.d(TAG, "Sends Menu Request");
-        return receiveMenu();*/
+        return receiveMenu();
     }
 
     public boolean sendMenuRequest() {
