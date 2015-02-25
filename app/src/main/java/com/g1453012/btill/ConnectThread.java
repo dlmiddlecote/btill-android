@@ -61,49 +61,27 @@ public class ConnectThread extends Thread {
 
     // What to do when the ConnectThread is started
     public void run() {
-/*
-        // Stop discovery
-        mBluetoothAdapter.cancelDiscovery();
-        try {
-            // Connect to socket
-            mSocket.connect();
-            Log.d(TAG, "Connected through Socket");
-        } catch (IOException connectException) {
-            try {
-                Log.d(TAG, "Inside Catch");
-                // If cannot connect, close the socket
-                mSocket.close();
-            } catch (IOException closeException) {
-
-            }
-            return;
-        }
-        // After Connect, start a ConnectedThread
-        mConnectedThread = new ConnectedThread(mSocket);
-        if (mConnectedThread != null) {
-            Log.d(TAG, "Makes connected thread");
-        }*/
     }
 
     public Future<Boolean> runFuture() {
         return pool.submit(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                mBluetoothAdapter.cancelDiscovery();
+                //mBluetoothAdapter.cancelDiscovery();
                 try {
                     mSocket.connect();
                     Log.d(TAG, "Connected to Server");
                     return Boolean.TRUE;
                 } catch (IOException e) {
-                    try {
+                    //try {
                         Log.e(TAG, "Couldn't connect to Server, retry...");
-                        mSocket.close();
+                        //mSocket.close();
                         return Boolean.FALSE;
-                    } catch (IOException f) {
-                        Log.e(TAG, "Couldn't close socket");
-                    }
+                    //} catch (IOException f) {
+                    //    Log.e(TAG, "Couldn't close socket");
+                    //}
                 }
-                return Boolean.FALSE;
+                //return Boolean.FALSE;
             }
         });
     }

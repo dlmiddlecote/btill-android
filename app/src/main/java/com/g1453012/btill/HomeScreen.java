@@ -112,24 +112,34 @@ public class HomeScreen extends Activity {
     }
 
     private void onBluetoothEnabled() {
+        int connectionTries = 0;
+        int MAX_ATTEMPTS = 50;
         ConnectThread mConnectThread = new ConnectThread(mBluetoothAdapter);
         mConnectThread.start();
-        Future<Boolean> connectionFuture = mConnectThread.runFuture();
-        while (true) {
-            try {
+        try {
+            while (connectionTries < MAX_ATTEMPTS) {
+                Future<Boolean> connectionFuture = mConnectThread.runFuture();
                 if (connectionFuture.get()) {
                     mBTillController.setBluetoothSocket(mConnectThread.getSocket());
                     break;
                 }
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Getting the Socket was interrupted");
-            } catch (ExecutionException e) {
-                Log.e(TAG, "Getting the Socket had an Execution Exception");
+                connectionTries++;
             }
-        }
 
-        setWallet();
-        generateViews();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the Socket was interrupted");
+            finish();
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the Socket had an Execution Exception");
+            finish();
+        }
+        if (connectionTries < MAX_ATTEMPTS) {
+            setWallet();
+            generateViews();
+        } else {
+            Log.e(TAG, "Connection Timed out... Quitting...");
+            finish();
+        }
     }
 
     private void setWallet() {
