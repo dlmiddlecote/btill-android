@@ -71,26 +71,6 @@ public class BTillController {
         return new Menu(mMenuItems);
     }
 
-    public boolean sendMenuRequest() {
-        return write(new BTMessageBuilder("REQUEST_MENU").build());
-    }
-
-    public Menu receiveMenu() {
-        BTMessage menuMessage = read();
-        Log.d(TAG, "Received in menu");
-        /*while (menuMessage == null) {
-
-        }*/
-
-        if (menuMessage.getHeader().equals(Status.OK.toString())) {
-            return new Gson().fromJson(menuMessage.getBodyString(), Menu.class);
-        }
-        else {
-            return null;
-        }
-
-    }
-
     /*public boolean confirmTransaction(Protos.PaymentRequest paymentRequest) {
 
     }*/
