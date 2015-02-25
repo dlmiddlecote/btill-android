@@ -19,6 +19,12 @@
     <string name="topup">Top-Up</string>
     <string name="retry">Retry</string>
     <string name="balance_topup_title">Balance/ Top-Up</string>
+    <string name="payment_dialog_title">Payment Request</string>
+    <string name="Price">Price</string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="id">Order ID</string>
+    <string name="payment_dialog_memo_title">Message</string>
+    <string name="sign_button">Sign</string>
 
 
 </resources>

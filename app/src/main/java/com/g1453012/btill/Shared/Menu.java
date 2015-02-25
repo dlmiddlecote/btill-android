@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 public class Menu implements Iterable<MenuItem> {
     private ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+    private int order_id;
 
     public Menu(ArrayList<MenuItem> items) {
         this.items = items;
@@ -46,6 +47,14 @@ public class Menu implements Iterable<MenuItem> {
 
     public int size() {
         return items.size();
+    }
+
+    public int getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
     }
 
     /*public void resetQuantities() {

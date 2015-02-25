@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +26,7 @@ import com.g1453012.btill.Shared.MenuItem;
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
+import org.bitcoinj.protocols.payments.PaymentSession;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -138,6 +138,7 @@ public class MenuFragment extends Fragment {
     private void launchOrderDialog(Menu menu) {
 
         final Menu nonZeroMenu = removeNonZero(menu);
+        nonZeroMenu.setOrder_id(1);
 
 
         final Dialog mOrderDialog = new Dialog(getActivity());
@@ -216,7 +217,7 @@ public class MenuFragment extends Fragment {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                launchPaymentRequestDialog(receivedRequest);
+                                launchPaymentRequestDialog(receivedRequest, nonZeroMenu);
                                 try {
                                     mBTillController.getBluetoothSocket().close();
                                 } catch (IOException e) {
@@ -231,14 +232,103 @@ public class MenuFragment extends Fragment {
 
                 }
 
-            }
+             }
         }).start();
     }
 
 
 
     // TODO -- this!
-    private void launchPaymentRequestDialog(final Protos.PaymentRequest request) {
+    private void launchPaymentRequestDialog(final Protos.PaymentRequest request, final Menu menu) {
+
+        final Dialog mPaymentDialog = new Dialog(getActivity());
+        mPaymentDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        mPaymentDialog.setContentView(R.layout.custom_payment_request_dialog);
+
+        PaymentSession mSession = null;
+        try {
+            mSession = new PaymentSession(request, false);
+        } catch (PaymentProtocolException e) {
+            Log.e(TAG, "Error creating Payment Session");
+        }
+
+        TextView mOrderID = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogOrderID);
+        TextView mGBPAmount = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogPriceAmount);
+        TextView mBitcoinAmount = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogBitcoinAmount);
+        TextView mMessage = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogMemo);
+
+        if (mSession != null) {
+            mOrderID.setText("" + menu.getOrder_id());
+
+            GBP mTotal = new GBP(0);
+            for (MenuItem item: menu)
+            {
+                mTotal = mTotal.plus(item.getPrice().times(item.getQuantity()));
+            }
+            mGBPAmount.setText(mTotal.toString());
+
+            mBitcoinAmount.setText(mSession.getValue().toFriendlyString());
+
+            mMessage.setText(mSession.getMemo() + "\nfrom " + mSession.getPaymentUrl());
+        }
+        else {
+            mOrderID.setVisibility(View.INVISIBLE);
+            mGBPAmount.setVisibility(View.INVISIBLE);
+            mBitcoinAmount.setVisibility(View.INVISIBLE);
+            mMessage.setVisibility(View.INVISIBLE);
+
+            TextView mOrderIDTitle = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogIDTitle);
+            TextView mGBPAmountTitle = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogPriceTitle);
+            TextView mBitcoinAmountTitle = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogBitcoinTitle);
+            TextView mMessageTitle = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogMemoTitle);
+
+            mOrderIDTitle.setVisibility(View.INVISIBLE);
+            mGBPAmountTitle.setVisibility(View.INVISIBLE);
+            mBitcoinAmountTitle.setVisibility(View.INVISIBLE);
+            mMessageTitle.setVisibility(View.INVISIBLE);
+        }
+
+        Button mSignButton = (Button) mPaymentDialog.findViewById(R.id.paymentDialogSignButton);
+        mSignButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Protos.Payment payment = null;
+                /*try {
+                    payment = mBTillController.transactionSigner(request);
+                    Log.d(TAG, "Transaction Signed");
+                } catch (PaymentProtocolException e) {
+                    //TODO error
+                }*/
+                if (mBTillController.sendPayment(payment)) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+
+                    builder1.setTitle("Success!").setMessage("Payment Successful");
+
+                    builder1.create().show();
+                } else {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+
+                    builder1.setTitle("Uh Oh!").setMessage("Payment Unsuccessful");
+
+                    builder1.create().show();
+                }
+            }
+        });
+
+        Button mCancelButton = (Button) mPaymentDialog.findViewById(R.id.paymentDialogCancelButton);
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPaymentDialog.dismiss();
+            }
+        });
+
+        mPaymentDialog.setCanceledOnTouchOutside(false);
+        mPaymentDialog.show();
+        Log.d(TAG, "Payment shown");
+
+
+        /*
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Test Payment").setMessage("This is a Test Payment")
@@ -284,6 +374,7 @@ public class MenuFragment extends Fragment {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         Log.d(TAG, "Payment shown");
+        */
     }
 
     public Menu removeNonZero(Menu menu)

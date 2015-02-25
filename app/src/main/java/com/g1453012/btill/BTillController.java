@@ -8,8 +8,8 @@ import android.util.Log;
 
 import com.g1453012.btill.Shared.BTMessage;
 import com.g1453012.btill.Shared.BTMessageBuilder;
-import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.Menu;
+import com.g1453012.btill.Shared.NewBill;
 import com.g1453012.btill.Shared.Status;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
@@ -49,7 +49,7 @@ public class BTillController {
 
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-    private Bill mBill = null;
+    private NewBill mBill = null;
 
     private final ExecutorService pool = Executors.newFixedThreadPool(10);
 
@@ -119,11 +119,6 @@ public class BTillController {
         return null;
 
     }
-
-    /*public boolean confirmTransaction(Protos.PaymentRequest paymentRequest) {
-
-    }*/
-
     // TODO remove this
     public Protos.PaymentRequest getRequest(String uri) {
         BitcoinURI mUri = null;
@@ -183,25 +178,84 @@ public class BTillController {
 
     // TODO remember to change this
     public Protos.PaymentRequest getPaymentRequest(){
-        //return getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com");
-        fetchBill();
+        //return getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com&message=Payment%20for%20coffee");
+        Log.d(TAG, "Going to fetch Bill");
+        //fetchBill();
+        Future<Boolean> fetchBillFuture = fetchBillFuture();
+        try {
+            if (fetchBillFuture.get()) {
+                Log.d(TAG, "Received Bill");
+                return mBill.getRequest();
+            }
+            else {
+                Log.d(TAG, "Null Bill");
+                return null;
+            }
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the Bill was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the Bill had an Execution Exception");
+        }
+        /*Log.d(TAG, "Received Bill");
         if (mBill != null) {
             return mBill.getRequest();
         }
         else {
             return null;
-        }
+        }*/
+        Log.d(TAG, "Null Bill -- outside try");
+        return null;
 
     }
 
     public void fetchBill(){
-        BTMessage billMessage = read();
+        Future<BTMessage> billMessageFuture = readBT();
+        Log.d(TAG, "Starts to read bill");
+        BTMessage billMessage = null;
+        try {
+            billMessage = billMessageFuture.get();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the BTMessage was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the BTMessage had an Execution Exception");
+        }
+        Log.d(TAG, "Has Bill");
         if (billMessage.getHeader().equals(Status.OK.toString())) {
-            mBill = new Gson().fromJson(billMessage.getBodyString(), Bill.class);
+            mBill = new Gson().fromJson(billMessage.getBodyString(), NewBill.class);
         }
         else {
             mBill = null;
         }
+
+    }
+
+    public Future<Boolean> fetchBillFuture() {
+        return pool.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                Future<BTMessage> billMessageFuture = readBT();
+                Log.d(TAG, "Starts to read bill");
+                //BTMessage billMessage = read();
+                BTMessage billMessage = null;
+                try {
+                    billMessage = billMessageFuture.get();
+                    Log.d(TAG, "Has Bill");
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Getting the BTMessage was interrupted");
+                } catch (ExecutionException e) {
+                    Log.e(TAG, "Getting the BTMessage had an Execution Exception");
+                }
+
+                if (billMessage.getHeader().equals(Status.OK.toString())) {
+                    mBill = new Gson().fromJson(billMessage.getBodyString(), NewBill.class);
+                    return Boolean.TRUE;
+                }
+                else {
+                    mBill = null;
+                    return Boolean.FALSE;
+                }
+            }
+        });
     }
 
 

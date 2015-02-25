@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/payment_dialog_title"
+        android:id="@+id/paymentDialogTitle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="25dp"/>
+
+    <GridLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:layout_below="@+id/paymentDialogTitle"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:alignmentMode="alignMargins"
+        android:useDefaultMargins="true"
+        android:id="@+id/gridLayout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/id"
+            android:id="@+id/paymentDialogIDTitle"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:minWidth="55dp"
+            android:textColor="@android:color/holo_blue_dark"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Order ID"
+            android:id="@+id/paymentDialogOrderID"
+            android:layout_column="1"
+            android:layout_row="0"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Price"
+            android:id="@+id/paymentDialogPriceTitle"
+            android:layout_below="@+id/paymentDialogTitle"
+            android:layout_alignStart="@+id/paymentDialogTitle"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:minWidth="55dp"
+            android:textColor="@android:color/holo_blue_dark"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Amount"
+            android:id="@+id/paymentDialogPriceAmount"
+            android:layout_below="@+id/paymentDialogTitle"
+            android:layout_toEndOf="@+id/paymentDialogPriceTitle"
+            android:layout_column="1"
+            android:layout_row="1"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/bitcoin"
+            android:id="@+id/paymentDialogBitcoinTitle"
+            android:layout_column="0"
+            android:layout_row="2"
+            android:minWidth="55dp"
+            android:textColor="@android:color/holo_blue_dark"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Amount"
+            android:id="@+id/paymentDialogBitcoinAmount"
+            android:layout_column="1"
+            android:layout_row="2"
+            />
+
+    </GridLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/payment_dialog_memo_title"
+        android:id="@+id/paymentDialogMemoTitle"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/gridLayout"
+        android:layout_alignStart="@+id/gridLayout"
+        android:textColor="@android:color/holo_blue_dark"
+        android:clickable="true"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Message"
+        android:id="@+id/paymentDialogMemo"
+        android:layout_below="@+id/paymentDialogMemoTitle"
+        android:layout_alignStart="@+id/paymentDialogMemoTitle"
+        android:layout_marginTop="5dp"
+        android:minLines="3"
+        android:maxLines="3"
+        android:layout_marginRight="25dp"
+        android:clickable="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_button"
+        android:id="@+id/paymentDialogSignButton"
+        android:layout_below="@+id/paymentDialogMemo"
+        android:layout_alignEnd="@+id/paymentDialogMemo"
+        android:layout_marginTop="25dp"
+        style="?android:borderlessButtonStyle"
+        android:textColor="@android:color/holo_blue_dark"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:id="@+id/paymentDialogCancelButton"
+        android:layout_alignTop="@+id/paymentDialogSignButton"
+        android:layout_toStartOf="@+id/paymentDialogSignButton"
+        style="?android:borderlessButtonStyle"
+        android:textColor="@android:color/holo_red_dark"/>
+
+</RelativeLayout>

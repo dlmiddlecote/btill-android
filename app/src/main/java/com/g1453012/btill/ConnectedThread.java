@@ -94,12 +94,25 @@ public class ConnectedThread extends Thread {
 
                 // Read from the input stream, and convert bytes to a string
                 try {
-                    bytes = mInStream.read(buffer, bytes, BUFFER_SIZE - bytes);
+                    bytes = mInStream.read(buffer);//, bytes, BUFFER_SIZE - bytes);
                 } catch (IOException e) {
                     Log.e(TAG, "Error reading from inputstream");
                 }
-                final String message = new String(buffer, 0, bytes);
-                Log.d(TAG, message + " read " + bytes + " bytes.");
+                String readCountMessage = new String(buffer, 0, bytes);
+                Integer readCount = Integer.parseInt(readCountMessage);
+                String message = new String();
+                bytes = 0;
+                int bytesTotal = 0;
+                for (int i = 0; i < readCount.intValue(); i++) {
+                    try {
+                        bytes = mInStream.read(buffer);
+                        bytesTotal += bytes;
+                        message += new String(buffer, 0, bytes);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error reading from inputstream");
+                    }
+                }
+                Log.d(TAG, "Read " + bytesTotal + " bytes: " + message);
                 return message;
             }
         });
