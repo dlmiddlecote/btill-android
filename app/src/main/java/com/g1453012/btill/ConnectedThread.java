@@ -11,6 +11,10 @@ import org.bitcoin.protocols.payments.Protos;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by dlmiddlecote on 18/02/15.
@@ -18,6 +22,8 @@ import java.io.OutputStream;
 public class ConnectedThread extends Thread {
 
     private static final String TAG = "ConnectedThread";
+
+    private final ExecutorService pool = Executors.newFixedThreadPool(10);
 
    // New Socket
     private final BluetoothSocket mSocket;
@@ -59,7 +65,7 @@ public class ConnectedThread extends Thread {
     public String read() {
         Log.d(TAG, "Inside Connected Run");
         // Set up a byte buffer
-        final int BUFFER_SIZE = 1024;
+        final int BUFFER_SIZE = 16384;
         byte[] buffer = new byte[BUFFER_SIZE];
         int bytes = 0;
 
@@ -72,8 +78,31 @@ public class ConnectedThread extends Thread {
             e.printStackTrace();
         }
         final String message = new String(buffer, 0, bytes);
-        Log.d(TAG, message);
+        Log.d(TAG, message + " read " + bytes + " bytes.");
         return message;
+    }
+
+    public Future<String> readFuture() {
+        return pool.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                Log.d(TAG, "Inside Connected Run Future");
+                // Set up a byte buffer
+                final int BUFFER_SIZE = 16384;
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int bytes = 0;
+
+                // Read from the input stream, and convert bytes to a string
+                try {
+                    bytes = mInStream.read(buffer, bytes, BUFFER_SIZE - bytes);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error reading from inputstream");
+                }
+                final String message = new String(buffer, 0, bytes);
+                Log.d(TAG, message + " read " + bytes + " bytes.");
+                return message;
+            }
+        });
     }
 
 

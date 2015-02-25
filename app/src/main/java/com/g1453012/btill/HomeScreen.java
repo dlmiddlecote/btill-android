@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 
 public class HomeScreen extends Activity {
@@ -44,8 +44,6 @@ public class HomeScreen extends Activity {
 
     private final String filePrefix = "Bitcoin-test";
     private final TestNet3Params mNetParams = TestNet3Params.get();
-
-    private final ExecutorService pool = Executors.newFixedThreadPool(10);
 
     private Bundle mSavedInstanceState;
 
@@ -114,10 +112,21 @@ public class HomeScreen extends Activity {
     }
 
     private void onBluetoothEnabled() {
-
         ConnectThread mConnectThread = new ConnectThread(mBluetoothAdapter);
         mConnectThread.start();
-        mBTillController.setBluetoothSocket(mConnectThread.getSocket());
+        Future<Boolean> connectionFuture = mConnectThread.runFuture();
+        while (true) {
+            try {
+                if (connectionFuture.get()) {
+                    mBTillController.setBluetoothSocket(mConnectThread.getSocket());
+                    break;
+                }
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Getting the Socket was interrupted");
+            } catch (ExecutionException e) {
+                Log.e(TAG, "Getting the Socket had an Execution Exception");
+            }
+        }
 
         setWallet();
         generateViews();

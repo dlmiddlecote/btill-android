@@ -33,6 +33,9 @@ import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 public class MenuFragment extends Fragment {
 
     private static final String TAG = "MenuFragment";
@@ -67,7 +70,16 @@ public class MenuFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         final ListView listView = (ListView) getActivity().findViewById(R.id.listView);
 
-        Menu mMenu = mBTillController.getMenu();
+        //Menu mMenu = mBTillController.getMenu();
+        Future<Menu> menuFuture = mBTillController.getMenuFuture();
+        Menu mMenu = null;
+        try {
+            mMenu = menuFuture.get();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the Menu was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the Menu had an Execution Exception");
+        }
         Log.d(TAG, "Gets Menu");
 
         listView.setAdapter(new MenuAdapter(getActivity(), mMenu));

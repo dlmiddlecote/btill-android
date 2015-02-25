@@ -23,6 +23,11 @@ import org.bitcoinj.uri.BitcoinURI;
 import org.bitcoinj.uri.BitcoinURIParseException;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by dlmiddlecote on 18/02/15.
@@ -36,6 +41,8 @@ public class BTillController {
     private BluetoothSocket mBluetoothSocket = null;
 
     private Bill mBill = null;
+
+    private final ExecutorService pool = Executors.newFixedThreadPool(10);
 
     public Wallet getWallet() {
         return mWallet;
@@ -64,23 +71,39 @@ public class BTillController {
         return receiveMenu();
     }
 
+    public Future<Menu> getMenuFuture() {
+        return pool.submit(new Callable<Menu>() {
+            @Override
+            public Menu call() throws Exception {
+                sendMenuRequest();
+                Log.d(TAG, "Sends Menu Request in Future");
+                return receiveMenu();
+            }
+        });
+    }
+
     public boolean sendMenuRequest() {
         return write(new BTMessageBuilder("REQUEST_MENU").build());
     }
 
     public Menu receiveMenu() {
-        BTMessage menuMessage = read();
-        Log.d(TAG, "Received in menu");
-        /*while (menuMessage == null) {
-
-        }*/
-
-        if (menuMessage.getHeader().equals(Status.OK.toString())) {
-            return new Gson().fromJson(menuMessage.getBodyString(), Menu.class);
+        //BTMessage menuMessage = read();
+        Future<BTMessage> menuMessageFuture = readBT();
+        BTMessage menuMessage = null;
+        try {
+            menuMessage = menuMessageFuture.get();
+            Log.d(TAG, "Received in menu");
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the BTMessage was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the BTMessage had an Execution Exception");
         }
-        else {
-            return null;
+        if (menuMessage != null) {
+            if (menuMessage.getHeader().equals(Status.OK.toString())) {
+                return new Gson().fromJson(menuMessage.getBodyString(), Menu.class);
+            }
         }
+        return null;
 
     }
 
@@ -152,14 +175,14 @@ public class BTillController {
 
     // TODO remember to change this
     public Protos.PaymentRequest getPaymentRequest(){
-        return getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com");
-        /*fetchBill();
+        //return getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com");
+        fetchBill();
         if (mBill != null) {
             return mBill.getRequest();
         }
         else {
             return null;
-        }*/
+        }
 
     }
 
@@ -177,6 +200,18 @@ public class BTillController {
         ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
         mConnectedThread.start();
         return new Gson().fromJson(mConnectedThread.read(), BTMessage.class);
+    }
+
+    public Future<BTMessage> readBT() {
+        return pool.submit(new Callable<BTMessage>() {
+            @Override
+            public BTMessage call() throws Exception {
+                ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
+                mConnectedThread.start();
+                Future<String> messageFuture = mConnectedThread.readFuture();
+                return new Gson().fromJson(messageFuture.get(), BTMessage.class);
+            }
+        });
     }
 
     public boolean write(BTMessage message) {

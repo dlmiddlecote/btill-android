@@ -8,6 +8,10 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by dlmiddlecote on 18/02/15.
@@ -21,6 +25,8 @@ public class ConnectThread extends Thread {
     private static final String MAC = "00:15:83:64:83:DE";
     private static final String LUKESMAC = "";
     private ConnectedThread mConnectedThread;
+
+    private final ExecutorService pool = Executors.newFixedThreadPool(10);
 
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     //private BluetoothAdapter mBluetoothAdapter;
@@ -55,7 +61,7 @@ public class ConnectThread extends Thread {
 
     // What to do when the ConnectThread is started
     public void run() {
-
+/*
         // Stop discovery
         mBluetoothAdapter.cancelDiscovery();
         try {
@@ -64,7 +70,6 @@ public class ConnectThread extends Thread {
             Log.d(TAG, "Connected through Socket");
         } catch (IOException connectException) {
             try {
-
                 Log.d(TAG, "Inside Catch");
                 // If cannot connect, close the socket
                 mSocket.close();
@@ -77,9 +82,30 @@ public class ConnectThread extends Thread {
         mConnectedThread = new ConnectedThread(mSocket);
         if (mConnectedThread != null) {
             Log.d(TAG, "Makes connected thread");
-        }
+        }*/
+    }
 
-
+    public Future<Boolean> runFuture() {
+        return pool.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                mBluetoothAdapter.cancelDiscovery();
+                try {
+                    mSocket.connect();
+                    Log.d(TAG, "Connected to Server");
+                    return Boolean.TRUE;
+                } catch (IOException e) {
+                    try {
+                        Log.e(TAG, "Couldn't connect to Server, retry...");
+                        mSocket.close();
+                        return Boolean.FALSE;
+                    } catch (IOException f) {
+                        Log.e(TAG, "Couldn't close socket");
+                    }
+                }
+                return Boolean.FALSE;
+            }
+        });
     }
 
 
