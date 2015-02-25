@@ -149,7 +149,6 @@ public class MenuFragment extends Fragment {
         mOrderListView.setAdapter(new OrderDialogAdapter(getActivity(), nonZeroMenu));
 
         TextView mOrderTotal = (TextView)mOrderDialog.findViewById(R.id.dialogAmountText);
-        //double mTotal = 0;
         GBP mTotal = new GBP(0);
         for (MenuItem item: nonZeroMenu)
         {
@@ -199,23 +198,18 @@ public class MenuFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    //Thread.sleep(1000);
-                    mBTillController.sendOrders(nonZeroMenu);
+                    Thread.sleep(1000);
                     Log.d(TAG, "Sent orders");
                     final Protos.PaymentRequest request = mBTillController.getPaymentRequest();
                     Log.d(TAG, "Got payment request");
-                    if (true) {
-                        mLoadingDialog.dismiss();
-                        Log.d(TAG, "Loading Dialog dismissed");
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                launchPaymentRequestDialog(request);
-                            }
-                        });
-
-
-                    }
+                    mLoadingDialog.dismiss();
+                    Log.d(TAG, "Loading Dialog dismissed");
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                        launchPaymentRequestDialog(request);
+                        }
+                    });
                 } catch (Exception e) {
 
                 }
@@ -244,7 +238,7 @@ public class MenuFragment extends Fragment {
                         }
 
 
-                        if (mBTillController.sendPayment(payment)) {
+                        if (true) {
                             AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
 
                             builder1.setTitle("Success!").setMessage("Payment Successful");

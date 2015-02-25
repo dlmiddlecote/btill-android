@@ -3,17 +3,14 @@ package com.g1453012.btill;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.store.UnreadableWalletException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,8 +37,6 @@ public class HomeScreen extends Activity {
 
     FileInputStream mCheckpointStream;
 
-    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
     private final String filePrefix = "Bitcoin-test";
     private final TestNet3Params mNetParams = TestNet3Params.get();
 
@@ -60,20 +55,7 @@ public class HomeScreen extends Activity {
         mBTillController = new BTillController();
         mSavedInstanceState = savedInstanceState;
 
-
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(this, R.string.no_bluetooth, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-        else {
-            onBluetoothEnabled();
-        }
+        onBluetoothEnabled();
 
     }
 
@@ -114,20 +96,13 @@ public class HomeScreen extends Activity {
     }
 
     private void onBluetoothEnabled() {
-
-        ConnectThread mConnectThread = new ConnectThread(mBluetoothAdapter);
-        mConnectThread.start();
-        mBTillController.setBluetoothSocket(mConnectThread.getSocket());
-
         setWallet();
         generateViews();
     }
 
     private void setWallet() {
-        mWalletKitThread = new WalletKitThread(getApplicationContext(), mBTillController, mFile);
-        mWalletKitThread.start();
 
-        mFile = new File(this.getExternalFilesDir("/wallet/"), filePrefix + ".wallet");
+        mFile = new File(filePrefix + ".wallet");
         mCheckpointFile = new File(this.getExternalFilesDir("/wallet/"), "checkpoints");
         try {
             mCheckpointStream = new FileInputStream(mCheckpointFile);
@@ -135,15 +110,10 @@ public class HomeScreen extends Activity {
             Log.e(TAG, "Couldn't find checkpoint file");
         }
 
-        try {
-            mBTillController.setWallet(Wallet.loadFromFile(mFile));
-            Log.d(TAG, "Loaded Wallet");
-            Log.d(TAG, "Wallet Address: " + mBTillController.getWallet().currentReceiveAddress().toString());
-            Log.d(TAG, "Wallet Balance: " + mBTillController.getWallet().getBalance().toFriendlyString());
-            //Log.d(TAG, "Wallet: " + mBTillController.getWallet().toString());
-        } catch (UnreadableWalletException e) {
-            Log.d(TAG, "Error reading the wallet");
-        }
+        mBTillController.setWallet(new Wallet(TestNet3Params.get()));
+        Log.d(TAG, "Loaded Wallet");
+        Log.d(TAG, "Wallet Address: " + mBTillController.getWallet().currentReceiveAddress().toString());
+        Log.d(TAG, "Wallet Balance: " + mBTillController.getWallet().getBalance().toFriendlyString());
     }
 
     private void generateViews() {
