@@ -95,8 +95,21 @@ public class BTillController {
         });
     }
 
-    public boolean sendMenuRequest() {
+    /*public boolean sendMenuRequest() {
         return write(new BTMessageBuilder("REQUEST_MENU").build());
+    }*/
+
+    public boolean sendMenuRequest() {
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder("REQUEST_MENU").build());
+        try {
+            return writeFuture.get().booleanValue();
+        }
+        catch (InterruptedException e) {
+            Log.e(TAG, "Sending the Menu Request was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Sending the Menu Request had an Execution Exception");
+        }
+        return false;
     }
 
     public Menu receiveMenu() {
@@ -168,12 +181,35 @@ public class BTillController {
         }
     }
 
-    public boolean sendPayment(Protos.Payment payment) {
+    /*public boolean sendPayment(Protos.Payment payment) {
         return write(new BTMessageBuilder(payment).build());
+    }*/
+
+    public boolean sendPayment(Protos.Payment payment) {
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(payment).build());
+        try {
+            return writeFuture.get().booleanValue();
+        }
+        catch (InterruptedException e) {
+            Log.e(TAG, "Sending the Payment was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Sending the Payment had an Execution Exception");
+        }
+        return false;
     }
 
+
     public boolean sendOrders(Menu menu) {
-        return write(new BTMessageBuilder(menu).build());
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(menu).build());
+        try {
+            return writeFuture.get().booleanValue();
+        }
+        catch (InterruptedException e) {
+            Log.e(TAG, "Sending the Payment was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Sending the Payment had an Execution Exception");
+        }
+        return false;
     }
 
     // TODO remember to change this
@@ -258,13 +294,6 @@ public class BTillController {
         });
     }
 
-
-    public BTMessage read() {
-        ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
-        mConnectedThread.start();
-        return new Gson().fromJson(mConnectedThread.read(), BTMessage.class);
-    }
-
     public Future<BTMessage> readBT() {
         return pool.submit(new Callable<BTMessage>() {
             @Override
@@ -277,10 +306,16 @@ public class BTillController {
         });
     }
 
-    public boolean write(BTMessage message) {
-        ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
-        mConnectedThread.start();
-        return mConnectedThread.write(message);
+    public Future<Boolean> writeBT(final BTMessage message) {
+        return pool.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
+                mConnectedThread.start();
+                Future<Boolean> writeFuture = mConnectedThread.writeFuture(message);
+                return writeFuture.get();
+            }
+        });
     }
 
     public Bitmap generateQR() {

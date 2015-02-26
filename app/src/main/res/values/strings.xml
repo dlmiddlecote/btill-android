@@ -25,6 +25,7 @@
     <string name="id">Order ID</string>
     <string name="payment_dialog_memo_title">Message</string>
     <string name="sign_button">Sign</string>
+    <string name="payment_dialog_error">Error Processing Payment Request</string>
 
 
 </resources>

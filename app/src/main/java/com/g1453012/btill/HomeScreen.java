@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.bitcoinj.core.Wallet;
-import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.store.UnreadableWalletException;
 
 import java.io.File;
@@ -48,8 +47,6 @@ public class HomeScreen extends Activity {
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
     private final String filePrefix = "Bitcoin-test";
-    private final TestNet3Params mNetParams = TestNet3Params.get();
-
     private Bundle mSavedInstanceState;
 
     public BTillController getBTillController() {
@@ -141,9 +138,9 @@ public class HomeScreen extends Activity {
             setWallet();
             generateMenuView();
         } else {
-            Log.e(TAG, "Connection Timed out... Quitting...");
+            Log.e(TAG, "Connection Timed out...");
             setWallet();
-            generateServerNotFoundView(0);
+            generateServerNotFoundView();
         }
     }
 
@@ -180,7 +177,8 @@ public class HomeScreen extends Activity {
         }
     }
 
-    public void generateServerNotFoundView(int type) {
+    public void generateServerNotFoundView() {
+
         setContentView(R.layout.server_not_found_home);
 
         TextView mBalanceTotal = (TextView) findViewById(R.id.serverNotFoundBalanceAmount);

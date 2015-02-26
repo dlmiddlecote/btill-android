@@ -229,7 +229,7 @@ public class MenuFragment extends Fragment {
 
                     }
                 } catch (Exception e) {
-
+                    Log.e(TAG, "Error when connecting to server");
                 }
 
              }
@@ -272,20 +272,23 @@ public class MenuFragment extends Fragment {
             mMessage.setText(mSession.getMemo() + "\nfrom " + mSession.getPaymentUrl());
         }
         else {
-            mOrderID.setVisibility(View.INVISIBLE);
-            mGBPAmount.setVisibility(View.INVISIBLE);
-            mBitcoinAmount.setVisibility(View.INVISIBLE);
-            mMessage.setVisibility(View.INVISIBLE);
+            mOrderID.setVisibility(View.GONE);
+            mGBPAmount.setVisibility(View.GONE);
+            mBitcoinAmount.setVisibility(View.GONE);
+            mMessage.setVisibility(View.GONE);
+
+            TextView mErrorTitle = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogError);
+            mErrorTitle.setVisibility(View.VISIBLE);
 
             TextView mOrderIDTitle = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogIDTitle);
             TextView mGBPAmountTitle = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogPriceTitle);
             TextView mBitcoinAmountTitle = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogBitcoinTitle);
             TextView mMessageTitle = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogMemoTitle);
 
-            mOrderIDTitle.setVisibility(View.INVISIBLE);
-            mGBPAmountTitle.setVisibility(View.INVISIBLE);
-            mBitcoinAmountTitle.setVisibility(View.INVISIBLE);
-            mMessageTitle.setVisibility(View.INVISIBLE);
+            mOrderIDTitle.setVisibility(View.GONE);
+            mGBPAmountTitle.setVisibility(View.GONE);
+            mBitcoinAmountTitle.setVisibility(View.GONE);
+            mMessageTitle.setVisibility(View.GONE);
         }
 
         Button mSignButton = (Button) mPaymentDialog.findViewById(R.id.paymentDialogSignButton);
@@ -299,19 +302,6 @@ public class MenuFragment extends Fragment {
                 } catch (PaymentProtocolException e) {
                     //TODO error
                 }
-               /* if (mBTillController.sendPayment(payment)) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-
-                    builder1.setTitle("Success!").setMessage("Payment Successful");
-
-                    builder1.create().show();
-                } else {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-
-                    builder1.setTitle("Uh Oh!").setMessage("Payment Unsuccessful");
-
-                    builder1.create().show();
-                }*/
                 ConnectThread mConnectThread = new ConnectThread(mBTillController.getBluetoothAdapter());
                 Future<Boolean> connectionFuture = mConnectThread.runFuture();
                 try {

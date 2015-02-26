@@ -124,11 +124,11 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_button"
         android:id="@+id/paymentDialogSignButton"
-        android:layout_below="@+id/paymentDialogMemo"
-        android:layout_alignEnd="@+id/paymentDialogMemo"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="27dp"
         style="?android:borderlessButtonStyle"
-        android:textColor="@android:color/holo_blue_dark"/>
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_below="@+id/paymentDialogMemo"
+        android:layout_alignParentEnd="true"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -139,5 +139,19 @@
         android:layout_toStartOf="@+id/paymentDialogSignButton"
         style="?android:borderlessButtonStyle"
         android:textColor="@android:color/holo_red_dark"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/payment_dialog_error"
+        android:id="@+id/paymentDialogError"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:visibility="invisible"
+        android:layout_above="@+id/paymentDialogCancelButton"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="25dp"
+        android:layout_below="@+id/paymentDialogTitle"/>
 
 </RelativeLayout>

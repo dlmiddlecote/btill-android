@@ -4,9 +4,6 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import com.g1453012.btill.Shared.BTMessage;
-import com.g1453012.btill.Shared.BTMessageBuilder;
-
-import org.bitcoin.protocols.payments.Protos;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,35 +49,11 @@ public class ConnectedThread extends Thread {
         mOutStream = tmpOut;
     }
 
-    public ConnectedThread get() {
-        return this;
-    }
-
     // When thread is started, read from socket
     public void run() {
         // TODO what we want it to do
     }
 
-    // How to read from server
-    public String read() {
-        Log.d(TAG, "Inside Connected Run");
-        // Set up a byte buffer
-        final int BUFFER_SIZE = 16384;
-        byte[] buffer = new byte[BUFFER_SIZE];
-        int bytes = 0;
-
-        // Read from the input stream, and convert bytes to a string
-
-        Log.d(TAG, "Message?");
-        try {
-            bytes = mInStream.read(buffer, bytes, BUFFER_SIZE - bytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        final String message = new String(buffer, 0, bytes);
-        Log.d(TAG, message + " read " + bytes + " bytes.");
-        return message;
-    }
 
     public Future<String> readFuture() {
         return pool.submit(new Callable<String>() {
@@ -88,13 +61,12 @@ public class ConnectedThread extends Thread {
             public String call() throws Exception {
                 Log.d(TAG, "Inside Connected Run Future");
                 // Set up a byte buffer
-                final int BUFFER_SIZE = 16384;
+                final int BUFFER_SIZE = 1024;
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int bytes = 0;
 
-                // Read from the input stream, and convert bytes to a string
                 try {
-                    bytes = mInStream.read(buffer);//, bytes, BUFFER_SIZE - bytes);
+                    bytes = mInStream.read(buffer);
                 } catch (IOException e) {
                     Log.e(TAG, "Error reading from inputstream");
                 }
@@ -119,41 +91,38 @@ public class ConnectedThread extends Thread {
     }
 
 
-    // Write to output stream method
-    public boolean write(String s) {
-        try {
-            // Take to input string and convert to bytes, and send
-            mOutStream.write(s.getBytes());
-            Log.i(TAG, "Written");
-            return true;
-        } catch (IOException e) {
-            Log.i(TAG, "Couldn't Write.");
-            return false;
-        }
+    public Future<Boolean> writeFuture(final BTMessage message) {
+        return pool.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                int start = 0;
+                Integer readCount = (message.getBytes().length / 990) + 1;
+                int lengthLeft = message.getBytes().length;
+                try {
+                    mOutStream.write(readCount.toString().getBytes());
+                    mOutStream.flush();
+                    for (int i = 0; i < readCount.intValue(); i++) {
+                        if (lengthLeft < 990) {
+                            mOutStream.write(message.getBytes(), start, lengthLeft);
+                            Log.d(TAG, "Wrote to server");
+                            return Boolean.TRUE;
+                        }
+                        else {
+                            mOutStream.write(message.getBytes(), start, 990);
+                        }
+                        mOutStream.flush();
+                        start += 990;
+                        lengthLeft -= 990;
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "Couldn't write inside Future");
+                    return Boolean.FALSE;
+                }
+                return Boolean.FALSE;
+            }
+        });
     }
 
-    public boolean write(BTMessage message) {
-        try {
-            // Take to input string and convert to bytes, and send
-            mOutStream.write(message.getBytes());
-            Log.i(TAG, "Written BTMessage");
-            return true;
-        } catch (IOException e) {
-            Log.i(TAG, "Couldn't Write BTMessage");
-            return false;
-        }
-    }
-
-    public boolean write(Protos.Payment mPayment) {
-        BTMessage message = new BTMessageBuilder(mPayment).build();
-
-        if (write(message)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
 
     // Cancel ConnectedThread method
     public void cancel() {
