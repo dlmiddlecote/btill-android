@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BTill</string>
+    <string name="app_name">B-Till</string>
     <string name="action_settings">Settings</string>
 
     <string name="no_bluetooth">Device does not support Bluetooth</string>

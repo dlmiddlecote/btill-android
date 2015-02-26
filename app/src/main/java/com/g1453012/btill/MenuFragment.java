@@ -217,12 +217,12 @@ public class MenuFragment extends Fragment {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                launchPaymentRequestDialog(receivedRequest, nonZeroMenu);
                                 try {
                                     mBTillController.getBluetoothSocket().close();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
+                                launchPaymentRequestDialog(receivedRequest, nonZeroMenu);
                             }
                         });
 
@@ -293,13 +293,13 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Protos.Payment payment = null;
-                /*try {
+                try {
                     payment = mBTillController.transactionSigner(request);
                     Log.d(TAG, "Transaction Signed");
                 } catch (PaymentProtocolException e) {
                     //TODO error
-                }*/
-                if (mBTillController.sendPayment(payment)) {
+                }
+               /* if (mBTillController.sendPayment(payment)) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
 
                     builder1.setTitle("Success!").setMessage("Payment Successful");
@@ -311,6 +311,31 @@ public class MenuFragment extends Fragment {
                     builder1.setTitle("Uh Oh!").setMessage("Payment Unsuccessful");
 
                     builder1.create().show();
+                }*/
+                ConnectThread mConnectThread = new ConnectThread(mBTillController.getBluetoothAdapter());
+                Future<Boolean> connectionFuture = mConnectThread.runFuture();
+                try {
+                    if (connectionFuture.get()) {
+                        mBTillController.setBluetoothSocket(mConnectThread.getSocket());
+                        if (mBTillController.sendPayment(payment)) {
+
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+
+                            builder1.setTitle("Success!").setMessage("Payment Successful");
+
+                            builder1.create().show();
+                        } else {
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+
+                            builder1.setTitle("Uh Oh!").setMessage("Payment Unsuccessful");
+
+                            builder1.create().show();
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
                 }
             }
         });
