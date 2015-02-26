@@ -26,6 +26,9 @@
     <string name="payment_dialog_memo_title">Message</string>
     <string name="sign_button">Sign</string>
     <string name="payment_dialog_error">Error Processing Payment Request</string>
+    <string name="receipt_dialog_title">Thanks For Your Order!</string>
+    <string name="receipt_dialog_subtitle">Your items will be with you shortly</string>
+    <string name="items">Items</string>
 
 
 </resources>

@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +23,10 @@ import android.widget.TextView;
 import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
+import com.g1453012.btill.Shared.Receipt;
 
 import org.bitcoin.protocols.payments.Protos;
+import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
 import org.bitcoinj.protocols.payments.PaymentSession;
@@ -39,7 +42,6 @@ public class MenuFragment extends Fragment {
     private Activity mParentActivity;
     private BTillController mBTillController;
 
-    // TODO -- make sure we need this
     Handler mHandler;
 
     public MenuFragment() {
@@ -77,11 +79,6 @@ public class MenuFragment extends Fragment {
             Log.e(TAG, "Getting the Menu had an Execution Exception");
         }
         Log.d(TAG, "Gets Menu");
-        try {
-            mBTillController.getBluetoothSocket().close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         listView.setAdapter(new MenuAdapter(getActivity(), mMenu));
 
         Button nextButton = (Button) getActivity().findViewById(R.id.nextButton);
@@ -111,7 +108,7 @@ public class MenuFragment extends Fragment {
         mBalanceDialog.setContentView(R.layout.custom_balance_dialog);
 
         TextView mBalanceTotal = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogBalance);
-        mBalanceTotal.setText(mBTillController.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+        mBalanceTotal.setText(mBTillController.getWallet().getBalance(Wallet.BalanceType.AVAILABLE).toFriendlyString());
 
         ImageView mBalanceQR = (ImageView) mBalanceDialog.findViewById(R.id.balanceDialogQR);
         Bitmap mBitmap = mBTillController.generateQR();
@@ -178,7 +175,15 @@ public class MenuFragment extends Fragment {
 
     }
 
-    private void loadingDialog(final Menu nonZeroMenu) {
+    private void loadingDialog(Menu menu) {
+        loadingDialogFull(menu, null, null, 0);
+    }
+
+    private void loadingDialog(Menu menu, Protos.PaymentRequest request, Coin amount) {
+        loadingDialogFull(menu, request, amount, 1);
+    }
+
+    private void loadingDialogFull(@Nullable Menu nonZeroMenu, @Nullable Protos.PaymentRequest request, @Nullable Coin amount, int loadingCase) {
 
         final Dialog mLoadingDialog = new Dialog(getActivity());
         mLoadingDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -190,16 +195,21 @@ public class MenuFragment extends Fragment {
         mLoadingDialog.setCanceledOnTouchOutside(false);
         mLoadingDialog.show();
 
-        //mBTillController.sendOrders(nonZeroMenu);
-        /* TODO this will currently dismiss the dialog if the order doesn't send
-         * Update this!
-         */
+        switch (loadingCase) {
+            case 0: sendOrdersThread(mLoadingDialog, nonZeroMenu).start();
+                break;
+            case 1: sendPaymentThread(mLoadingDialog, request, nonZeroMenu, amount).start();
+                break;
+        }
 
-        new Thread(new Runnable() {
+
+    }
+
+    private Thread sendOrdersThread(final Dialog mLoadingDialog, final Menu nonZeroMenu) {
+        return new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    //Thread.sleep(1000);
                     Protos.PaymentRequest request = null;
                     ConnectThread mConnectThread = new ConnectThread(mBTillController.getBluetoothAdapter());
                     Future<Boolean> connectionFuture = mConnectThread.runFuture();
@@ -211,31 +221,78 @@ public class MenuFragment extends Fragment {
                         Log.d(TAG, "Got payment request");
                     }
                     final Protos.PaymentRequest receivedRequest = request;
-                    if (true) {
-                        mLoadingDialog.dismiss();
-                        Log.d(TAG, "Loading Dialog dismissed");
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    mBTillController.getBluetoothSocket().close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                launchPaymentRequestDialog(receivedRequest, nonZeroMenu);
+                    mLoadingDialog.dismiss();
+                    Log.d(TAG, "Loading Dialog dismissed");
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                mBTillController.getBluetoothSocket().close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        });
-
-
-                    }
+                            launchPaymentRequestDialog(receivedRequest, nonZeroMenu);
+                        }
+                    });
                 } catch (Exception e) {
                     Log.e(TAG, "Error when connecting to server");
                 }
 
-             }
-        }).start();
+            }
+        });
     }
 
+    private Thread sendPaymentThread(final Dialog mLoadingDialog, final Protos.PaymentRequest request, final Menu menu, final Coin amount) {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Protos.Payment payment = null;
+                try {
+                    payment = mBTillController.transactionSigner(request);
+                    Log.d(TAG, "Transaction Signed");
+                } catch (PaymentProtocolException e) {
+                    //TODO error
+                }
+                ConnectThread mConnectThread = new ConnectThread(mBTillController.getBluetoothAdapter());
+                Future<Boolean> connectionFuture = mConnectThread.runFuture();
+                try {
+                    if (connectionFuture.get()) {
+                        mBTillController.setBluetoothSocket(mConnectThread.getSocket());
+                        if (mBTillController.sendPayment(payment)) {
+                            Future<Receipt> receiptFuture = mBTillController.getReceipt();
+                            final Receipt receipt = receiptFuture.get();
+
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mLoadingDialog.dismiss();
+                                    launchReceiptDialog(menu, receipt);
+                                }
+                            });
+
+                        } else {
+
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mLoadingDialog.dismiss();
+                                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+
+                                    builder1.setTitle("Uh Oh!").setMessage("Payment Unsuccessful");
+
+                                    builder1.create().show();
+                                }
+                            });
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
 
     // TODO -- this!
@@ -291,42 +348,14 @@ public class MenuFragment extends Fragment {
             mMessageTitle.setVisibility(View.GONE);
         }
 
+        final PaymentSession mNewSession = mSession;
+
         Button mSignButton = (Button) mPaymentDialog.findViewById(R.id.paymentDialogSignButton);
         mSignButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Protos.Payment payment = null;
-                try {
-                    payment = mBTillController.transactionSigner(request);
-                    Log.d(TAG, "Transaction Signed");
-                } catch (PaymentProtocolException e) {
-                    //TODO error
-                }
-                ConnectThread mConnectThread = new ConnectThread(mBTillController.getBluetoothAdapter());
-                Future<Boolean> connectionFuture = mConnectThread.runFuture();
-                try {
-                    if (connectionFuture.get()) {
-                        mBTillController.setBluetoothSocket(mConnectThread.getSocket());
-                        if (mBTillController.sendPayment(payment)) {
-
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-
-                            builder1.setTitle("Success!").setMessage("Payment Successful");
-
-                            builder1.create().show();
-                        } else {
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-
-                            builder1.setTitle("Uh Oh!").setMessage("Payment Unsuccessful");
-
-                            builder1.create().show();
-                        }
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+                mPaymentDialog.dismiss();
+                loadingDialog(menu, request, mNewSession.getValue());
             }
         });
 
@@ -342,54 +371,41 @@ public class MenuFragment extends Fragment {
         mPaymentDialog.show();
         Log.d(TAG, "Payment shown");
 
+    }
 
-        /*
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    private void launchReceiptDialog(Menu menu, Receipt receipt) {
+        final Dialog mReceiptDialog = new Dialog(getActivity());
+        mReceiptDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        mReceiptDialog.setContentView(R.layout.custom_receipt_dialog);
 
-        builder.setTitle("Test Payment").setMessage("This is a Test Payment")
-                .setPositiveButton("Sign", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        TextView mOrderID = (TextView) mReceiptDialog.findViewById(R.id.receiptDialogOrderID);
+        TextView mGBPAmount = (TextView) mReceiptDialog.findViewById(R.id.receiptDialogPriceAmount);
+        TextView mBitcoinAmount = (TextView) mReceiptDialog.findViewById(R.id.receiptDialogBitcoinAmount);
+        ListView mListView = (ListView) mReceiptDialog.findViewById(R.id.receiptDialogList);
+        mListView.setAdapter(new OrderDialogAdapter(getActivity(), menu));
 
-                        Protos.Payment payment = null;
-                        try {
-                            payment = mBTillController.transactionSigner(request);
-                            Log.d(TAG, "Transaction Signed");
-                        } catch (PaymentProtocolException e) {
-                            //TODO error
-                        }
+        mOrderID.setText("" + menu.getOrder_id());
 
+        /*GBP mTotal = new GBP(0);
+        for (MenuItem item: menu)
+        {
+            mTotal = mTotal.plus(item.getPrice().times(item.getQuantity()));
+        }*/
+        if (receipt != null) {
+            mGBPAmount.setText(receipt.getGbp().toString());
 
-                        if (mBTillController.sendPayment(payment)) {
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-
-                            builder1.setTitle("Success!").setMessage("Payment Successful");
-
-                            builder1.create().show();
-                        } else {
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-
-                            builder1.setTitle("Uh Oh!").setMessage("Payment Unsuccessful");
-
-                            builder1.create().show();
-                        }
-
-                        //mBTillController.getMenu().resetQuantities();
-
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            mBitcoinAmount.setText(receipt.getBitcoins().toFriendlyString());
+        }
+        Button mOKButton = (Button) mReceiptDialog.findViewById(R.id.receiptDialogButton);
+        mOKButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-
+            public void onClick(View v) {
+                mReceiptDialog.dismiss();
             }
         });
+        mReceiptDialog.show();
+        Log.d(TAG, "Receipt Dialog shown");
 
-        AlertDialog dialog = builder.create();
-
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-        Log.d(TAG, "Payment shown");
-        */
     }
 
     public Menu removeNonZero(Menu menu)

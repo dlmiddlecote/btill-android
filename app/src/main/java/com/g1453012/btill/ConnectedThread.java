@@ -98,17 +98,22 @@ public class ConnectedThread extends Thread {
                 int start = 0;
                 Integer readCount = (message.getBytes().length / 990) + 1;
                 int lengthLeft = message.getBytes().length;
+                Log.i("WRITTEN", "Length: " + lengthLeft);
                 try {
                     mOutStream.write(readCount.toString().getBytes());
+                    Log.i("WRITTEN", "Written: " + readCount.toString());
                     mOutStream.flush();
+                    sleep(200);
                     for (int i = 0; i < readCount.intValue(); i++) {
                         if (lengthLeft < 990) {
                             mOutStream.write(message.getBytes(), start, lengthLeft);
+                            Log.i("WRITTEN", "Written: " + new String(message.getBytes(), start, lengthLeft));
                             Log.d(TAG, "Wrote to server");
                             return Boolean.TRUE;
                         }
                         else {
                             mOutStream.write(message.getBytes(), start, 990);
+                            Log.i("WRITTEN", "Written: " + new String(message.getBytes(), start, 990));
                         }
                         mOutStream.flush();
                         start += 990;

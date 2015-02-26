@@ -165,6 +165,7 @@ public class HomeScreen extends Activity {
         } catch (UnreadableWalletException e) {
             Log.d(TAG, "Error reading the wallet");
         }
+
     }
 
     private void generateMenuView() {
@@ -182,7 +183,7 @@ public class HomeScreen extends Activity {
         setContentView(R.layout.server_not_found_home);
 
         TextView mBalanceTotal = (TextView) findViewById(R.id.serverNotFoundBalanceAmount);
-        mBalanceTotal.setText(mBTillController.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+        mBalanceTotal.setText(mBTillController.getWallet().getBalance(Wallet.BalanceType.AVAILABLE).toFriendlyString());
 
         ImageView mBalanceQR = (ImageView) findViewById(R.id.serverNotFoundQR);
         Bitmap mBitmap = mBTillController.generateQR();
@@ -206,6 +207,8 @@ public class HomeScreen extends Activity {
     protected void onStop() {
         super.onStop();
         try {
+            mBTillController.closeBluetoothSocket();
+            mBTillController.getWallet().cleanup();
             mBTillController.getWallet().saveToFile(mFile);
             Log.d(TAG, "Wallet Saved");
         } catch (IOException e) {

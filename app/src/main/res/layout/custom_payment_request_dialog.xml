@@ -23,7 +23,7 @@
         android:layout_marginRight="25dp"
         android:alignmentMode="alignMargins"
         android:useDefaultMargins="true"
-        android:id="@+id/gridLayout">
+        android:id="@+id/paymentDialogGrid">
 
         <TextView
             android:layout_width="wrap_content"
@@ -101,8 +101,8 @@
         android:text="@string/payment_dialog_memo_title"
         android:id="@+id/paymentDialogMemoTitle"
         android:layout_marginTop="25dp"
-        android:layout_below="@+id/gridLayout"
-        android:layout_alignStart="@+id/gridLayout"
+        android:layout_below="@+id/paymentDialogGrid"
+        android:layout_alignStart="@+id/paymentDialogGrid"
         android:textColor="@android:color/holo_blue_dark"
         android:clickable="true"/>
 

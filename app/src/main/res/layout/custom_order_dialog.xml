@@ -17,7 +17,7 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/dialogListView"
         android:layout_above="@+id/dialogAmountText"
         android:layout_alignParentBottom="false"
@@ -69,5 +69,11 @@
         android:layout_below="@+id/dialogAmountText"
         android:layout_alignParentEnd="true"
         android:textColor="@android:color/holo_blue_dark"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    </LinearLayout>
 
 </RelativeLayout>
