@@ -1,11 +1,9 @@
 package com.g1453012.btill;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
-import android.widget.NumberPicker;
 
 import com.g1453012.btill.Bluetooth.ConnectedThread;
 import com.g1453012.btill.Shared.BTMessage;
@@ -44,26 +42,36 @@ public class BTillController {
     private final ExecutorService pool = Executors.newFixedThreadPool(10);
 
     // TODO Update get Menu to pull menu from Till.
-    public Menu getMenu() {
+    /*public Menu getMenu() {
 
         sendMenuRequest();
         Log.d(TAG, "Sends Menu Request");
         return receiveMenu();
-    }
+    }*/
 
     public Future<Menu> getMenuFuture() {
         return pool.submit(new Callable<Menu>() {
             @Override
             public Menu call() throws Exception {
-                sendMenuRequest();
+                while (!sendMenuRequest()){};
                 Log.d(TAG, "Sends Menu Request in Future");
                 return receiveMenu();
             }
         });
     }
 
+
     public boolean sendMenuRequest() {
-        return write(new BTMessageBuilder("REQUEST_MENU").build());
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder("REQUEST_MENU").build());
+        try {
+            return writeFuture.get();
+        }
+        catch (InterruptedException e) {
+            Log.e(TAG, "Sending the Menu Request was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Sending the Menu Request had an Execution Exception");
+        }
+        return false;
     }
 
     public Menu receiveMenu() {
@@ -72,28 +80,22 @@ public class BTillController {
         BTMessage menuMessage = null;
         try {
             menuMessage = menuMessageFuture.get();
-
             Log.d(TAG, "Received in menu");
         } catch (InterruptedException e) {
             Log.e(TAG, "Getting the BTMessage was interrupted");
         } catch (ExecutionException e) {
             Log.e(TAG, "Getting the BTMessage had an Execution Exception");
         }
-        if (menuMessage != null && menuMessage.getHeader().equals(Status.OK.toString())) {
-            Log.d(TAG, menuMessage.getBodyString());
-            return new Gson().fromJson(menuMessage.getBodyString(), Menu.class);
+        if (menuMessage != null) {
+            if (menuMessage.getHeader().equals(Status.OK.toString())) {
+                closeBluetoothSocket();
+                return new Gson().fromJson(menuMessage.getBodyString(), Menu.class);
+            }
         }
+        closeBluetoothSocket();
         return null;
 
     }
-
-    /*public boolean confirmTransaction(Protos.PaymentRequest paymentRequest) {
-
-    }*/
-    /****************************************************************/
-    /****************************************************************/
-    /****************************************************************/
-    /****************************************************************/
 
 
     // TODO remove this
@@ -114,7 +116,7 @@ public class BTillController {
         return request;
     }
 
-    public static Protos.Payment transactionSigner(Protos.PaymentRequest request, Wallet wallet) throws PaymentProtocolException {
+    public Protos.Payment transactionSigner(Protos.PaymentRequest request) throws PaymentProtocolException {
         Protos.Payment mPayment = null;
         PaymentSession mPaymentSession = new PaymentSession(request, false);
         if (mPaymentSession.isExpired()) {
@@ -124,14 +126,15 @@ public class BTillController {
             Wallet.SendRequest mSendRequest = mPaymentSession.getSendRequest();
             //mWallet.signTransaction(Wallet.SendRequest.forTx(mSendRequest.tx));
             try {
-                wallet.completeTx(Wallet.SendRequest.forTx(mSendRequest.tx));
+                mWallet.completeTx(Wallet.SendRequest.forTx(mSendRequest.tx));
+                // TODO uncomment this to decrease Bitcoin in wallet, when working.
                 //mWallet.commitTx(mSendRequest.tx);
             } catch (InsufficientMoneyException e) {
                 // TODO this
                 Log.e(TAG, "Insufficient Money");
             }
             try {
-                mPayment = mPaymentSession.getPayment(ImmutableList.of(mSendRequest.tx), wallet.freshReceiveAddress(), null);
+                mPayment = mPaymentSession.getPayment(ImmutableList.of(mSendRequest.tx), mWallet.freshReceiveAddress(), null);
             } catch (IOException e) {
                 // TODO this
                 Log.e(TAG, "Error making payment");
