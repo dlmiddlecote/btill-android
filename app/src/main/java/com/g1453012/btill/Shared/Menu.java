@@ -70,13 +70,23 @@ public class Menu implements Iterable<MenuItem> {
         }
     }*/
 
-    public ArrayList<MenuItem> getCategoryItems(int position) {
+    public ArrayList<MenuItem> getCategoryItems(String category) {
         ArrayList<MenuItem> sortedItems = new ArrayList<MenuItem>();
-        String category = categories.get(position);
         for (MenuItem item: items) {
             if (item.getCategory().equals(category))
                 sortedItems.add(item);
         }
         return sortedItems;
+    }
+
+    public static Menu removeNonZero(Menu menu) {
+        Menu retMenu = new Menu();
+        for (MenuItem item: menu)
+        {
+            if (item.getQuantity()!=0)
+                retMenu.add(item);
+        }
+
+        return retMenu;
     }
 }

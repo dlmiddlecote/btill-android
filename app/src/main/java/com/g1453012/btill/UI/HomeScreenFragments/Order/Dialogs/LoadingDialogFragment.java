@@ -56,7 +56,7 @@ public class LoadingDialogFragment extends DialogFragment{
 
     @Override
     public void onStart() {
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -82,20 +82,10 @@ public class LoadingDialogFragment extends DialogFragment{
                 }
 
             }
-        }).start();
+        }).start();*/
     }
 
     //TODO Not sure about this class - needs to return when connectionFuture.get(). Hopefully using the onStart method to start the thread will work
 
-    private static Menu removeNonZero(Menu menu) {
-        Menu retMenu = new Menu();
-        for (MenuItem item: menu)
-        {
-            if (item.getQuantity()!=0)
-                retMenu.add(item);
-        }
-
-        return retMenu;
-    }
 
 }

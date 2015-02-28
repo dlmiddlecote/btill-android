@@ -16,12 +16,15 @@ import com.g1453012.btill.BTillController;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.Menu;
+import com.g1453012.btill.Shared.MenuItem;
 import com.g1453012.btill.UI.HomeScreenFragments.AppStartup;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.BalanceDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDialogFragment;
 
+import java.util.ArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -42,6 +45,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     private PersistentParameters params;
     private Menu mMenu;
+    private OrderFragmentPagerAdapter mOrderFragmentPagerAdapter;
     private BTillController mBTillController;
     private Activity mParentActivity;
     private static final String TAG = "OrderFragment";
@@ -106,6 +110,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             mMenu.sortCategories();
             final ViewPager pager = (ViewPager)getActivity().findViewById(R.id.categoryPager);
             final OrderFragmentPagerAdapter adapter = new OrderFragmentPagerAdapter(getFragmentManager(), mMenu);
+            mOrderFragmentPagerAdapter = adapter;
             pager.setAdapter(adapter);
             pager.setPageTransformer(true, new CubeOutTransformer());
         }
@@ -138,10 +143,15 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             case ORDER_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        DialogFragment dialogFragment = LoadingDialogFragment.newInstance(mMenu);
+                        //Pulls orders out of the adapter and sorts out non zero
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        orders = Menu.removeNonZero(orders);
+                        //Creates new loading dialog
+                        //TODO this shouldn't need a menu it is just loading
+                        DialogFragment dialogFragment = LoadingDialogFragment.newInstance(orders);
                         dialogFragment.setTargetFragment(this, LOADING_DIALOG);
                         dialogFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
-                        BTillController.sendOrders(mMenu, params.getSocket());
+                        BTillController.sendOrders(orders, params.getSocket());
                         break;
                     default:
                         break;
@@ -175,6 +185,18 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    //Goes through the category fragments in the adapter and adds up their menus into a new one
+    //This is used to pull the orders and post them to the server
+    private static Menu getOrdersFromAdapter(OrderFragmentPagerAdapter adapter) {
+        ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+        for (CategoryFragment fragment: adapter.getCategoryFragments()) {
+            items.addAll(fragment.getItems());
+        }
+        Menu menu = new Menu(items);
+        menu.sortCategories();
+        return menu;
     }
 
 
