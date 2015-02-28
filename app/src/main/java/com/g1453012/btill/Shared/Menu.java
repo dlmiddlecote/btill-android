@@ -9,6 +9,15 @@ import java.util.Iterator;
 public class Menu implements Iterable<MenuItem> {
     private ArrayList<MenuItem> items = new ArrayList<MenuItem>();
     private ArrayList<String> categories = new ArrayList<String>();
+    private int mOrderId;
+
+    public int getOrderId() {
+        return mOrderId;
+    }
+
+    public void setOrderId(int orderId) {
+        mOrderId = orderId;
+    }
 
     public ArrayList<String> getCategories() {
         return categories;
@@ -70,13 +79,23 @@ public class Menu implements Iterable<MenuItem> {
         }
     }*/
 
-    public ArrayList<MenuItem> getCategoryItems(int position) {
+    public ArrayList<MenuItem> getCategoryItems(String category) {
         ArrayList<MenuItem> sortedItems = new ArrayList<MenuItem>();
-        String category = categories.get(position);
         for (MenuItem item: items) {
             if (item.getCategory().equals(category))
                 sortedItems.add(item);
         }
         return sortedItems;
+    }
+
+    public static Menu removeNonZero(Menu menu) {
+        Menu retMenu = new Menu();
+        for (MenuItem item: menu)
+        {
+            if (item.getQuantity()!=0)
+                retMenu.add(item);
+        }
+
+        return retMenu;
     }
 }

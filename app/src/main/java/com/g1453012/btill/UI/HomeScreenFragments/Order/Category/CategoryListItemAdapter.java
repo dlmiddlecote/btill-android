@@ -9,28 +9,22 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.g1453012.btill.R;
-import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
 
 import java.util.ArrayList;
 
-/**
- * Created by Andy on 27/02/2015.
- */
 public class CategoryListItemAdapter extends BaseAdapter{
     private LayoutInflater mLayoutInflater;
     private ArrayList<MenuItem> mItems;
-    private String category;
     private static final String TAG = "MenuAdapter";
 
     public ArrayList<MenuItem> getItems() {
         return mItems;
     }
 
-    public CategoryListItemAdapter(Context context, Menu menu, String category) {
+    public CategoryListItemAdapter(Context context, ArrayList<MenuItem> items) {
         mLayoutInflater = LayoutInflater.from(context);
-        this.category = category;
-        mItems = menu.getCategoryItems(menu.getCategories().indexOf(category));
+        mItems = items;
     }
 
     @Override
@@ -49,7 +43,7 @@ public class CategoryListItemAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         View rowView = convertView;
 
         if (rowView == null)
@@ -68,6 +62,7 @@ public class CategoryListItemAdapter extends BaseAdapter{
                 public void onClick(View v) {
                     // Max amount is 9 to help with UI
                     // TODO Fix UI Here (Number overlaps with +)
+
                     mItems.get(position).setQuantity(Math.min(mItems.get(position).getQuantity() + 1, 9));
                     quantity.setText(String.valueOf(mItems.get(position).getQuantity()));
                 }
@@ -87,5 +82,10 @@ public class CategoryListItemAdapter extends BaseAdapter{
         }
 
         return rowView;
+    }
+
+    public void updateMenuItem(MenuItem item, int position) {
+        mItems.set(position, item);
+        notifyDataSetChanged();
     }
 }

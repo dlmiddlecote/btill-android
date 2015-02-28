@@ -22,8 +22,9 @@ public class ConnectThread extends Thread {
     private BluetoothSocket mSocket = null;
 
     private static UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private static final String MAC = "00:03:C9:EA:E1:C7";
+    private static final String ANDYSMAC = "00:03:C9:EA:E1:C7";
     private static final String LUKESMAC = "48:5D:60:FC:B0:46";
+    private static final String DANSMAC = "00:15:83:64:83:DE";
     private static BluetoothDevice mBluetoothDevice;
     private ConnectedThread mConnectedThread;
 
@@ -44,7 +45,8 @@ public class ConnectThread extends Thread {
         Set<BluetoothDevice> mPairedDevices = mBluetoothAdapter.getBondedDevices();
         for (BluetoothDevice bt: mPairedDevices) {
             Log.d(TAG, bt.getName());
-            if (bt.getAddress().toString().equals(MAC) || bt.getAddress().toString().equals(LUKESMAC)) {
+            Log.d(TAG, bt.getAddress());
+            if (bt.getAddress().toString().equals(DANSMAC) || bt.getAddress().toString().equals(LUKESMAC) || bt.getAddress().toString().equals(ANDYSMAC)) {
                 device = bt;
                 mBluetoothDevice = bt;
             }

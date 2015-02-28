@@ -8,8 +8,9 @@ import android.util.Log;
 import com.g1453012.btill.Bluetooth.ConnectedThread;
 import com.g1453012.btill.Shared.BTMessage;
 import com.g1453012.btill.Shared.BTMessageBuilder;
-import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.Menu;
+import com.g1453012.btill.Shared.NewBill;
+import com.g1453012.btill.Shared.Receipt;
 import com.g1453012.btill.Shared.Status;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
@@ -19,15 +20,10 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import org.bitcoin.protocols.payments.Protos;
-import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Wallet;
-import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.protocols.payments.PaymentProtocol;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
 import org.bitcoinj.protocols.payments.PaymentSession;
-import org.bitcoinj.uri.BitcoinURI;
-import org.bitcoinj.uri.BitcoinURIParseException;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -39,7 +35,9 @@ import java.util.concurrent.Future;
 public class BTillController {
 
     private static final String TAG = "BTillController";
-    private final ExecutorService pool = Executors.newFixedThreadPool(10);
+
+    private static ExecutorService pool = Executors.newFixedThreadPool(10);
+
 
     // TODO Update get Menu to pull menu from Till.
     /*public Menu getMenu() {
@@ -49,20 +47,20 @@ public class BTillController {
         return receiveMenu();
     }*/
 
-    public Future<Menu> getMenuFuture() {
+    public static Future<Menu> getMenuFuture(final BluetoothSocket socket) {
         return pool.submit(new Callable<Menu>() {
             @Override
             public Menu call() throws Exception {
-                while (!sendMenuRequest()){};
+                while (!sendMenuRequest(socket)){};
                 Log.d(TAG, "Sends Menu Request in Future");
-                return receiveMenu();
+                return receiveMenu(socket);
             }
         });
     }
 
 
-    public boolean sendMenuRequest() {
-        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder("REQUEST_MENU").build());
+    private static boolean sendMenuRequest(BluetoothSocket socket) {
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder("REQUEST_MENU").build(), socket);
         try {
             return writeFuture.get();
         }
@@ -74,9 +72,9 @@ public class BTillController {
         return false;
     }
 
-    public Menu receiveMenu() {
+    private static Menu receiveMenu(final BluetoothSocket socket) {
         //BTMessage menuMessage = read();
-        Future<BTMessage> menuMessageFuture = readBT();
+        Future<BTMessage> menuMessageFuture = readBT(socket);
         BTMessage menuMessage = null;
         try {
             menuMessage = menuMessageFuture.get();
@@ -88,18 +86,27 @@ public class BTillController {
         }
         if (menuMessage != null) {
             if (menuMessage.getHeader().equals(Status.OK.toString())) {
-                closeBluetoothSocket();
+                //closeBluetoothSocket();
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Couldn't close socket");
+                }
                 return new Gson().fromJson(menuMessage.getBodyString(), Menu.class);
             }
         }
-        closeBluetoothSocket();
+        //closeBluetoothSocket();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Couldn't close socket");
+        }
         return null;
 
     }
 
-
     // TODO remove this
-    public Protos.PaymentRequest getRequest(String uri) {
+    /*public Protos.PaymentRequest getRequest(String uri) {
         BitcoinURI mUri = null;
         try {
             mUri = new BitcoinURI(TestNet3Params.get(), uri);
@@ -114,9 +121,9 @@ public class BTillController {
         Protos.PaymentRequest.Builder requestBuilder = PaymentProtocol.createPaymentRequest(TestNet3Params.get(), amount, address, memo, url, null);
         Protos.PaymentRequest request = requestBuilder.build();
         return request;
-    }
+    }*/
 
-    public Protos.Payment transactionSigner(Protos.PaymentRequest request) throws PaymentProtocolException {
+    public static Protos.Payment transactionSigner(Protos.PaymentRequest request, final Wallet mWallet) throws PaymentProtocolException {
         Protos.Payment mPayment = null;
         PaymentSession mPaymentSession = new PaymentSession(request, false);
         if (mPaymentSession.isExpired()) {
@@ -148,47 +155,223 @@ public class BTillController {
         }
     }
 
-    public static boolean sendPayment(Protos.Payment payment) {
-        return write(new BTMessageBuilder(payment).build());
+
+/*
+    public void fetchBill(){
+        Future<BTMessage> billMessageFuture = readBT();
+        Log.d(TAG, "Starts to read bill");
+        BTMessage billMessage = null;
+        try {
+            billMessage = billMessageFuture.get();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the BTMessage was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the BTMessage had an Execution Exception");
+        }
+        Log.d(TAG, "Has Bill");
+        if (billMessage.getHeader().equals(Status.OK.toString())) {
+            mBill = new Gson().fromJson(billMessage.getBodyString(), NewBill.class);
+        }
+        else {
+            mBill = null;
+        }
+        return mBill;
+
+    }*/
+
+    public static Future<NewBill> processOrders(final Menu menu, final BluetoothSocket socket) {
+        return pool.submit(new Callable<NewBill>() {
+            @Override
+            public NewBill call() throws Exception {
+                while (!sendOrders(menu, socket)) {}
+                return receiveBill(socket);
+            }
+        });
     }
 
-    public static boolean sendOrders(Menu menu, BluetoothSocket socket) {
-        return write(new BTMessageBuilder(menu).build(), socket);
+    private static boolean sendOrders(Menu menu, final BluetoothSocket socket) {
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(menu).build(), socket);
+        try {
+            return writeFuture.get().booleanValue();
+        }
+        catch (InterruptedException e) {
+            Log.e(TAG, "Sending the Payment was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Sending the Payment had an Execution Exception");
+        }
+        return false;
     }
 
-    // TODO remember to change this
-    public Protos.PaymentRequest getPaymentRequest(){
-        //return getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com");
-        Bill bill = fetchBill();
-        if (bill != null) {
-            return bill.getRequest();
+    /*private NewBill receiveBill(final BluetoothSocket socket) {
+        Future<NewBill> billFuture = fetchBillFuture(socket);
+        try {
+            socket.close();
+            return billFuture.get();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the Bill was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the Bill had an Execution Exception");
+        } catch (IOException e) {
+            Log.e(TAG, "Couldn't close socket");
+        }
+        try {
+            socket.close();
+        }
+        catch (IOException e) {
+            Log.e(TAG, "Couldn't close socket");
+        }
+        return null;
+    }*/
+
+    private static NewBill receiveBill(final BluetoothSocket socket) {
+        Future<BTMessage> billMessageFuture = readBT(socket);
+        Log.d(TAG, "Starts to read bill");
+        //BTMessage billMessage = read();
+        BTMessage billMessage = null;
+        try {
+            billMessage = billMessageFuture.get();
+            Log.d(TAG, "Has Bill");
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the BTMessage was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the BTMessage had an Execution Exception");
+        }
+
+        if (billMessage.getHeader().equals(Status.OK.toString())) {
+            return new Gson().fromJson(billMessage.getBodyString(), NewBill.class);
         }
         else {
             return null;
         }
-
-    }
-
-    public Bill fetchBill(){
-        BTMessage billMessage = read();
-        Bill bill;
-        if (billMessage.getHeader().equals(Status.OK.toString())) {
-            bill = new Gson().fromJson(billMessage.getBodyString(), Bill.class);
-        }
-        else {
-            bill = null;
-        }
-        return bill;
     }
 
 
-    public BTMessage read(BluetoothSocket socket) {
+
+
+
+    // TODO remember to change this
+    /*public Protos.PaymentRequest getPaymentRequest(final BluetoothSocket socket){
+        //return getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com&message=Payment%20for%20coffee");
+        Log.d(TAG, "Going to fetch Bill");
+        //fetchBill();
+        Future<Boolean> fetchBillFuture = fetchBillFuture(socket);
+        try {
+            if (fetchBillFuture.get()) {
+                Log.d(TAG, "Received Bill");
+                //closeBluetoothSocket();
+                socket.close();
+                return mBill.getRequest();
+            }
+            else {
+                Log.d(TAG, "Null Bill");
+                //closeBluetoothSocket();
+                socket.close();
+                return null;
+            }
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the Bill was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the Bill had an Execution Exception");
+        } catch (IOException e) {
+            Log.e(TAG, "Couldn't close Socket");
+        }
+        Log.d(TAG, "Null Bill -- outside try");
+        //closeBluetoothSocket();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Couldn't close socket");
+        }
+        return null;
+
+    }*/
+
+    /*public Future<Boolean> fetchBillFuture(final BluetoothSocket socket) {
+        return pool.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                Future<BTMessage> billMessageFuture = readBT(socket);
+                Log.d(TAG, "Starts to read bill");
+                //BTMessage billMessage = read();
+                BTMessage billMessage = null;
+                try {
+                    billMessage = billMessageFuture.get();
+                    Log.d(TAG, "Has Bill");
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Getting the BTMessage was interrupted");
+                } catch (ExecutionException e) {
+                    Log.e(TAG, "Getting the BTMessage had an Execution Exception");
+                }
+
+                if (billMessage.getHeader().equals(Status.OK.toString())) {
+                    mBill = new Gson().fromJson(billMessage.getBodyString(), NewBill.class);
+                    return Boolean.TRUE;
+                }
+                else {
+                    mBill = null;
+                    return Boolean.FALSE;
+                }
+            }
+        });
+    }*/
+
+    public static Future<Receipt> processPayment(final Protos.Payment payment, final BluetoothSocket socket) {
+        return pool.submit(new Callable<Receipt>() {
+            @Override
+            public Receipt call() throws Exception {
+                while (!sendPayment(payment, socket)) {}
+                return getReceipt(socket);
+            }
+        });
+    }
+
+    private static boolean sendPayment(Protos.Payment payment, final BluetoothSocket socket) {
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(payment).build(), socket);
+        try {
+            return writeFuture.get().booleanValue();
+        }
+        catch (InterruptedException e) {
+            Log.e(TAG, "Sending the Payment was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Sending the Payment had an Execution Exception");
+        }
+        return false;
+    }
+
+    private static Receipt getReceipt(final BluetoothSocket socket) {
+        Future<BTMessage> receiptFuture = readBT(socket);
+        BTMessage receiptMessage = null;
+        try {
+            receiptMessage = receiptFuture.get();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Getting the BTMessage was interrupted");
+        } catch (ExecutionException e) {
+            Log.e(TAG, "Getting the BTMessage had an Execution Exception");
+        }
+        try {
+            if (receiptMessage != null && receiptMessage.getHeader().equals(Status.OK.toString())) {
+                Log.d(TAG, "Created Receipt");
+                //closeBluetoothSocket();
+                socket.close();
+                return new Gson().fromJson(receiptMessage.getBodyString(), Receipt.class);
+            } else {
+                Log.e(TAG, "Receipt is null");
+                //closeBluetoothSocket();
+                socket.close();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Couldn't close socket");
+        }
+        return null;
+    }
+
+    private BTMessage read(BluetoothSocket socket) {
         ConnectedThread mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
         return new Gson().fromJson(mConnectedThread.read(), BTMessage.class);
     }
 
-    public Future<BTMessage> readBT(final BluetoothSocket socket) {
+    private static Future<BTMessage> readBT(final BluetoothSocket socket) {
         return pool.submit(new Callable<BTMessage>() {
             @Override
             public BTMessage call() throws Exception {
@@ -200,10 +383,22 @@ public class BTillController {
         });
     }
 
-    public static boolean write(BTMessage message, BluetoothSocket socket) {
+    private static boolean write(BTMessage message, BluetoothSocket socket) {
         ConnectedThread mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
         return mConnectedThread.write(message);
+    }
+
+    private static Future<Boolean> writeBT(final BTMessage message, final BluetoothSocket socket) {
+        return pool.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                ConnectedThread mConnectedThread = new ConnectedThread(socket);
+                mConnectedThread.start();
+                Future<Boolean> writeFuture = mConnectedThread.writeFuture(message);
+                return writeFuture.get();
+            }
+        });
     }
 
     public static Bitmap generateQR(Wallet wallet) {

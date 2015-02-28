@@ -2,11 +2,11 @@ package com.g1453012.btill.UI.HomeScreenFragments.Order;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +16,18 @@ import com.g1453012.btill.BTillController;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.Menu;
-import com.g1453012.btill.UI.HomeScreenFragments.AppStartup;
+import com.g1453012.btill.Shared.MenuItem;
+import com.g1453012.btill.Shared.NewBill;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.BalanceDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDialogFragment;
 
+import org.bitcoin.protocols.payments.Protos;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -29,8 +35,7 @@ import java.util.concurrent.TimeoutException;
 public class OrderFragment extends Fragment implements View.OnClickListener {
 
     static final int ORDER_DIALOG = 1;
-    static final int LOADING_DIALOG = 2;
-    static final int PAYMENT_REQUEST_DIALOG = 3;
+    static final int PAYMENT_REQUEST_DIALOG = 2;
 
     public PersistentParameters getParams() {
         return params;
@@ -42,7 +47,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     private PersistentParameters params;
     private Menu mMenu;
-    private BTillController mBTillController;
+    private OrderFragmentPagerAdapter mOrderFragmentPagerAdapter;
     private Activity mParentActivity;
     private static final String TAG = "OrderFragment";
 
@@ -92,7 +97,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Future<Menu> menuFuture = mBTillController.getMenuFuture();
+        Future<Menu> menuFuture = BTillController.getMenuFuture(params.getSocket());
         try {
             mMenu = menuFuture.get(10, TimeUnit.SECONDS);
         }
@@ -106,6 +111,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             mMenu.sortCategories();
             final ViewPager pager = (ViewPager)getActivity().findViewById(R.id.categoryPager);
             final OrderFragmentPagerAdapter adapter = new OrderFragmentPagerAdapter(getFragmentManager(), mMenu);
+            mOrderFragmentPagerAdapter = adapter;
             pager.setAdapter(adapter);
             pager.setPageTransformer(true, new CubeOutTransformer());
         }
@@ -138,16 +144,38 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             case ORDER_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        DialogFragment dialogFragment = LoadingDialogFragment.newInstance(mMenu);
-                        dialogFragment.setTargetFragment(this, LOADING_DIALOG);
-                        dialogFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
-                        BTillController.sendOrders(mMenu, params.getSocket());
+                        //Pulls orders out of the adapter and sorts out non zero
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        orders = Menu.removeNonZero(orders);
+                        //Creates new loading dialog
+                        //TODO this shouldn't need a menu it is just loading
+                        DialogFragment loadingFragment = LoadingDialogFragment.newInstance(orders);
+                        loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
+                        Future<NewBill> requestFuture = BTillController.processOrders(orders, params.getSocket());
+                        Protos.PaymentRequest request = null;
+                        try {
+                            //Blocks here until the request is returned
+                            request = requestFuture.get().getRequest();
+                            Log.d(TAG, "Retrieved request");
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Getting the Request was interrupted");
+                        } catch (ExecutionException e) {
+                            Log.e(TAG, "Getting the Request had an Execution Exception");
+                        }
+                        //this only executes once the request has been retrieved or errored
+
+                        loadingFragment.dismiss();
+                        //Launches a paymentconfirmation with the new Request
+                        DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(request);
+                        paymentFragment.setTargetFragment(this, PAYMENT_REQUEST_DIALOG);
+                        paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");
+
                         break;
                     default:
                         break;
                 }
                 break;
-            case LOADING_DIALOG:
+            /*case LOADING_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         DialogFragment dialogFragment = PaymentRequestDialogFragment.newInstance(mBTillController.getPaymentRequest());
@@ -158,7 +186,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         //Inform that sending order failed
                         break;
                 }
-                break;
+                break;*/
             case PAYMENT_REQUEST_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
@@ -175,6 +203,18 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    //Goes through the category fragments in the adapter and adds up their menus into a new one
+    //This is used to pull the orders and post them to the server
+    private static Menu getOrdersFromAdapter(OrderFragmentPagerAdapter adapter) {
+        ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+        for (CategoryFragment fragment: adapter.getCategoryFragments()) {
+            items.addAll(fragment.getItems());
+        }
+        Menu menu = new Menu(items);
+        menu.sortCategories();
+        return menu;
     }
 
 

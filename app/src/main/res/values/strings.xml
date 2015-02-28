@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BTill</string>
+    <string name="app_name">B-Till</string>
     <string name="action_settings">Settings</string>
 
     <string name="no_bluetooth">Device does not support Bluetooth</string>
@@ -19,6 +19,16 @@
     <string name="topup">Top-Up</string>
     <string name="retry">Retry</string>
     <string name="balance_topup_title">Balance/ Top-Up</string>
+    <string name="payment_dialog_title">Payment Request</string>
+    <string name="Price">Price</string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="id">Order ID</string>
+    <string name="payment_dialog_memo_title">Message</string>
+    <string name="sign_button">Sign</string>
+    <string name="payment_dialog_error">Error Processing Payment Request</string>
+    <string name="receipt_dialog_title">Thanks For Your Order!</string>
+    <string name="receipt_dialog_subtitle">Your items will be with you shortly</string>
+    <string name="items">Items</string>
 
 
 </resources>

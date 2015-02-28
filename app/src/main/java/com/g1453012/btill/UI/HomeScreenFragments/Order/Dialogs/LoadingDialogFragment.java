@@ -1,23 +1,15 @@
 package com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
 
-import com.g1453012.btill.BTillController;
-import com.g1453012.btill.Bluetooth.ConnectThread;
 import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
-
-import org.bitcoin.protocols.payments.Protos;
-
-import java.util.concurrent.Future;
 
 
 public class LoadingDialogFragment extends DialogFragment{
@@ -56,7 +48,7 @@ public class LoadingDialogFragment extends DialogFragment{
 
     @Override
     public void onStart() {
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -82,7 +74,7 @@ public class LoadingDialogFragment extends DialogFragment{
                 }
 
             }
-        }).start();
+        }).start();*/
     }
 
     //TODO Not sure about this class - needs to return when connectionFuture.get(). Hopefully using the onStart method to start the thread will work

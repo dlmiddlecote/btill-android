@@ -3,6 +3,7 @@ package com.g1453012.btill.Shared;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.bitcoin.protocols.payments.Protos;
 import org.bitcoin.protocols.payments.Protos.PaymentRequest;
 import org.bitcoin.protocols.payments.Protos.PaymentRequest.Builder;
 import org.bitcoinj.core.Coin;
@@ -12,6 +13,8 @@ import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.protocols.payments.PaymentProtocol;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
 import org.bitcoinj.protocols.payments.PaymentSession;
+import org.bitcoinj.uri.BitcoinURI;
+import org.bitcoinj.uri.BitcoinURIParseException;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -29,12 +32,6 @@ public class Bill implements Serializable {
     private transient Coin coinAmount = null;
     private transient Wallet wallet = null;
     private transient Builder requestBuilder = null;
-
-    public PaymentRequest getRequest() {
-        return request;
-    }
-
-
     // PaymentRequest IS SENT TO PHONE
     private PaymentRequest request = null;
 
@@ -57,6 +54,14 @@ public class Bill implements Serializable {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
+    public PaymentRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(PaymentRequest request) {
+        this.request = request;
+    }
+
     public Bill(String memo, String paymentURL, byte[] merchantData,
                 Coin amount, Wallet wallet) {
         this.memo = memo;
@@ -66,12 +71,29 @@ public class Bill implements Serializable {
         this.wallet = wallet;
         buildPaymentRequest();
     }
+    public Protos.PaymentRequest getRequest(String uri) {
+        BitcoinURI mUri = null;
+        try {
+            mUri = new BitcoinURI(TestNet3Params.get(), uri);
+        } catch (BitcoinURIParseException e) {
+            System.out.println("Bitcoin URI Parse Exception");
+        }
 
-    public void buildPaymentRequest() {
+        org.bitcoinj.core.Address address = mUri.getAddress();
+        Coin amount = mUri.getAmount();
+        String memo = mUri.getMessage();
+        String url = mUri.getPaymentRequestUrl();
+        Protos.PaymentRequest.Builder requestBuilder = PaymentProtocol.createPaymentRequest(TestNet3Params.get(), amount, address, memo, url, null);
+        Protos.PaymentRequest request = requestBuilder.build();
+        return request;
+    }
+
+
+    public void buildPaymentRequest() {/*
         requestBuilder = PaymentProtocol.createPaymentRequest(net3Params,
                 coinAmount, wallet.currentReceiveAddress(), memo, paymentURL,
                 merchantData);
-        request = requestBuilder.build();
+        request = requestBuilder.build();*/
     }
 
     /**
@@ -156,6 +178,8 @@ public class Bill implements Serializable {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+
 
     }
 }

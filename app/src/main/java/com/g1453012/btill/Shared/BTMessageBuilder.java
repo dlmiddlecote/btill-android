@@ -43,7 +43,9 @@ public class BTMessageBuilder {
 
     public BTMessageBuilder(Protos.Payment payment) {
         this.header = "SETTLE_BILL";
-        this.body = payment.toByteArray();
+        String json = new Gson().toJson(new SignedBill(payment), SignedBill.class);
+        this.body = json.getBytes();
+        //this.body = payment.toByteArray();
     }
 
     public BTMessageBuilder(Menu menu) {

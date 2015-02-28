@@ -7,28 +7,38 @@ import android.util.Log;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment;
 
+import java.util.ArrayList;
+
 public class OrderFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
-    private Menu mMenu;
+    private ArrayList<CategoryFragment> categoryFragments = new ArrayList<CategoryFragment>();
     private static final String TAG = "CategoryPageAdapter";
 
     public OrderFragmentPagerAdapter(FragmentManager fragmentManager, Menu menu) {
         super(fragmentManager);
-        mMenu = menu;
+        for (String category: menu.getCategories()) {
+            CategoryFragment fragment = new CategoryFragment();
+            Log.d(TAG, "Creating fragment for category: " + category);
+            //Create a new fragment and get the items that fit into that category
+            fragment.setItems(menu.getCategoryItems(category));
+            //Add it to the list as we need it for later
+            categoryFragments.add(fragment);
+        }
+    }
+
+    public ArrayList<CategoryFragment> getCategoryFragments() {
+        return categoryFragments;
     }
 
     @Override
     public CategoryFragment getItem(int position) {
-        CategoryFragment fragment = new CategoryFragment();
-        fragment.setMenu(mMenu);
-        Log.d(TAG, "Creating fragment for category: " + mMenu.getCategories().get(position));
-        fragment.setCategory(mMenu.getCategories().get(position));
-        return fragment;
+        //Use this list as a store as we need persistent fragments without recycling (hopefully)
+        return categoryFragments.get(position);
     }
 
-    @Overridev
+    @Override
     public int getCount() {
-        return mMenu.getCategories().size();
+        return categoryFragments.size();
     }
 
 }

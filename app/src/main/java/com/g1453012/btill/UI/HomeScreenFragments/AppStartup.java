@@ -1,15 +1,15 @@
 package com.g1453012.btill.UI.HomeScreenFragments;
 
 //import android.app.Fragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-//import android.app.FragmentTransaction;
+
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-        import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,14 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.g1453012.btill.BTillController;
+import com.g1453012.btill.Bitcoin.WalletKitThread;
 import com.g1453012.btill.Bluetooth.ConnectThread;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
-import com.g1453012.btill.Bitcoin.WalletKitThread;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.OrderFragment;
 
 import org.bitcoinj.core.Wallet;
-import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.store.UnreadableWalletException;
 
 import java.io.File;
@@ -35,6 +34,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+//import android.app.FragmentTransaction;
 
 
 public class AppStartup extends FragmentActivity {
@@ -47,7 +48,7 @@ public class AppStartup extends FragmentActivity {
     private static final int REQUEST_ENABLE_BT = 2;
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private final String filePrefix = "Bitcoin-test";
-    private final TestNet3Params mNetParams = TestNet3Params.get();
+    private Bundle mSavedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,9 +131,9 @@ public class AppStartup extends FragmentActivity {
             setWallet();
             generateMenuView();
         } else {
-            Log.e(TAG, "Connection Timed out... Quitting...");
+            Log.e(TAG, "Connection Timed out...");
             setWallet();
-            generateServerNotFoundView(0);
+            generateServerNotFoundView();
         }
     }
 
@@ -156,6 +157,7 @@ public class AppStartup extends FragmentActivity {
         } catch (UnreadableWalletException e) {
             Log.d(TAG, "Error reading the wallet");
         }
+
     }
 
     private void generateMenuView() {
@@ -166,7 +168,8 @@ public class AppStartup extends FragmentActivity {
         transaction.commit();
     }
 
-    public void generateServerNotFoundView(int type) {
+    public void generateServerNotFoundView() {
+
         setContentView(R.layout.server_not_found_home);
 
         TextView mBalanceTotal = (TextView) findViewById(R.id.serverNotFoundBalanceAmount);
@@ -195,6 +198,8 @@ public class AppStartup extends FragmentActivity {
         super.onStop();
         File file = new File(this.getExternalFilesDir("/wallet/"), filePrefix + ".wallet");
         try {
+            params.getSocket().close();
+            params.getWallet().cleanup();
             params.getWallet().saveToFile(file);
             Log.d(TAG, "Wallet Saved");
         } catch (IOException e) {

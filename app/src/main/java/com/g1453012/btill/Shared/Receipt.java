@@ -19,4 +19,16 @@ public class Receipt {
         this.gbp = gbp;
         this.bitcoins = bitcoins;
     }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public GBP getGbp() {
+        return gbp;
+    }
+
+    public Coin getBitcoins() {
+        return bitcoins;
+    }
 }

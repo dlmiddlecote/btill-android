@@ -39,6 +39,16 @@ public class MenuItem {
         this.category = category;
     }
 
+    public void incrementQuantity() {
+        if (quantity<10)
+            this.quantity++;
+    }
+
+    public void decrementQuantity() {
+        if (quantity>0)
+            this.quantity--;
+    }
+
     @Override public String toString() {
         return "MenuItem{" + name + ", " + price + '}';
     }
