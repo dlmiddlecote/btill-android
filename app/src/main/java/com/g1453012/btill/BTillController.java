@@ -90,6 +90,11 @@ public class BTillController {
     /*public boolean confirmTransaction(Protos.PaymentRequest paymentRequest) {
 
     }*/
+    /****************************************************************/
+    /****************************************************************/
+    /****************************************************************/
+    /****************************************************************/
+
 
     // TODO remove this
     public Protos.PaymentRequest getRequest(String uri) {
