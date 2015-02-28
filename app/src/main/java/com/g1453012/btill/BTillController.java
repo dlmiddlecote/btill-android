@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothSocket;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
+import android.widget.NumberPicker;
 
 import com.g1453012.btill.Bluetooth.ConnectedThread;
 import com.g1453012.btill.Shared.BTMessage;
@@ -37,45 +38,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-/**
- * Created by dlmiddlecote on 18/02/15.
- */
 public class BTillController {
 
     private static final String TAG = "BTillController";
-
-    private Wallet mWallet;
-
-    private BluetoothSocket mBluetoothSocket = null;
-
-    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-    private Bill mBill = null;
-
     private final ExecutorService pool = Executors.newFixedThreadPool(10);
-
-    public Wallet getWallet() {
-        return mWallet;
-    }
-
-    public void setWallet(Wallet wallet) {
-        mWallet = wallet;
-    }
-
-    public BluetoothSocket getBluetoothSocket() {
-        return mBluetoothSocket;
-    }
-
-    public void setBluetoothSocket(BluetoothSocket bluetoothSocket) {
-        mBluetoothSocket = bluetoothSocket;
-    }
-
-    public BluetoothAdapter getBluetoothAdapter() {
-        return mBluetoothAdapter;
-    }
-
-    public BTillController() {
-    }
 
     // TODO Update get Menu to pull menu from Till.
     public Menu getMenu() {
@@ -178,16 +144,16 @@ public class BTillController {
         return write(new BTMessageBuilder(payment).build());
     }
 
-    public boolean sendOrders(Menu menu) {
-        return write(new BTMessageBuilder(menu).build());
+    public static boolean sendOrders(Menu menu, BluetoothSocket socket) {
+        return write(new BTMessageBuilder(menu).build(), socket);
     }
 
     // TODO remember to change this
     public Protos.PaymentRequest getPaymentRequest(){
         //return getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=0.001&r=http://www.b-till.com");
-        fetchBill();
-        if (mBill != null) {
-            return mBill.getRequest();
+        Bill bill = fetchBill();
+        if (bill != null) {
+            return bill.getRequest();
         }
         else {
             return null;
@@ -195,28 +161,30 @@ public class BTillController {
 
     }
 
-    public void fetchBill(){
+    public Bill fetchBill(){
         BTMessage billMessage = read();
+        Bill bill;
         if (billMessage.getHeader().equals(Status.OK.toString())) {
-            mBill = new Gson().fromJson(billMessage.getBodyString(), Bill.class);
+            bill = new Gson().fromJson(billMessage.getBodyString(), Bill.class);
         }
         else {
-            mBill = null;
+            bill = null;
         }
+        return bill;
     }
 
 
-    public BTMessage read() {
-        ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
+    public BTMessage read(BluetoothSocket socket) {
+        ConnectedThread mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
         return new Gson().fromJson(mConnectedThread.read(), BTMessage.class);
     }
 
-    public Future<BTMessage> readBT() {
+    public Future<BTMessage> readBT(final BluetoothSocket socket) {
         return pool.submit(new Callable<BTMessage>() {
             @Override
             public BTMessage call() throws Exception {
-                ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
+                ConnectedThread mConnectedThread = new ConnectedThread(socket);
                 mConnectedThread.start();
                 Future<String> messageFuture = mConnectedThread.readFuture();
                 return new Gson().fromJson(messageFuture.get(), BTMessage.class);
@@ -224,8 +192,8 @@ public class BTillController {
         });
     }
 
-    public boolean write(BTMessage message) {
-        ConnectedThread mConnectedThread = new ConnectedThread(mBluetoothSocket);
+    public static boolean write(BTMessage message, BluetoothSocket socket) {
+        ConnectedThread mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
         return mConnectedThread.write(message);
     }

@@ -19,16 +19,13 @@ public class WalletKitThread extends Thread {
 
     private WalletAppKit mWalletAppKit;
 
-    private BTillController mBTillController;
-
     private final String filePrefix = "Bitcoin-test";
     private final TestNet3Params mNetParams = TestNet3Params.get();
     private final Context mContext;
     private final File mFile;
 
-    public WalletKitThread(Context context, BTillController bTillController, File file) {
+    public WalletKitThread(Context context, File file) {
         mContext = context;
-        mBTillController = bTillController;
         mFile = file;
     }
 

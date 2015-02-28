@@ -1,45 +1,27 @@
 package com.g1453012.btill.UI.HomeScreenFragments.Order;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.g1453012.btill.BTillController;
-import com.g1453012.btill.Bluetooth.ConnectThread;
+import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
-import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
-import com.g1453012.btill.Shared.MenuItem;
 import com.g1453012.btill.UI.HomeScreenFragments.AppStartup;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.BalanceDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDialogFragment;
-import com.g1453012.btill.UI.OrderDialogAdapter;
-import com.g1453012.btill.UI.UIBuilder;
 
-import org.bitcoin.protocols.payments.Protos;
-import org.bitcoinj.protocols.payments.PaymentProtocolException;
-
-import java.io.IOException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -50,20 +32,29 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     static final int LOADING_DIALOG = 2;
     static final int PAYMENT_REQUEST_DIALOG = 3;
 
+    public PersistentParameters getParams() {
+        return params;
+    }
+
+    public void setParams(PersistentParameters params) {
+        this.params = params;
+    }
+
+    private PersistentParameters params;
     private Menu mMenu;
     private BTillController mBTillController;
     private Activity mParentActivity;
-    private Handler mHandler;
-    private UIBuilder mUIBuilder = new UIBuilder(getActivity());
     private static final String TAG = "OrderFragment";
+
+    public static OrderFragment newInstance(PersistentParameters parameters) {
+        OrderFragment orderFragment = new OrderFragment();
+        orderFragment.setParams(parameters);
+        return orderFragment;
+    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.mParentActivity = activity;
-        AppStartup screen = (AppStartup) mParentActivity;
-        mBTillController = screen.getBTillController();
-        mHandler = new Handler();
         /*Future<Menu> menuFuture = mBTillController.getMenuFuture();
         try {
             mMenu = menuFuture.get();
@@ -128,7 +119,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.balanceButton:
-                DialogFragment balanceDialogFragment = BalanceDialogFragment.newInstance(mBTillController.getWallet());
+                DialogFragment balanceDialogFragment = BalanceDialogFragment.newInstance(params.getWallet());
                 balanceDialogFragment.show(getFragmentManager(), "BALANCE_DIALOG");
                 break;
 
@@ -150,6 +141,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         DialogFragment dialogFragment = LoadingDialogFragment.newInstance(mMenu);
                         dialogFragment.setTargetFragment(this, LOADING_DIALOG);
                         dialogFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
+                        BTillController.sendOrders(mMenu, params.getSocket());
                         break;
                     default:
                         break;
