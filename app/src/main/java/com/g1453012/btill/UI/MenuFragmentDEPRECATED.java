@@ -27,7 +27,7 @@ import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
 <<<<<<< HEAD:app/src/main/java/com/g1453012/btill/UI/MenuFragmentDEPRECATED.java
-import com.g1453012.btill.UI.HomeScreenFragments.AppStartup;
+import com.g1453012.btill.UI.AppStartup;
 =======
 import com.g1453012.btill.Shared.Receipt;
 >>>>>>> Daniel-Middlecote:app/src/main/java/com/g1453012/btill/MenuFragment.java

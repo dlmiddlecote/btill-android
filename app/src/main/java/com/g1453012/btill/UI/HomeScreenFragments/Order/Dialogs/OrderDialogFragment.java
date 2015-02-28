@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -43,6 +44,13 @@ public class OrderDialogFragment extends DialogFragment implements View.OnClickL
 
         ListView mOrderListView = (ListView)mOrderDialog.findViewById(R.id.dialogListView);
         mOrderListView.setAdapter(new OrderDialogAdapter(getActivity(), mMenu));
+
+        Button positiveButton = (Button)mOrderDialog.findViewById(R.id.dialogConfirmButton);
+        Button negativeButton = (Button)mOrderDialog.findViewById(R.id.dialogCancelButton);
+
+        positiveButton.setOnClickListener(this);
+        negativeButton.setOnClickListener(this);
+
 
         TextView mOrderTotal = (TextView)mOrderDialog.findViewById(R.id.dialogAmountText);
         GBP mTotal = new GBP(0);

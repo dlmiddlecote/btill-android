@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.g1453012.btill.BTillController;
@@ -97,7 +100,17 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+
+        Button cancelButton = (Button)getActivity().findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(this);
+        Button balanceButton = (Button)getActivity().findViewById(R.id.balanceButton);
+        balanceButton.setOnClickListener(this);
+        Button nextButton = (Button)getActivity().findViewById(R.id.nextButton);
+        nextButton.setOnClickListener(this);
         Future<Menu> menuFuture = BTillController.getMenuFuture(params.getSocket());
+
+
         try {
             mMenu = menuFuture.get(10, TimeUnit.SECONDS);
         }

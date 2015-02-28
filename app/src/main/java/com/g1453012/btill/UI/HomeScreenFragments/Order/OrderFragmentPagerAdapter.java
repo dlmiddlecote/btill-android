@@ -41,4 +41,8 @@ public class OrderFragmentPagerAdapter extends FragmentStatePagerAdapter {
         return categoryFragments.size();
     }
 
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return categoryFragments.get(position).getItems().get(0).getCategory();
+    }
 }
