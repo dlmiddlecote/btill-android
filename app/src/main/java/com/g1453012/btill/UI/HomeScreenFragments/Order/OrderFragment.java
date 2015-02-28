@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
+import com.ToxicBakery.viewpager.transforms.AccordionTransformer;
 import com.g1453012.btill.BTillController;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
@@ -126,7 +127,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             final OrderFragmentPagerAdapter adapter = new OrderFragmentPagerAdapter(getFragmentManager(), mMenu);
             mOrderFragmentPagerAdapter = adapter;
             pager.setAdapter(adapter);
-            pager.setPageTransformer(true, new CubeOutTransformer());
+            pager.setPageTransformer(true, new AccordionTransformer());
         }
     }
 

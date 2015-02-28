@@ -46,10 +46,6 @@ public class CategoryFragment extends Fragment {
                 }
             }
         });
-
-        TextView textView = (TextView) rootView.findViewById(R.id.categoryTitle);
-        //Just pull the category from the first item as they are all the same
-        textView.setText(mItems.get(0).getCategory());
         return rootView;
     }
 
