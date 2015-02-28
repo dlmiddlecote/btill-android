@@ -14,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
-import com.ToxicBakery.viewpager.transforms.AccordionTransformer;
 import com.g1453012.btill.BTillController;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
@@ -64,32 +62,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        /*Future<Menu> menuFuture = mBTillController.getMenuFuture();
-        try {
-            mMenu = menuFuture.get();
-            mMenu.sortCategories();
-        } catch (InterruptedException e) {
-            Log.e(TAG, "Getting the Menu was interrupted");
-        } catch (ExecutionException e) {
-            Log.e(TAG, "Getting the Menu had an Execution Exception");
-        }
-        Log.d(TAG, "Gets Menu");
-        try {
-            mBTillController.getBluetoothSocket().close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        /*
-        mMenu = new Menu();
-        mMenu.add(new MenuItem("Burrito", new GBP(600), "Mains"));
-        mMenu.add(new MenuItem("Nachos", new GBP(500), "Mains"));
-        mMenu.add(new MenuItem("Quesadilla", new GBP(400), "Mains"));
-        mMenu.add(new MenuItem("Tacos", new GBP(600), "Mains"));
-        mMenu.add(new MenuItem("Guacamole", new GBP(200), "Sides"));
-        mMenu.add(new MenuItem("Spicy Rice", new GBP(300), "Sides"));
-        mMenu.add(new MenuItem("Horchata", new GBP(350), "Drinks"));
-        mMenu.add(new MenuItem("Mojito", new GBP(700), "Drinks"));
-        mMenu.sortCategories();*/
     }
 
     @Override
@@ -127,7 +99,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             final OrderFragmentPagerAdapter adapter = new OrderFragmentPagerAdapter(getFragmentManager(), mMenu);
             mOrderFragmentPagerAdapter = adapter;
             pager.setAdapter(adapter);
-            pager.setPageTransformer(true, new AccordionTransformer());
         }
     }
 
