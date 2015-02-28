@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +16,7 @@ import com.g1453012.btill.R;
 
 import org.bitcoinj.core.Wallet;
 
-public class BalanceDialogFragment extends DialogFragment implements View.OnClickListener{
+public class BalanceDialogFragment extends DialogFragment{
 
     public Wallet getWallet() {
         return mWallet;
@@ -50,16 +51,16 @@ public class BalanceDialogFragment extends DialogFragment implements View.OnClic
 
         TextView mBalanceAddress = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogAddress);
         mBalanceAddress.setText(mWallet.currentReceiveAddress().toString());
+
+        Button dimissButton = (Button)mBalanceDialog.findViewById(R.id.balanceDialogButton);
+        dimissButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
         return mBalanceDialog;
 
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.balanceDialogButton:
-                dismiss();
-                break;
-        }
     }
 }
