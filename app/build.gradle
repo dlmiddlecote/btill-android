@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 19
     buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "com.g1453012.btill"
         minSdkVersion 19
-        targetSdkVersion 21
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -21,25 +21,14 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
-
-    compile ('org.bitcoinj:bitcoinj-core:0.12.2') {
+    compile 'com.android.support:appcompat-v7:19.+'
+    compile('org.bitcoinj:bitcoinj-core:0.12.2') {
         exclude module: 'scrypt'
     }
     compile 'com.google.code.gson:gson:1.7.2'
-
     compile 'org.apache.commons:commons-lang3:3.3.2'
-
     compile 'org.altbeacon:android-beacon-library:2+@aar'
     compile 'com.google.zxing:core:3.2.0'
-
-
-
-
-
-
-
-
-
+    compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.1.0@aar'
 }
 

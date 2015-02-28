@@ -8,9 +8,25 @@ import java.util.Iterator;
 
 public class Menu implements Iterable<MenuItem> {
     private ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+    private ArrayList<String> categories = new ArrayList<String>();
+
+    public ArrayList<String> getCategories() {
+        return categories;
+    }
 
     public Menu(ArrayList<MenuItem> items) {
         this.items = items;
+        for (MenuItem item: items) {
+            if (!categories.contains(item.getCategory()))
+                categories.add(item.getCategory());
+        }
+    }
+
+    public void sortCategories() {
+        for (MenuItem item: items) {
+            if (!categories.contains(item.getCategory()))
+                categories.add(item.getCategory());
+        }
     }
 
     public Menu(){}
@@ -53,4 +69,14 @@ public class Menu implements Iterable<MenuItem> {
             item.setQuantity(0);
         }
     }*/
+
+    public ArrayList<MenuItem> getCategoryItems(int position) {
+        ArrayList<MenuItem> sortedItems = new ArrayList<MenuItem>();
+        String category = categories.get(position);
+        for (MenuItem item: items) {
+            if (item.getCategory().equals(category))
+                sortedItems.add(item);
+        }
+        return sortedItems;
+    }
 }

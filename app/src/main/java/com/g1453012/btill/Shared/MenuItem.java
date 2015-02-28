@@ -7,6 +7,15 @@ public class MenuItem {
     private final String name;
     private final GBP price;
     private int quantity = 0;
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public String getName() {
         return name;
@@ -24,9 +33,10 @@ public class MenuItem {
         this.quantity = quantity;
     }
 
-    public MenuItem(String name, GBP price) {
+    public MenuItem(String name, GBP price, String category) {
         this.name = name;
         this.price = price;
+        this.category = category;
     }
 
     @Override public String toString() {

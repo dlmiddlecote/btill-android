@@ -12,8 +12,7 @@
         android:id="@+id/serverNotFoundTitle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        style="@style/Base.TextAppearance.AppCompat.Headline"/>
+        android:layout_marginTop="20dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,8 +22,7 @@
         android:id="@+id/serverNotFoundBalanceTitle"
         android:layout_below="@+id/serverNotFoundTitle"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        style="@style/Base.TextAppearance.AppCompat.Large"/>
+        android:layout_marginTop="40dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,8 +42,7 @@
         android:id="@+id/serverNotFoundTopUpTitle"
         android:layout_below="@+id/serverNotFoundBalanceAmount"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        style="@style/Base.TextAppearance.AppCompat.Large"/>
+        android:layout_marginTop="25dp"/>
 
     <ImageView
         android:layout_width="wrap_content"

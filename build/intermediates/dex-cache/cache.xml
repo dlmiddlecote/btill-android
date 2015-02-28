@@ -2,116 +2,109 @@
 <items version="2" >
 
     <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.2.0/e019d15a13a9786f881141d2df6654b8510bce8b/core-3.2.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="e019d15a13a9786f881141d2df6654b8510bce8b">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/core-3.2.0-7e70eba49081506f8a560818e6fbf60539314591.jar" />
-    </item>
-    <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/1.7.2/112366d8158749e25532ebce162232c6e0fb20a5/gson-1.7.2.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="112366d8158749e25532ebce162232c6e0fb20a5">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/gson-1.7.2-7a6230e4553ca4baa43f5dbd3720c83d20acc800.jar" />
-    </item>
-    <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/16.0.1/5fa98cd1a63c99a44dd8d3b77e4762b066a5d0c5/guava-16.0.1.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="5fa98cd1a63c99a44dd8d3b77e4762b066a5d0c5">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/guava-16.0.1-6b28da5ab9764e49381f784304d68305ff048e00.jar" />
-    </item>
-    <item
-        jar="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-b6aeea508fecc93c93ad2647d707635add77e87b.jar" />
-    </item>
-    <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.3.2/90a3822c38ec8c996e84c16a3477ef632cbc87a3/commons-lang3-3.3.2.jar"
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-lang3\3.3.2\90a3822c38ec8c996e84c16a3477ef632cbc87a3\commons-lang3-3.3.2.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="90a3822c38ec8c996e84c16a3477ef632cbc87a3">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/commons-lang3-3.3.2-2834096bbf5f5d1c342b47f0ce4faae17c7ea378.jar" />
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\commons-lang3-3.3.2-417511a978d42548b67ac4c11de77e0677b461ef.jar" />
     </item>
     <item
-        jar="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
+        jar="C:\Users\Andy\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/classes-83d508ec47dd7d527b605e22f8ee7c0ebb7c2209.jar" />
+        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-a1871028811456ae39f53fb1f638302252b6f498.jar" />
     </item>
     <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/net.jcip/jcip-annotations/1.0/afba4942caaeaf46aab0b976afd57cc7c181467e/jcip-annotations-1.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="afba4942caaeaf46aab0b976afd57cc7c181467e">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/jcip-annotations-1.0-9a099866cb34f090ad9035084e1c394db12908f9.jar" />
-    </item>
-    <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/org.bitcoinj/orchid/1.0/bd98285f39f88875bb91bde940d6ca2d020edaa4/orchid-1.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="bd98285f39f88875bb91bde940d6ca2d020edaa4">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/orchid-1.0-2f64754e2ec36931122ad69aec4b11d22464c9da.jar" />
-    </item>
-    <item
-        jar="/Volumes/Nifty/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-ac270add93167a0439891f8cf872d6c7a73866d8.jar" />
-    </item>
-    <item
-        jar="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/exploded-aar/org.altbeacon/android-beacon-library/2.1.3/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="54ff0c82277895632a46392a3663e73645ac2b0d">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/classes-628170c55da2c1c0644ea33203e307a37b2f0825.jar" />
-    </item>
-    <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/2.5.0/a10732c76bfacdbd633a7eb0f7968b1059a65dfa/protobuf-java-2.5.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="a10732c76bfacdbd633a7eb0f7968b1059a65dfa">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/protobuf-java-2.5.0-2cec38ea0372243244e8fc68bd859eb301c13878.jar" />
-    </item>
-    <item
-        jar="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/classes-9adad30fafce78c63a593af596016353b68e58ca.jar" />
-    </item>
-    <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.6/562424e36df3d2327e8e9301a76027fca17d54ea/slf4j-api-1.7.6.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="562424e36df3d2327e8e9301a76027fca17d54ea">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/slf4j-api-1.7.6-4ab858c4e91d2b3ab3d8e5ce972c3480cc4afd0c.jar" />
-    </item>
-    <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/org.bitcoinj/bitcoinj-core/0.12.2/41341486b50efe648571ee39dc500a81b8ccc0e5/bitcoinj-core-0.12.2.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="41341486b50efe648571ee39dc500a81b8ccc0e5">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/bitcoinj-core-0.12.2-7e4fb23cb575b448204f77c114e0a2b444d9cc22.jar" />
-    </item>
-    <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/2.0.1/516c03b21d50a644d538de0f0369c620989cd8f0/jsr305-2.0.1.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="516c03b21d50a644d538de0f0369c620989cd8f0">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/jsr305-2.0.1-c1ad30114fbd54297ec8c038b742e86a2603b531.jar" />
-    </item>
-    <item
-        jar="/Users/dlmiddlecote/.gradle/caches/modules-2/files-2.1/com.madgag.spongycastle/core/1.51.0.0/f642963312ea0e615ad65f28adc5a5b3a2a0862/core-1.51.0.0.jar"
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\com.madgag.spongycastle\core\1.51.0.0\f642963312ea0e615ad65f28adc5a5b3a2a0862\core-1.51.0.0.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="0f642963312ea0e615ad65f28adc5a5b3a2a0862">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/core-1.51.0.0-29f99b4a02c0a5b20e141cffb309a68969861580.jar" />
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\core-1.51.0.0-3fd488a5639101e131dbbe6c9e387a5e8df19c44.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\com.google.zxing\core\3.2.0\e019d15a13a9786f881141d2df6654b8510bce8b\core-3.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e019d15a13a9786f881141d2df6654b8510bce8b">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\core-3.2.0-ab3e3ee728f87a69441c125fb8dfc4297fc5e5c6.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\com.google.code.findbugs\jsr305\2.0.1\516c03b21d50a644d538de0f0369c620989cd8f0\jsr305-2.0.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="516c03b21d50a644d538de0f0369c620989cd8f0">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\jsr305-2.0.1-2b4a3c2779f007743362c6ac77d45fa0dd679d33.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\1.7.2\112366d8158749e25532ebce162232c6e0fb20a5\gson-1.7.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="112366d8158749e25532ebce162232c6e0fb20a5">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\gson-1.7.2-551a5637930dece23523b2a1cfc3c1e4837e8e05.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\exploded-aar\com.ToxicBakery.viewpager.transforms\view-pager-transforms\1.1.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1d48c363ce7c087386d2cb6ecf8342fa399d2757">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\classes-f7fb8fa2f061a4f4b025c49dd94bbbb7d26fc761.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\com.google.guava\guava\16.0.1\5fa98cd1a63c99a44dd8d3b77e4762b066a5d0c5\guava-16.0.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5fa98cd1a63c99a44dd8d3b77e4762b066a5d0c5">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\guava-16.0.1-5d41b2849ce5fe21252c71cd31d11d296c7de1af.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\org.bitcoinj\orchid\1.0\bd98285f39f88875bb91bde940d6ca2d020edaa4\orchid-1.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="bd98285f39f88875bb91bde940d6ca2d020edaa4">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\orchid-1.0-d8e4b09dbab30db501794bfb5e3731b5df4b3e5c.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\org.slf4j\slf4j-api\1.7.6\562424e36df3d2327e8e9301a76027fca17d54ea\slf4j-api-1.7.6.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="562424e36df3d2327e8e9301a76027fca17d54ea">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\slf4j-api-1.7.6-b00489bb26cd88b17484e809a4b9c91c1308214b.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\org.bitcoinj\bitcoinj-core\0.12.2\41341486b50efe648571ee39dc500a81b8ccc0e5\bitcoinj-core-0.12.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="41341486b50efe648571ee39dc500a81b8ccc0e5">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\bitcoinj-core-0.12.2-eec08310c3128d4b65793bceb0b51649c1a62e3d.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\exploded-aar\org.altbeacon\android-beacon-library\2.1.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="54ff0c82277895632a46392a3663e73645ac2b0d">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\classes-9da451ffa7f3cd67e224b8728d0048b7f1982139.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\net.jcip\jcip-annotations\1.0\afba4942caaeaf46aab0b976afd57cc7c181467e\jcip-annotations-1.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="afba4942caaeaf46aab0b976afd57cc7c181467e">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\jcip-annotations-1.0-7f1f5c97d323f758b0bc80bfdf47f36900bffd8a.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\com.google.protobuf\protobuf-java\2.5.0\a10732c76bfacdbd633a7eb0f7968b1059a65dfa\protobuf-java-2.5.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a10732c76bfacdbd633a7eb0f7968b1059a65dfa">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\protobuf-java-2.5.0-0188b3e4c6f566d4fa3b519be39fb2966d31aed1.jar" />
+    </item>
+    <item
+        jar="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28">
+        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\classes-64bb4d486f29e0ac1548667b5e2d49d6245a233f.jar" />
     </item>
 
 </items>
