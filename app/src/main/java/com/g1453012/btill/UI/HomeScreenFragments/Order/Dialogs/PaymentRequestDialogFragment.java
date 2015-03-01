@@ -22,7 +22,7 @@ import org.bitcoinj.protocols.payments.PaymentSession;
 /**
  * Created by Andy on 28/02/2015.
  */
-public class PaymentRequestDialogFragment extends DialogFragment implements View.OnClickListener{
+public class PaymentRequestDialogFragment extends DialogFragment implements View.OnClickListener {
 
     private static final String TAG = "PaymentDialogFragment";
 
