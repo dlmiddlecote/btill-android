@@ -79,6 +79,7 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
 
     @Override
     public void onClick(View v) {
+
         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
         dismiss();
     }
