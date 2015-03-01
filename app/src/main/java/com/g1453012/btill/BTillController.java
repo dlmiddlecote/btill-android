@@ -236,8 +236,13 @@ public class BTillController {
         } catch (ExecutionException e) {
             Log.e(TAG, "Getting the BTMessage had an Execution Exception");
         }
-
+        try {
+            socket.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Couldn't close socket");
+        }
         if (billMessage.getHeader().equals(Status.OK.toString())) {
+
             return new Gson().fromJson(billMessage.getBodyString(), NewBill.class);
         }
         else {

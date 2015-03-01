@@ -98,4 +98,10 @@ public class Menu implements Iterable<MenuItem> {
 
         return retMenu;
     }
+
+    public void resetQuantities() {
+        for (MenuItem item: items) {
+            item.setQuantity(0);
+        }
+    }
 }

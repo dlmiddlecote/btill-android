@@ -9,6 +9,7 @@ public class PersistentParameters {
 
     private Wallet mWallet;
     private BluetoothSocket mSocket;
+    private Protos.PaymentRequest mRequest;
 
     public Wallet getWallet() {
         return mWallet;
@@ -24,5 +25,17 @@ public class PersistentParameters {
 
     public void setSocket(BluetoothSocket mSocket) {
         this.mSocket = mSocket;
+    }
+
+    public Protos.PaymentRequest getRequest() {
+        return mRequest;
+    }
+
+    public void setRequest(Protos.PaymentRequest request) {
+        mRequest = request;
+    }
+
+    public void resetRequest() {
+        mRequest = null;
     }
 }

@@ -16,7 +16,7 @@ public class LoadingDialogFragment extends DialogFragment{
 
     private static final String TAG = "LoadingDialog";
 
-    public Menu getMenu() {
+    /*public Menu getMenu() {
         return mMenu;
     }
 
@@ -24,11 +24,11 @@ public class LoadingDialogFragment extends DialogFragment{
         this.mMenu = mMenu;
     }
 
-    private Menu mMenu;
+    private Menu mMenu;*/
 
-    public static LoadingDialogFragment newInstance(Menu menu) {
+    public static LoadingDialogFragment newInstance() {
         LoadingDialogFragment loadingDialogFragment = new LoadingDialogFragment();
-        loadingDialogFragment.setMenu(menu);
+        //loadingDialogFragment.setMenu(menu);
         return loadingDialogFragment;
     }
 

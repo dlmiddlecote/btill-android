@@ -21,13 +21,16 @@ import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
 import com.g1453012.btill.Shared.NewBill;
+import com.g1453012.btill.Shared.Receipt;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.BalanceDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDialogFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.ReceiptDialogFragment;
 
 import org.bitcoin.protocols.payments.Protos;
+import org.bitcoinj.protocols.payments.PaymentProtocolException;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -42,6 +45,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     static final int ORDER_DIALOG = 1;
     static final int PAYMENT_REQUEST_DIALOG = 2;
+    static final int RECEIPT_DIALOG = 3;
 
     public PersistentParameters getParams() {
         return params;
@@ -152,6 +156,11 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         //Would be really cool to have the loading dialog take a Future<Obj> and return when the object is not null
                         //This would allow reuse of the loading dialog
                         //Show success/failure
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        orders = Menu.removeNonZero(orders);
+
+                        loadingDialogForSendingPayment(params.getRequest(), orders).start();
+
                         break;
                     default:
                         Log.d(TAG, "CANCELLED");
@@ -159,9 +168,32 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         break;
                 }
                 break;
-            default:
-                break;
+            case RECEIPT_DIALOG:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                       resetMenu();
+                    default:
+                        break;
+                }
         }
+    }
+
+    private void resetMenu() {
+        mMenu.resetQuantities();
+        mMenu.sortCategories();
+        final ViewPager pager = (ViewPager)getActivity().findViewById(R.id.categoryPager);
+        final OrderFragmentPagerAdapter adapter = new OrderFragmentPagerAdapter(getFragmentManager(), mMenu);
+        mOrderFragmentPagerAdapter = adapter;
+        pager.setAdapter(adapter);
+    }
+
+    private Thread loadingDialogForResettingOrders() {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
     }
 
     private Thread loadingDialogForSendingOrder(final Menu orders) {
@@ -172,7 +204,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
                 //Creates new loading dialog
                 //TODO this shouldn't need a menu it is just loading
-                DialogFragment loadingFragment = LoadingDialogFragment.newInstance(orders);
+                DialogFragment loadingFragment = LoadingDialogFragment.newInstance();
                 loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
 
                 ConnectThread mConnectThread = new ConnectThread(BluetoothAdapter.getDefaultAdapter());
@@ -181,10 +213,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                     if (connectFuture.get()) {
                         params.setSocket(mConnectThread.getSocket());
                         Future<NewBill> requestFuture = BTillController.processOrders(orders, params.getSocket());
-                        Protos.PaymentRequest request = null;
+                        //Protos.PaymentRequest request = null;
                         try {
                             //Blocks here until the request is returned
-                            request = requestFuture.get().getRequest();
+                            params.setRequest(requestFuture.get().getRequest());
                             Log.d(TAG, "Retrieved request");
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Getting the Request was interrupted");
@@ -194,7 +226,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         //this only executes once the request has been retrieved or errored
 
                         loadingFragment.dismiss();
-                        final Protos.PaymentRequest finalRequest = request;
+                        final Protos.PaymentRequest finalRequest = params.getRequest();
                         final Menu finalOrders = orders;
 
                         mHandler.post(new Runnable() {
@@ -205,9 +237,63 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                                 DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(finalRequest, finalOrders);
                                 paymentFragment.setTargetFragment(mainFragment, PAYMENT_REQUEST_DIALOG);
                                 paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");
+
                             }
                         });
 
+                    }
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Getting the Connection was interrupted");
+                } catch (ExecutionException e) {
+                    Log.e(TAG, "Getting the Connection had an Execution Exception");
+                }
+            }
+        });
+    }
+
+    private Thread loadingDialogForSendingPayment(final Protos.PaymentRequest request, final Menu menu) {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //Creates new loading dialog
+                //TODO this shouldn't need a menu it is just loading
+                DialogFragment loadingFragment = LoadingDialogFragment.newInstance();
+                loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
+
+                Protos.Payment payment = null;
+                try {
+                    payment = BTillController.transactionSigner(request, params.getWallet());
+                } catch (PaymentProtocolException e) {
+                    Log.e(TAG, "Error Signing Payment");
+                }
+
+                ConnectThread mConnectThread = new ConnectThread(BluetoothAdapter.getDefaultAdapter());
+                Future<Boolean> connectFuture = mConnectThread.runFuture();
+                try {
+                    if (connectFuture.get()) {
+                        params.setSocket(mConnectThread.getSocket());
+                        Future<Receipt> receiptFuture = BTillController.processPayment(payment, params.getSocket());
+                        Receipt receipt = null;
+                        try {
+                            receipt = receiptFuture.get();
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Getting the Receipt was interrupted");
+                        } catch (ExecutionException e) {
+                            Log.e(TAG, "Getting the Receipt had an Execution Exception");
+                        }
+
+                        loadingFragment.dismiss();
+
+                        final Receipt finalReceipt = receipt;
+                        final Menu finalMenu = menu;
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(finalReceipt, finalMenu);
+                                receiptFragment.setTargetFragment(mainFragment, RECEIPT_DIALOG);
+                                receiptFragment.show(getFragmentManager().beginTransaction(), "RECEIPT_DIALOG");
+                            }
+                        });
                     }
                 } catch (InterruptedException e) {
                     Log.e(TAG, "Getting the Connection was interrupted");
@@ -229,57 +315,4 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         menu.sortCategories();
         return menu;
     }
-
-
-
-    // TODO -- this!
-    /*
-    private void launchPaymentRequestDialog(final Protos.PaymentRequest request) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setTitle("Test Payment").setMessage("This is a Test Payment")
-                .setPositiveButton("Sign", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Protos.Payment payment = null;
-                        try {
-                            payment = mBTillController.transactionSigner(request);
-                            Log.d(TAG, "Transaction Signed");
-                        } catch (PaymentProtocolException e) {
-                            //TODO error
-                        }
-
-
-                        if (mBTillController.sendPayment(payment)) {
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-
-                            builder1.setTitle("Success!").setMessage("Payment Successful");
-
-                            builder1.create().show();
-                        } else {
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-
-                            builder1.setTitle("Uh Oh!").setMessage("Payment Unsuccessful");
-
-                            builder1.create().show();
-                        }
-
-                        //mBTillController.getMenu().resetQuantities();
-
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-        Log.d(TAG, "Payment shown");
-    }
-    */
 }

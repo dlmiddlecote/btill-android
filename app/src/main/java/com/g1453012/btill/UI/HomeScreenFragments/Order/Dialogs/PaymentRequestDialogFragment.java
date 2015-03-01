@@ -95,6 +95,8 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
         Button mCancelButton = (Button) mPaymentDialog.findViewById(R.id.paymentDialogCancelButton);
         mCancelButton.setOnClickListener(this);
 
+        mPaymentDialog.setCanceledOnTouchOutside(false);
+
         return mPaymentDialog;
 
     }
