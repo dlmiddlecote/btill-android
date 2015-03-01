@@ -3,6 +3,7 @@ package com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.Window;
@@ -17,6 +18,10 @@ import com.g1453012.btill.Shared.MenuItem;
 import com.g1453012.btill.UI.OrderDialogAdapter;
 
 public class OrderDialogFragment extends DialogFragment implements View.OnClickListener{
+
+    private static final String TAG = "OrderDialogFragment";
+
+    private static Handler mHandler = new Handler();
 
     public Menu getMenu() {
         return mMenu;
@@ -68,7 +73,7 @@ public class OrderDialogFragment extends DialogFragment implements View.OnClickL
         switch (v.getId()) {
             case R.id.dialogConfirmButton:
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
-                getDialog().dismiss();
+                dismiss();
                 break;
             case R.id.dialogCancelButton:
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());

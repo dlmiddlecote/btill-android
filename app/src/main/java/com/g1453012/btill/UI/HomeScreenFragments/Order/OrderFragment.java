@@ -37,6 +37,9 @@ import java.util.concurrent.TimeoutException;
 
 public class OrderFragment extends Fragment implements View.OnClickListener {
 
+    private static final String TAG = "OrderFragment";
+    private static Handler mHandler = new Handler();
+
     static final int ORDER_DIALOG = 1;
     static final int PAYMENT_REQUEST_DIALOG = 2;
 
@@ -52,9 +55,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     private Menu mMenu;
     private OrderFragmentPagerAdapter mOrderFragmentPagerAdapter;
     private Activity mParentActivity;
+    private Fragment mainFragment = this;
 
-    Handler mHandler = new Handler();
-    private static final String TAG = "OrderFragment";
+
+
 
     public static OrderFragment newInstance(PersistentParameters parameters) {
         OrderFragment orderFragment = new OrderFragment();
@@ -119,7 +123,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
             case R.id.nextButton:
                 DialogFragment orderDialogFragment = OrderDialogFragment.newInstance(mMenu);
-                orderDialogFragment.setTargetFragment(this, ORDER_DIALOG);
+                orderDialogFragment.setTargetFragment(mainFragment, ORDER_DIALOG);
                 orderDialogFragment.show(getFragmentManager().beginTransaction(), "ORDER_DIALOG");
                 break;
         }
@@ -132,25 +136,15 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             case ORDER_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-
-                        loadingDialogForSendingOrder().start();
+                        //Pulls orders out of the adapter and sorts out non zero
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        orders = Menu.removeNonZero(orders);
+                        loadingDialogForSendingOrder(orders).start();
                         break;
                     default:
                         break;
                 }
                 break;
-            /*case LOADING_DIALOG:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        DialogFragment dialogFragment = PaymentRequestDialogFragment.newInstance(mBTillController.getPaymentRequest());
-                        dialogFragment.setTargetFragment(this, PAYMENT_REQUEST_DIALOG);
-                        dialogFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");
-                        break;
-                    default:
-                        //Inform that sending order failed
-                        break;
-                }
-                break;*/
             case PAYMENT_REQUEST_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
@@ -160,6 +154,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         //Show success/failure
                         break;
                     default:
+                        Log.d(TAG, "CANCELLED");
                         //Cancel transaction
                         break;
                 }
@@ -169,14 +164,12 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private Thread loadingDialogForSendingOrder() {
+    private Thread loadingDialogForSendingOrder(final Menu orders) {
 
         return new Thread(new Runnable() {
             @Override
             public void run() {
-                //Pulls orders out of the adapter and sorts out non zero
-                Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
-                orders = Menu.removeNonZero(orders);
+
                 //Creates new loading dialog
                 //TODO this shouldn't need a menu it is just loading
                 DialogFragment loadingFragment = LoadingDialogFragment.newInstance(orders);
@@ -202,12 +195,15 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
                         loadingFragment.dismiss();
                         final Protos.PaymentRequest finalRequest = request;
+                        final Menu finalOrders = orders;
+
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
+
                                 //Launches a paymentconfirmation with the new Request
-                                DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(finalRequest);
-                                paymentFragment.setTargetFragment(getParentFragment(), PAYMENT_REQUEST_DIALOG);
+                                DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(finalRequest, finalOrders);
+                                paymentFragment.setTargetFragment(mainFragment, PAYMENT_REQUEST_DIALOG);
                                 paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");
                             }
                         });

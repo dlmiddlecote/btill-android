@@ -36,7 +36,7 @@ public class BTillController {
 
     private static final String TAG = "BTillController";
 
-    private static ExecutorService pool = Executors.newFixedThreadPool(10);
+    public static ExecutorService pool = Executors.newFixedThreadPool(10);
 
 
     // TODO Update get Menu to pull menu from Till.
