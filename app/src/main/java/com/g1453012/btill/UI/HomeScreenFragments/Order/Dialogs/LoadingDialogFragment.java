@@ -46,9 +46,10 @@ public class LoadingDialogFragment extends DialogFragment{
         return mLoadingDialog;
     }
 
-    @Override
+    /*@Override
     public void onStart() {
-        /*new Thread(new Runnable() {
+        super.onStart();
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -74,8 +75,8 @@ public class LoadingDialogFragment extends DialogFragment{
                 }
 
             }
-        }).start();*/
-    }
+        }).start();
+    }*/
 
     //TODO Not sure about this class - needs to return when connectionFuture.get(). Hopefully using the onStart method to start the thread will work
 

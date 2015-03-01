@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerTabStrip;
-import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.g1453012.btill.BTillController;
+import com.g1453012.btill.Bluetooth.ConnectThread;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.Menu;
@@ -24,7 +23,6 @@ import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.BalanceDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
-import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDialogFragment;
 
 import org.bitcoin.protocols.payments.Protos;
 
@@ -136,6 +134,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         //TODO this shouldn't need a menu it is just loading
                         DialogFragment loadingFragment = LoadingDialogFragment.newInstance(orders);
                         loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
+
+                        ConnectThread mConnectThread = new ConnectThread();
+
                         Future<NewBill> requestFuture = BTillController.processOrders(orders, params.getSocket());
                         Protos.PaymentRequest request = null;
                         try {
@@ -149,11 +150,11 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         }
                         //this only executes once the request has been retrieved or errored
 
-                        loadingFragment.dismiss();
+                        loadingFragment.dismiss();/*
                         //Launches a paymentconfirmation with the new Request
                         DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(request);
                         paymentFragment.setTargetFragment(this, PAYMENT_REQUEST_DIALOG);
-                        paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");
+                        paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");*/
 
                         break;
                     default:

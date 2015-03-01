@@ -85,7 +85,7 @@ public class ConnectedThread extends Thread {
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int bytes = 0;
 
-                try {
+                /*try {
                     bytes = mInStream.read(buffer);
                 } catch (IOException e) {
                     Log.e(TAG, "Error reading from inputstream");
@@ -103,7 +103,21 @@ public class ConnectedThread extends Thread {
                     } catch (IOException e) {
                         Log.e(TAG, "Error reading from inputstream");
                     }
+                }*/
+
+                boolean read = true;
+                int bytesTotal = 0;
+                String message = new String();
+                while (read) {
+                    bytes = mInStream.read(buffer);
+                    bytesTotal += bytes;
+                    message += new String(buffer, 0, bytes);
+                    if (bytes != 990) {
+                        read = false;
+                    }
                 }
+
+
                 Log.d(TAG, "Read " + bytesTotal + " bytes: " + message);
                 return message;
             }
@@ -150,7 +164,7 @@ public class ConnectedThread extends Thread {
                 int lengthLeft = message.getBytes().length;
                 Log.i("WRITTEN", "Length: " + lengthLeft);
                 try {
-                    mOutStream.write(readCount.toString().getBytes());
+                    //mOutStream.write(readCount.toString().getBytes());
                     Log.i("WRITTEN", "Written: " + readCount.toString());
                     mOutStream.flush();
                     sleep(200);
