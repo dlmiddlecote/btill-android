@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.g1453012.btill.Shared.BTMessage;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -81,21 +80,45 @@ public class ConnectedThread extends Thread {
             @Override
             public String call() throws Exception {
                 Log.d(TAG, "Inside Connected Run Future");
+                // Set up a byte buffer
+                final int BUFFER_SIZE = 1024;
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int bytes = 0;
 
-                byte[] buffer = new byte[990];
-                int bytesRead = 990;
+                /*try {
+                    bytes = mInStream.read(buffer);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error reading from inputstream");
+                }
+                String readCountMessage = new String(buffer, 0, bytes);
+                Integer readCount = Integer.parseInt(readCountMessage);
                 String message = new String();
-
-                while (bytesRead==990) {
+                bytes = 0;
+                int bytesTotal = 0;
+                for (int i = 0; i < readCount.intValue(); i++) {
                     try {
-                        bytesRead = mInStream.read(buffer);
-                        message += new String(buffer, 0, bytesRead);
-                    }
-                    catch (IOException ex) {
+                        bytes = mInStream.read(buffer);
+                        bytesTotal += bytes;
+                        message += new String(buffer, 0, bytes);
+                    } catch (IOException e) {
                         Log.e(TAG, "Error reading from inputstream");
                     }
+                }*/
+
+                boolean read = true;
+                int bytesTotal = 0;
+                String message = new String();
+                while (read) {
+                    bytes = mInStream.read(buffer);
+                    bytesTotal += bytes;
+                    message += new String(buffer, 0, bytes);
+                    if (bytes != 990) {
+                        read = false;
+                    }
                 }
-                Log.d(TAG, "Received: " + message);
+
+
+                Log.d(TAG, "Read " + bytesTotal + " bytes: " + message);
                 return message;
             }
         });
@@ -136,22 +159,35 @@ public class ConnectedThread extends Thread {
         return pool.submit(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
+                int start = 0;
+                Integer readCount = (message.getBytes().length / 990) + 1;
+                int lengthLeft = message.getBytes().length;
+                Log.i("WRITTEN", "Length: " + lengthLeft);
                 try {
-                    byte[] messageBytes = message.getBytes();
-                    int remaining = messageBytes.length;
-
-                    for (int i = 0; i <= messageBytes.length / 990; i++) {
-                        Log.d(TAG, "Writing " + Math.min(990, remaining) + " bytes");
-                        mOutStream.write(messageBytes, i * 990, Math.min(990, remaining));
+                    //mOutStream.write(readCount.toString().getBytes());
+                    Log.i("WRITTEN", "Written: " + readCount.toString());
+                    mOutStream.flush();
+                    sleep(200);
+                    for (int i = 0; i < readCount.intValue(); i++) {
+                        if (lengthLeft < 990) {
+                            mOutStream.write(message.getBytes(), start, lengthLeft);
+                            Log.i("WRITTEN", "Written: " + new String(message.getBytes(), start, lengthLeft));
+                            Log.d(TAG, "Wrote to server");
+                            return Boolean.TRUE;
+                        }
+                        else {
+                            mOutStream.write(message.getBytes(), start, 990);
+                            Log.i("WRITTEN", "Written: " + new String(message.getBytes(), start, 990));
+                        }
                         mOutStream.flush();
-                        remaining -= 990;
+                        start += 990;
+                        lengthLeft -= 990;
                     }
-                    return Boolean.TRUE;
-
                 } catch (IOException e) {
                     Log.e(TAG, "Couldn't write inside Future");
                     return Boolean.FALSE;
                 }
+                return Boolean.FALSE;
             }
         });
     }
