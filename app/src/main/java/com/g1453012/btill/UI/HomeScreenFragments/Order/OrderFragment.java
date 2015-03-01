@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -24,6 +25,7 @@ import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.BalanceDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDialogFragment;
 
 import org.bitcoin.protocols.payments.Protos;
 
@@ -50,6 +52,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     private Menu mMenu;
     private OrderFragmentPagerAdapter mOrderFragmentPagerAdapter;
     private Activity mParentActivity;
+
+    Handler mHandler = new Handler();
     private static final String TAG = "OrderFragment";
 
     public static OrderFragment newInstance(PersistentParameters parameters) {
@@ -128,41 +132,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             case ORDER_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        //Pulls orders out of the adapter and sorts out non zero
-                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
-                        orders = Menu.removeNonZero(orders);
-                        //Creates new loading dialog
-                        //TODO this shouldn't need a menu it is just loading
-                        DialogFragment loadingFragment = LoadingDialogFragment.newInstance(orders);
-                        loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
 
-                        ConnectThread mConnectThread = new ConnectThread(BluetoothAdapter.getDefaultAdapter());
-                        Future<Boolean> connectFuture = mConnectThread.runFuture();
-                        if (connectFuture.get()) {
-                            params.setSocket(mConnectThread.getSocket());
-
-                        }
-
-
-                        Future<NewBill> requestFuture = BTillController.processOrders(orders, params.getSocket());
-                        Protos.PaymentRequest request = null;
-                        try {
-                            //Blocks here until the request is returned
-                            request = requestFuture.get().getRequest();
-                            Log.d(TAG, "Retrieved request");
-                        } catch (InterruptedException e) {
-                            Log.e(TAG, "Getting the Request was interrupted");
-                        } catch (ExecutionException e) {
-                            Log.e(TAG, "Getting the Request had an Execution Exception");
-                        }
-                        //this only executes once the request has been retrieved or errored
-
-                        loadingFragment.dismiss();/*
-                        //Launches a paymentconfirmation with the new Request
-                        DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(request);
-                        paymentFragment.setTargetFragment(this, PAYMENT_REQUEST_DIALOG);
-                        paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");*/
-
+                        loadingDialogForSendingOrder().start();
                         break;
                     default:
                         break;
@@ -196,6 +167,59 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    private Thread loadingDialogForSendingOrder() {
+
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //Pulls orders out of the adapter and sorts out non zero
+                Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                orders = Menu.removeNonZero(orders);
+                //Creates new loading dialog
+                //TODO this shouldn't need a menu it is just loading
+                DialogFragment loadingFragment = LoadingDialogFragment.newInstance(orders);
+                loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
+
+                ConnectThread mConnectThread = new ConnectThread(BluetoothAdapter.getDefaultAdapter());
+                Future<Boolean> connectFuture = mConnectThread.runFuture();
+                try {
+                    if (connectFuture.get()) {
+                        params.setSocket(mConnectThread.getSocket());
+                        Future<NewBill> requestFuture = BTillController.processOrders(orders, params.getSocket());
+                        Protos.PaymentRequest request = null;
+                        try {
+                            //Blocks here until the request is returned
+                            request = requestFuture.get().getRequest();
+                            Log.d(TAG, "Retrieved request");
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Getting the Request was interrupted");
+                        } catch (ExecutionException e) {
+                            Log.e(TAG, "Getting the Request had an Execution Exception");
+                        }
+                        //this only executes once the request has been retrieved or errored
+
+                        loadingFragment.dismiss();
+                        final Protos.PaymentRequest finalRequest = request;
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //Launches a paymentconfirmation with the new Request
+                                DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(finalRequest);
+                                paymentFragment.setTargetFragment(getParentFragment(), PAYMENT_REQUEST_DIALOG);
+                                paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");
+                            }
+                        });
+
+                    }
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Getting the Connection was interrupted");
+                } catch (ExecutionException e) {
+                    Log.e(TAG, "Getting the Connection had an Execution Exception");
+                }
+            }
+        });
     }
 
     //Goes through the category fragments in the adapter and adds up their menus into a new one

@@ -68,7 +68,7 @@ public class OrderDialogFragment extends DialogFragment implements View.OnClickL
         switch (v.getId()) {
             case R.id.dialogConfirmButton:
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
-                dismiss();
+                getDialog().dismiss();
                 break;
             case R.id.dialogCancelButton:
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
