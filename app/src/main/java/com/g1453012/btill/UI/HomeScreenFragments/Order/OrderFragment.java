@@ -1,6 +1,7 @@
 package com.g1453012.btill.UI.HomeScreenFragments.Order;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -135,7 +136,13 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         DialogFragment loadingFragment = LoadingDialogFragment.newInstance(orders);
                         loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
 
-                        ConnectThread mConnectThread = new ConnectThread();
+                        ConnectThread mConnectThread = new ConnectThread(BluetoothAdapter.getDefaultAdapter());
+                        Future<Boolean> connectFuture = mConnectThread.runFuture();
+                        if (connectFuture.get()) {
+                            params.setSocket(mConnectThread.getSocket());
+
+                        }
+
 
                         Future<NewBill> requestFuture = BTillController.processOrders(orders, params.getSocket());
                         Protos.PaymentRequest request = null;
