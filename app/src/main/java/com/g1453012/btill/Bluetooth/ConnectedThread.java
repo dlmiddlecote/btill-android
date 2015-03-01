@@ -54,26 +54,6 @@ public class ConnectedThread extends Thread {
         // TODO what we want it to do
     }
 
-    // How to read from server
-    public String read() {
-        Log.d(TAG, "Inside Connected Run");
-        // Set up a byte buffer
-        final int BUFFER_SIZE = 16384;
-        byte[] buffer = new byte[BUFFER_SIZE];
-        int bytes = 0;
-
-        // Read from the input stream, and convert bytes to a string
-
-        Log.d(TAG, "Message?");
-        try {
-            bytes = mInStream.read(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        final String message = new String(buffer, 0, bytes);
-        Log.d(TAG, message + " read " + bytes + " bytes.");
-        return message;
-    }
 
     public Future<String> readFuture() {
         return pool.submit(new Callable<String>() {
@@ -81,30 +61,8 @@ public class ConnectedThread extends Thread {
             public String call() throws Exception {
                 Log.d(TAG, "Inside Connected Run Future");
                 // Set up a byte buffer
-                final int BUFFER_SIZE = 1024;
-                byte[] buffer = new byte[BUFFER_SIZE];
-                int bytes = 0;
-
-                /*try {
-                    bytes = mInStream.read(buffer);
-                } catch (IOException e) {
-                    Log.e(TAG, "Error reading from inputstream");
-                }
-                String readCountMessage = new String(buffer, 0, bytes);
-                Integer readCount = Integer.parseInt(readCountMessage);
-                String message = new String();
-                bytes = 0;
-                int bytesTotal = 0;
-                for (int i = 0; i < readCount.intValue(); i++) {
-                    try {
-                        bytes = mInStream.read(buffer);
-                        bytesTotal += bytes;
-                        message += new String(buffer, 0, bytes);
-                    } catch (IOException e) {
-                        Log.e(TAG, "Error reading from inputstream");
-                    }
-                }*/
-
+                byte[] buffer = new byte[1024];
+                int bytes;
                 boolean read = true;
                 int bytesTotal = 0;
                 String message = new String();
@@ -112,11 +70,10 @@ public class ConnectedThread extends Thread {
                     bytes = mInStream.read(buffer);
                     bytesTotal += bytes;
                     message += new String(buffer, 0, bytes);
-                    if (bytes != 990) {
+                    if (bytes < 990) {
                         read = false;
                     }
                 }
-
 
                 Log.d(TAG, "Read " + bytesTotal + " bytes: " + message);
                 return message;
@@ -124,70 +81,24 @@ public class ConnectedThread extends Thread {
         });
     }
 
-    // Write to output stream method
-    public boolean write(String s) {
-        try {
-            // Take to input string and convert to bytes, and send
-            mOutStream.write(s.getBytes());
-            Log.i(TAG, "Written");
-            return true;
-        } catch (IOException e) {
-            Log.i(TAG, "Couldn't Write.");
-            return false;
-        }
-    }
-
-    public boolean write(BTMessage message) {
-        try {
-            // Take to input string and convert to bytes, and send
-            byte[] messageBytes = message.getBytes();
-            int remaining = messageBytes.length;
-            for (int i = 0; i <= messageBytes.length / 990; i++) {
-                mOutStream.write(messageBytes, i * 990, Math.min(990, remaining));
-                mOutStream.flush();
-                remaining -= 990;
-            }
-            Log.i(TAG, "Written BTMessage");
-            return true;
-        } catch (IOException e) {
-            Log.i(TAG, "Couldn't Write BTMessage");
-            return false;
-        }
-    }
-
     public Future<Boolean> writeFuture(final BTMessage message) {
         return pool.submit(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                int start = 0;
-                Integer readCount = (message.getBytes().length / 990) + 1;
-                int lengthLeft = message.getBytes().length;
-                Log.i("WRITTEN", "Length: " + lengthLeft);
                 try {
-                    //mOutStream.write(readCount.toString().getBytes());
-                    Log.i("WRITTEN", "Written: " + readCount.toString());
-                    mOutStream.flush();
-                    sleep(200);
-                    for (int i = 0; i < readCount.intValue(); i++) {
-                        if (lengthLeft < 990) {
-                            mOutStream.write(message.getBytes(), start, lengthLeft);
-                            Log.i("WRITTEN", "Written: " + new String(message.getBytes(), start, lengthLeft));
-                            Log.d(TAG, "Wrote to server");
-                            return Boolean.TRUE;
-                        }
-                        else {
-                            mOutStream.write(message.getBytes(), start, 990);
-                            Log.i("WRITTEN", "Written: " + new String(message.getBytes(), start, 990));
-                        }
+                    byte[] messageBytes = message.getBytes();
+                    int remaining = messageBytes.length;
+                    for (int i = 0; i <= (messageBytes.length / 990); i++) {
+                        mOutStream.write(messageBytes, i * 990, Math.min(990, remaining));
                         mOutStream.flush();
-                        start += 990;
-                        lengthLeft -= 990;
+                        remaining -= 990;
                     }
+                    Log.d(TAG, "Written BTMessage");
+                    return Boolean.TRUE;
                 } catch (IOException e) {
                     Log.e(TAG, "Couldn't write inside Future");
                     return Boolean.FALSE;
                 }
-                return Boolean.FALSE;
             }
         });
     }
