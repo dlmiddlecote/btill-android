@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.g1453012.btill.BTillController;
 import com.g1453012.btill.Bluetooth.ConnectThread;
@@ -117,7 +118,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.cancelButton:
-                //clear quantities
+                resetMenu();
+                Toast.makeText(getActivity(), "Menu reset", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.balanceButton:

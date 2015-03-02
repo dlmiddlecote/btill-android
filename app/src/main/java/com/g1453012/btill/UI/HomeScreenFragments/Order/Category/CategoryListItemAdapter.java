@@ -63,7 +63,7 @@ public class CategoryListItemAdapter extends BaseAdapter{
                     // Max amount is 9 to help with UI
                     // TODO Fix UI Here (Number overlaps with +)
 
-                    mItems.get(position).setQuantity(Math.min(mItems.get(position).getQuantity() + 1, 9));
+                    mItems.get(position).setQuantity(Math.min(mItems.get(position).getQuantity() + 1, 99));
                     quantity.setText(String.valueOf(mItems.get(position).getQuantity()));
                 }
             });

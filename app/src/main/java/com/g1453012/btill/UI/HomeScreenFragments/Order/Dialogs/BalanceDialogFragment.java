@@ -3,8 +3,10 @@ package com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Bitmap;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -42,6 +44,7 @@ public class BalanceDialogFragment extends DialogFragment{
         mBalanceDialog.setContentView(R.layout.custom_balance_dialog);
 
         TextView mBalanceTotal = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogBalance);
+        Log.d("Address:", mWallet.currentReceiveAddress().toString());
         mBalanceTotal.setText(mWallet.getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
 
         ImageView mBalanceQR = (ImageView) mBalanceDialog.findViewById(R.id.balanceDialogQR);

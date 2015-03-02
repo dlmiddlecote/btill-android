@@ -53,10 +53,9 @@ public class AppStartup extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getActionBar().hide();
+        super.onCreate(savedInstanceState);
 
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.no_bluetooth, Toast.LENGTH_SHORT).show();

@@ -695,14 +695,16 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f050005;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f060007;
+        public static final int abc_search_url_text_holo=0x7f060009;
         public static final int abc_search_url_text_normal=0x7f060000;
         public static final int abc_search_url_text_pressed=0x7f060001;
         public static final int abc_search_url_text_selected=0x7f060002;
         public static final int blue=0x7f060003;
-        public static final int green=0x7f060004;
-        public static final int purple=0x7f060005;
-        public static final int red=0x7f060006;
+        public static final int darkBlue=0x7f060004;
+        public static final int green=0x7f060005;
+        public static final int purple=0x7f060006;
+        public static final int red=0x7f060007;
+        public static final int white=0x7f060008;
     }
     public static final class dimen {
         public static final int abc_action_bar_default_height=0x7f070000;
@@ -831,19 +833,19 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f080001;
         public static final int action_menu_presenter=0x7f080002;
         public static final int action_mode_close_button=0x7f080024;
-        public static final int action_settings=0x7f08007a;
+        public static final int action_settings=0x7f080079;
         public static final int activity_chooser_view_content=0x7f080025;
         public static final int always=0x7f080013;
-        public static final int balanceButton=0x7f080071;
+        public static final int balanceButton=0x7f080070;
         public static final int balanceDialogAddress=0x7f080041;
         public static final int balanceDialogBalance=0x7f08003f;
         public static final int balanceDialogButton=0x7f080042;
         public static final int balanceDialogQR=0x7f080040;
         public static final int balanceDialogTitle=0x7f08003e;
         public static final int beginning=0x7f08000f;
-        public static final int cancelButton=0x7f080070;
+        public static final int cancelButton=0x7f08006f;
         public static final int categoryItemsList=0x7f08003d;
-        public static final int categoryPager=0x7f08006d;
+        public static final int categoryPager=0x7f08006c;
         public static final int checkbox=0x7f08002d;
         public static final int collapseActionView=0x7f080014;
         public static final int default_activity_button=0x7f080028;
@@ -862,7 +864,7 @@ containing a value of this type.
         public static final int fragmentFrame=0x7f08003c;
         public static final int home=0x7f080003;
         public static final int homeAsUp=0x7f08000a;
-        public static final int homeScreen=0x7f08006c;
+        public static final int homeScreen=0x7f08006b;
         public static final int icon=0x7f08002a;
         public static final int ifRoom=0x7f080015;
         public static final int image=0x7f080027;
@@ -873,14 +875,14 @@ containing a value of this type.
         public static final int loadingDialogTitle=0x7f080044;
         public static final int loadingProgressBar=0x7f080043;
         public static final int middle=0x7f080011;
-        public static final int minusButton=0x7f080068;
+        public static final int minusButton=0x7f080067;
         public static final int never=0x7f080016;
-        public static final int nextButton=0x7f080072;
+        public static final int nextButton=0x7f080071;
         public static final int none=0x7f080012;
         public static final int normal=0x7f080007;
-        public static final int orderDialogQuantity=0x7f08006b;
+        public static final int orderDialogQuantity=0x7f08006a;
         public static final int orderDialogTitle=0x7f080045;
-        public static final int pagerTabStrip=0x7f08006f;
+        public static final int pagerTabStrip=0x7f08006e;
         public static final int paymentDialogBitcoinAmount=0x7f080052;
         public static final int paymentDialogBitcoinTitle=0x7f080051;
         public static final int paymentDialogCancelButton=0x7f080056;
@@ -894,11 +896,11 @@ containing a value of this type.
         public static final int paymentDialogPriceTitle=0x7f08004f;
         public static final int paymentDialogSignButton=0x7f080055;
         public static final int paymentDialogTitle=0x7f08004b;
-        public static final int plusButton=0x7f08006a;
+        public static final int plusButton=0x7f080069;
         public static final int price=0x7f080066;
         public static final int progress_circular=0x7f080004;
         public static final int progress_horizontal=0x7f080005;
-        public static final int quantity=0x7f080069;
+        public static final int quantity=0x7f080068;
         public static final int radio=0x7f08002f;
         public static final int receiptDialogBitcoinAmount=0x7f080060;
         public static final int receiptDialogBitcoinTitle=0x7f08005f;
@@ -912,8 +914,7 @@ containing a value of this type.
         public static final int receiptDialogPriceTitle=0x7f08005d;
         public static final int receiptDialogSubtitle=0x7f080059;
         public static final int receiptDialogTitle=0x7f080058;
-        public static final int relativeLayout=0x7f08006e;
-        public static final int relativeLayout2=0x7f080067;
+        public static final int relativeLayout=0x7f08006d;
         public static final int search_badge=0x7f080032;
         public static final int search_bar=0x7f080031;
         public static final int search_button=0x7f080033;
@@ -924,13 +925,13 @@ containing a value of this type.
         public static final int search_plate=0x7f080036;
         public static final int search_src_text=0x7f080037;
         public static final int search_voice_btn=0x7f08003b;
-        public static final int serverNotFoundBalanceAmount=0x7f080075;
-        public static final int serverNotFoundBalanceTitle=0x7f080074;
-        public static final int serverNotFoundQR=0x7f080077;
-        public static final int serverNotFoundRetryButton=0x7f080079;
-        public static final int serverNotFoundTitle=0x7f080073;
-        public static final int serverNotFoundTopUpTitle=0x7f080076;
-        public static final int serverNotFoundWalletAddress=0x7f080078;
+        public static final int serverNotFoundBalanceAmount=0x7f080074;
+        public static final int serverNotFoundBalanceTitle=0x7f080073;
+        public static final int serverNotFoundQR=0x7f080076;
+        public static final int serverNotFoundRetryButton=0x7f080078;
+        public static final int serverNotFoundTitle=0x7f080072;
+        public static final int serverNotFoundTopUpTitle=0x7f080075;
+        public static final int serverNotFoundWalletAddress=0x7f080077;
         public static final int shortcut=0x7f08002e;
         public static final int showCustom=0x7f08000b;
         public static final int showHome=0x7f08000c;
