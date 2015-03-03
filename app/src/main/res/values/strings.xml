@@ -6,7 +6,7 @@
 
     <string name="no_bluetooth">Device does not support Bluetooth</string>
 
-    <string name="server_not_found_title">No server was found</string>
+    <string name="server_not_found_title">No B-Till shop was found</string>
 
 
     <string name="order_dialog_title">Confirm Your Order</string>
@@ -29,6 +29,7 @@
     <string name="receipt_dialog_title">Thanks For Your Order!</string>
     <string name="receipt_dialog_subtitle">Your items will be with you shortly</string>
     <string name="items">Items</string>
+    <string name="searching">Searching for a B-Till enabled shop...</string>
 
 
 </resources>

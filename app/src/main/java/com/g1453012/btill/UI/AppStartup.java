@@ -53,6 +53,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private final String filePrefix = "Bitcoin-test";
 
+    com.g1453012.btill.Shared.Menu mMenu;
     private boolean blockLoadingView = false;
 
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
@@ -285,7 +286,10 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             if (params.getSocket() != null) {
                 params.getSocket().close();
             }
-            unregisterReceiver(mBroadcastReceiver);
+           /* if (mBroadcastReceiver != null) {
+                unregisterReceiver(mBroadcastReceiver);
+            }*/
+            beaconManager.unbind(this);
             params.getWallet().cleanup();
             params.getWallet().saveToFile(file);
             Log.d(TAG, "Wallet Saved");

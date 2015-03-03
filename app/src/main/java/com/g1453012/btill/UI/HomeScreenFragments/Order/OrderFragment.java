@@ -94,7 +94,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         nextButton.setOnClickListener(this);
         Future<Menu> menuFuture = BTillController.getMenuFuture(params.getSocket());
 
-
         try {
             mMenu = menuFuture.get(10, TimeUnit.SECONDS);
         }

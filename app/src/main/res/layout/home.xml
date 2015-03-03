@@ -10,7 +10,7 @@
         android:id="@+id/appIcon"
         android:src="@drawable/home_icon"
         android:cropToPadding="false"
-        android:layout_above="@+id/progressBar"
+        android:layout_above="@+id/textView"
         android:layout_centerHorizontal="true"/>
 
     <ProgressBar
@@ -20,5 +20,24 @@
         android:id="@+id/progressBar"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:indeterminate="true"/>
+        android:indeterminate="true"
+        android:indeterminateOnly="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/searching"
+        android:id="@+id/textView"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_above="@+id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp"
+        android:textStyle="italic"
+        android:gravity="center"/>
 </RelativeLayout>
