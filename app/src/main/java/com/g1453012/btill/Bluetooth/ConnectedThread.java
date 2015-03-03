@@ -70,6 +70,7 @@ public class ConnectedThread extends Thread {
                     bytes = mInStream.read(buffer);
                     bytesTotal += bytes;
                     message += new String(buffer, 0, bytes);
+                    Thread.sleep(100);
                     if (bytes < 990) {
                         read = false;
                     }
@@ -92,6 +93,7 @@ public class ConnectedThread extends Thread {
                         mOutStream.write(messageBytes, i * 990, Math.min(990, remaining));
                         mOutStream.flush();
                         remaining -= 990;
+                        Thread.sleep(100);
                     }
                     Log.d(TAG, "Written BTMessage");
                     return Boolean.TRUE;

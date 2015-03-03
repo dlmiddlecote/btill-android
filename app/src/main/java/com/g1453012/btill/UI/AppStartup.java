@@ -1,9 +1,11 @@
 package com.g1453012.btill.UI;
 
-//import android.app.Fragment;
-
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,10 +35,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-//import android.app.FragmentTransaction;
 
 
 public class AppStartup extends FragmentActivity {
@@ -44,18 +46,44 @@ public class AppStartup extends FragmentActivity {
     private final static String TAG = "HomeScreen";
 
     private PersistentParameters params = new PersistentParameters();
-
     // Intent request codes
     private static final int REQUEST_ENABLE_BT = 2;
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private final String filePrefix = "Bitcoin-test";
-    private Bundle mSavedInstanceState;
+
+    private boolean blockLoadingView = false;
+
+
+    // This is what happens when a device is found
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Get the BluetoothDevice object from the Intent
+                BluetoothDevice bt = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                if (bt.getAddress().toString().equals(ConnectThread.DANSMAC) || bt.getAddress().toString().equals(ConnectThread.LUKESMAC)
+                        || bt.getAddress().toString().equals(ConnectThread.ANDYSMAC) || bt.getAddress().toString().equals(ConnectThread.PIMAC)) {
+                    Log.d(TAG, bt.getName());
+                    ConnectThread.setBluetoothDevice(bt);
+                    onBluetoothEnabled();
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getActionBar().hide();
         super.onCreate(savedInstanceState);
+
+        generateLoadingView();
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mBroadcastReceiver, filter);
 
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.no_bluetooth, Toast.LENGTH_SHORT).show();
@@ -68,11 +96,10 @@ public class AppStartup extends FragmentActivity {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
         else {
-            onBluetoothEnabled();
+            mBluetoothAdapter.startDiscovery();
         }
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,7 +127,9 @@ public class AppStartup extends FragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ENABLE_BT) {
             if (resultCode == RESULT_OK) {
-                onBluetoothEnabled();
+                if (mBluetoothAdapter.startDiscovery()) {
+                    Log.d("DISCOVERY", "STARTED DISCOVERY");
+                }
             }
             else {
                 finish();
@@ -112,15 +141,18 @@ public class AppStartup extends FragmentActivity {
     private void onBluetoothEnabled() {
         int connectionTries = 0;
         int MAX_ATTEMPTS = 25;
-        ConnectThread connectThread = new ConnectThread(mBluetoothAdapter);
+        Log.d(TAG, "onBluetoothEnabled");
         try {
+            ConnectThread connectThread = new ConnectThread();
             while (connectionTries < MAX_ATTEMPTS) {
-                Future<Boolean> connectionFuture = connectThread.runFuture();
-                if (connectionFuture.get()) {
-                    params.setSocket(connectThread.getSocket());
-                    break;
+                if (connectThread.getBluetoothDevice() != null) {
+                    Future<Boolean> connectionFuture = connectThread.runFuture();
+                    if (connectionFuture.get()) {
+                        params.setSocket(connectThread.getSocket());
+                        break;
+                    }
+                    connectionTries++;
                 }
-                connectionTries++;
             }
 
         } catch (InterruptedException e) {
@@ -164,6 +196,7 @@ public class AppStartup extends FragmentActivity {
     }
 
     private void generateMenuView() {
+        blockLoadingView = true;
         setContentView(R.layout.activity_home_screen);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = OrderFragment.newInstance(params);
@@ -190,10 +223,32 @@ public class AppStartup extends FragmentActivity {
         mServerNotFoundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBluetoothEnabled();
+                //onBluetoothEnabled();
+                mBluetoothAdapter.startDiscovery();
             }
         });
 
+    }
+
+    private void generateLoadingView() {
+
+        setContentView(R.layout.home);
+
+        Timer timer = new Timer("timer");
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                setWallet();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!blockLoadingView) {
+                            generateServerNotFoundView();
+                        }
+                    }
+                });
+            }
+        }, 5000);
     }
 
     @Override
@@ -201,7 +256,10 @@ public class AppStartup extends FragmentActivity {
         super.onStop();
         File file = new File(this.getExternalFilesDir("/wallet/"), filePrefix + ".wallet");
         try {
-            params.getSocket().close();
+            if (params.getSocket() != null) {
+                params.getSocket().close();
+            }
+            unregisterReceiver(mBroadcastReceiver);
             params.getWallet().cleanup();
             params.getWallet().saveToFile(file);
             Log.d(TAG, "Wallet Saved");

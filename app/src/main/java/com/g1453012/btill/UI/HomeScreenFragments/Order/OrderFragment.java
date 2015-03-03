@@ -1,7 +1,6 @@
 package com.g1453012.btill.UI.HomeScreenFragments.Order;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -209,7 +208,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 DialogFragment loadingFragment = LoadingDialogFragment.newInstance();
                 loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
 
-                ConnectThread mConnectThread = new ConnectThread(BluetoothAdapter.getDefaultAdapter());
+                ConnectThread mConnectThread = new ConnectThread();
                 Future<Boolean> connectFuture = mConnectThread.runFuture();
                 try {
                     if (connectFuture.get()) {
@@ -269,7 +268,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                     Log.e(TAG, "Error Signing Payment");
                 }
 
-                ConnectThread mConnectThread = new ConnectThread(BluetoothAdapter.getDefaultAdapter());
+                ConnectThread mConnectThread = new ConnectThread();
                 Future<Boolean> connectFuture = mConnectThread.runFuture();
                 try {
                     if (connectFuture.get()) {

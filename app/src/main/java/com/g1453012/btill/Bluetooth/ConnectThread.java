@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -22,13 +21,15 @@ public class ConnectThread extends Thread {
     private BluetoothSocket mSocket = null;
 
     private static UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private static final String ANDYSMAC = "00:03:C9:EA:E1:C7";
-    private static final String LUKESMAC = "48:5D:60:FC:B0:46";
-    private static final String DANSMAC = "00:15:83:64:83:DE";
-    private static BluetoothDevice mBluetoothDevice;
+    public static final String ANDYSMAC = "00:03:C9:EA:E1:C7";
+    public static final String LUKESMAC = "48:5D:60:FC:B0:46";
+    public static final String DANSMAC = "00:15:83:64:83:DE";
+    public static final String PIMAC = "00:15:83:64:94:62";
+    private static volatile BluetoothDevice mBluetoothDevice = null;
     private ConnectedThread mConnectedThread;
 
     private final ExecutorService pool = Executors.newFixedThreadPool(10);
+    private final static ExecutorService poolStatic = Executors.newFixedThreadPool(10);
 
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     //private BluetoothAdapter mBluetoothAdapter;
@@ -37,31 +38,27 @@ public class ConnectThread extends Thread {
         return mSocket;
     }
 
-    public ConnectThread(BluetoothAdapter bluetoothAdapter) {
+    public static void setBluetoothDevice(BluetoothDevice bluetoothDevice) {
+        mBluetoothDevice = bluetoothDevice;
+    }
 
-        BluetoothDevice device = null;
-        //mBluetoothAdapter = bluetoothAdapter;
+    public static BluetoothDevice getBluetoothDevice() {
+        return mBluetoothDevice;
+    }
 
-        Set<BluetoothDevice> mPairedDevices = mBluetoothAdapter.getBondedDevices();
-        for (BluetoothDevice bt: mPairedDevices) {
-            Log.d(TAG, bt.getName());
-            Log.d(TAG, bt.getAddress());
-            if (bt.getAddress().toString().equals(DANSMAC) || bt.getAddress().toString().equals(LUKESMAC) || bt.getAddress().toString().equals(ANDYSMAC)) {
-                device = bt;
-                mBluetoothDevice = bt;
-            }
-        }
+    public ConnectThread() {
 
         // Temporary Bluetooth Socket
         BluetoothSocket tmp = null;
         // Try to create an RFCOMM socket to the UUID given
         try {
-            tmp = device.createRfcommSocketToServiceRecord(mUUID);
+            tmp = mBluetoothDevice.createRfcommSocketToServiceRecord(mUUID);
             Log.d(TAG, "Created Socket");
         } catch (IOException e) {
         }
         // Set the temp socket to be the socket in the thread
         mSocket = tmp;
+
     }
 
     // What to do when the ConnectThread is started

@@ -14,17 +14,23 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
-
         <activity
             android:name=".UI.AppStartup"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".Bluetooth.BluetoothBroadcastReceiver"
+                  android:enabled="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.adapter.action.ACTION_FOUND"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
