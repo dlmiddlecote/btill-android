@@ -71,17 +71,18 @@ public class BluetoothLauncher extends Application implements BootstrapNotifier,
         {
             Log.e(TAG, "Cannot start ranging");
         }
-
+        /*
         Intent intent = new Intent(BluetoothLauncher.this, AppStartup.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        BluetoothLauncher.this.startActivity(intent);
+        BluetoothLauncher.this.startActivity(intent);*/
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle("B-Till")
-                        .setContentText("You have arrived at Imperial!");
+                        .setContentText("Imperial is nearby!")
+                        .setAutoCancel(true);
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, AppStartup.class);
 
