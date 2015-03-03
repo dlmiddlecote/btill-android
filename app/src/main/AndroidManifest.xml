@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".Bluetooth.BluetoothLauncher"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -17,19 +18,13 @@
         <activity
             android:name=".UI.AppStartup"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <receiver android:name=".Bluetooth.BluetoothBroadcastReceiver"
-                  android:enabled="true">
-            <intent-filter>
-                <action android:name="android.bluetooth.adapter.action.ACTION_FOUND"/>
-            </intent-filter>
-        </receiver>
 
     </application>
 

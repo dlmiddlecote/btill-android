@@ -28,6 +28,8 @@ import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.OrderFragment;
 
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.store.UnreadableWalletException;
 
@@ -41,7 +43,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 
-public class AppStartup extends FragmentActivity {
+public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
     private final static String TAG = "HomeScreen";
 
@@ -53,6 +55,7 @@ public class AppStartup extends FragmentActivity {
 
     private boolean blockLoadingView = false;
 
+    private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
 
     // This is what happens when a device is found
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -79,6 +82,8 @@ public class AppStartup extends FragmentActivity {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getActionBar().hide();
         super.onCreate(savedInstanceState);
+
+        beaconManager.bind(this);
 
         generateLoadingView();
 
@@ -249,6 +254,27 @@ public class AppStartup extends FragmentActivity {
                 });
             }
         }, 5000);
+    }
+
+    @Override
+    public void onBeaconServiceConnect() {
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (beaconManager.isBound(this)) {
+            beaconManager.setBackgroundMode(true);
+            beaconManager.setBackgroundBetweenScanPeriod(2000l);
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (beaconManager.isBound(this)) {
+            beaconManager.setBackgroundMode(false);
+        }
     }
 
     @Override
