@@ -58,6 +58,8 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
 
+    private boolean registered = false;
+
     // This is what happens when a device is found
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -90,6 +92,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mBroadcastReceiver, filter);
+        registered = true;
 
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.no_bluetooth, Toast.LENGTH_SHORT).show();
@@ -286,9 +289,9 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             if (params.getSocket() != null) {
                 params.getSocket().close();
             }
-           /* if (mBroadcastReceiver != null) {
+            if (registered) {
                 unregisterReceiver(mBroadcastReceiver);
-            }*/
+            }
             beaconManager.unbind(this);
             params.getWallet().cleanup();
             params.getWallet().saveToFile(file);

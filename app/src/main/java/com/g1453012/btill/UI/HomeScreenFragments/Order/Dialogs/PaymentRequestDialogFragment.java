@@ -11,9 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.g1453012.btill.R;
-import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
-import com.g1453012.btill.Shared.MenuItem;
+import com.g1453012.btill.Shared.NewBill;
 
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
@@ -28,6 +27,7 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
 
     private Protos.PaymentRequest mRequest;
     private Menu mMenu;
+    private NewBill mBill;
 
     public Protos.PaymentRequest getRequest() {
         return mRequest;
@@ -35,6 +35,10 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
 
     public void setRequest(Protos.PaymentRequest mRequest) {
         this.mRequest = mRequest;
+    }
+
+    public void setBill(NewBill bill) {
+        mBill = bill;
     }
 
     public Menu getMenu() {
@@ -45,9 +49,10 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
         mMenu = menu;
     }
 
-    public static PaymentRequestDialogFragment newInstance(Protos.PaymentRequest request, Menu menu) {
+    public static PaymentRequestDialogFragment newInstance(NewBill bill, Menu menu) {
             PaymentRequestDialogFragment paymentRequestDialogFragment = new PaymentRequestDialogFragment();
-            paymentRequestDialogFragment.setRequest(request);
+            paymentRequestDialogFragment.setBill(bill);
+            paymentRequestDialogFragment.setRequest(bill.getRequest());
             paymentRequestDialogFragment.setMenu(menu);
             return paymentRequestDialogFragment;
     }
@@ -70,12 +75,13 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
         mOrderID.setText("" + mMenu.getOrderId());
 
         TextView mGBPAmount = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogPriceAmount);
-        GBP mTotal = new GBP(0);
+        /*GBP mTotal = new GBP(0);
         for (MenuItem item: mMenu)
         {
             mTotal = mTotal.plus(item.getPrice().times(item.getQuantity()));
         }
-        mGBPAmount.setText(mTotal.toString());
+        mGBPAmount.setText(mTotal.toString());*/
+        mGBPAmount.setText(mBill.getAmount().toString());
 
         TextView mBitcoinAmount = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogBitcoinAmount);
         mBitcoinAmount.setText("Error");

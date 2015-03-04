@@ -159,7 +159,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
                         orders = Menu.removeNonZero(orders);
 
-                        loadingDialogForSendingPayment(params.getRequest(), orders).start();
+                        loadingDialogForSendingPayment(params.getBill(), orders).start();
 
                         break;
                     default:
@@ -171,6 +171,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             case RECEIPT_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
+                        params.resetBill();
                        resetMenu();
                     default:
                         break;
@@ -185,15 +186,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         final OrderFragmentPagerAdapter adapter = new OrderFragmentPagerAdapter(getFragmentManager(), mMenu);
         mOrderFragmentPagerAdapter = adapter;
         pager.setAdapter(adapter);
-    }
-
-    private Thread loadingDialogForResettingOrders() {
-        return new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
     }
 
     private Thread loadingDialogForSendingOrder(final Menu orders) {
@@ -216,7 +208,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         //Protos.PaymentRequest request = null;
                         try {
                             //Blocks here until the request is returned
-                            params.setRequest(requestFuture.get().getRequest());
+                            params.setBill(requestFuture.get());
                             Log.d(TAG, "Retrieved request");
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Getting the Request was interrupted");
@@ -226,7 +218,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         //this only executes once the request has been retrieved or errored
 
                         loadingFragment.dismiss();
-                        final Protos.PaymentRequest finalRequest = params.getRequest();
+                        //final Protos.PaymentRequest finalRequest = params.getRequest();
+                        final NewBill finalBill = params.getBill();
                         final Menu finalOrders = orders;
 
                         mHandler.post(new Runnable() {
@@ -234,7 +227,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                             public void run() {
 
                                 //Launches a paymentconfirmation with the new Request
-                                DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(finalRequest, finalOrders);
+                                DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(finalBill, finalOrders);
                                 paymentFragment.setTargetFragment(mainFragment, PAYMENT_REQUEST_DIALOG);
                                 paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");
 
@@ -251,7 +244,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private Thread loadingDialogForSendingPayment(final Protos.PaymentRequest request, final Menu menu) {
+    private Thread loadingDialogForSendingPayment(final NewBill bill, final Menu menu) {
         return new Thread(new Runnable() {
             @Override
             public void run() {
@@ -262,7 +255,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
                 Protos.Payment payment = null;
                 try {
-                    payment = BTillController.transactionSigner(request, params.getWallet());
+                    payment = BTillController.transactionSigner(bill.getRequest(), params.getWallet());
                 } catch (PaymentProtocolException e) {
                     Log.e(TAG, "Error Signing Payment");
                 }

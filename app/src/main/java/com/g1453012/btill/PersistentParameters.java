@@ -2,14 +2,15 @@ package com.g1453012.btill;
 
 import android.bluetooth.BluetoothSocket;
 
-import org.bitcoin.protocols.payments.Protos;
+import com.g1453012.btill.Shared.NewBill;
+
 import org.bitcoinj.core.Wallet;
 
 public class PersistentParameters {
 
     private Wallet mWallet;
     private BluetoothSocket mSocket;
-    private Protos.PaymentRequest mRequest;
+    private NewBill mBill;
 
     public Wallet getWallet() {
         return mWallet;
@@ -27,15 +28,15 @@ public class PersistentParameters {
         this.mSocket = mSocket;
     }
 
-    public Protos.PaymentRequest getRequest() {
-        return mRequest;
+    public NewBill getBill() {
+        return mBill;
     }
 
-    public void setRequest(Protos.PaymentRequest request) {
-        mRequest = request;
+    public void setBill(NewBill bill) {
+        mBill = bill;
     }
 
-    public void resetRequest() {
-        mRequest = null;
+    public void resetBill() {
+        mBill = null;
     }
 }

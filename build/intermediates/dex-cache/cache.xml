@@ -2,11 +2,11 @@
 <items version="2" >
 
     <item
-        jar="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/exploded-aar/com.ToxicBakery.viewpager.transforms/view-pager-transforms/1.1.0/classes.jar"
+        jar="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/jacoco/jacocoagent.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="1d48c363ce7c087386d2cb6ecf8342fa399d2757">
-        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/classes-b9436b1485cd6b5b585a008414f46cb924170776.jar" />
+        sha1="e084e6b8a000c2a3fd71fa1c6f603f47f90ea7c4">
+        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/jacocoagent-b33114d45f2a9cd58840f0f3c2a13fd1e4b726b7.jar" />
     </item>
 
 </items>

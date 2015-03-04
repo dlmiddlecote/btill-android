@@ -26,6 +26,10 @@ public class NewBill implements Serializable{
         this.amount = amount;
     }
 
+    public GBP getAmount() {
+        return amount;
+    }
+
     public Protos.PaymentRequest getRequest() {
         try {
             return Protos.PaymentRequest.parseFrom(request);
