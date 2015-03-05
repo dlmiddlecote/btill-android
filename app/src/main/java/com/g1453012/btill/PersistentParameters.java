@@ -2,7 +2,7 @@ package com.g1453012.btill;
 
 import android.bluetooth.BluetoothSocket;
 
-import com.g1453012.btill.Shared.NewBill;
+import com.g1453012.btill.Shared.Bill;
 
 import org.bitcoinj.core.Wallet;
 
@@ -10,7 +10,7 @@ public class PersistentParameters {
 
     private Wallet mWallet;
     private BluetoothSocket mSocket;
-    private NewBill mBill;
+    private Bill mBill;
 
     public Wallet getWallet() {
         return mWallet;
@@ -28,11 +28,11 @@ public class PersistentParameters {
         this.mSocket = mSocket;
     }
 
-    public NewBill getBill() {
+    public Bill getBill() {
         return mBill;
     }
 
-    public void setBill(NewBill bill) {
+    public void setBill(Bill bill) {
         mBill = bill;
     }
 

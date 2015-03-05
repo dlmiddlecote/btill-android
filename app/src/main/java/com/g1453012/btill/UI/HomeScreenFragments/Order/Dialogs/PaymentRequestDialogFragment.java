@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.g1453012.btill.R;
+import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.Menu;
-import com.g1453012.btill.Shared.NewBill;
 
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
@@ -27,7 +27,7 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
 
     private Protos.PaymentRequest mRequest;
     private Menu mMenu;
-    private NewBill mBill;
+    private Bill mBill;
 
     public Protos.PaymentRequest getRequest() {
         return mRequest;
@@ -37,7 +37,7 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
         this.mRequest = mRequest;
     }
 
-    public void setBill(NewBill bill) {
+    public void setBill(Bill bill) {
         mBill = bill;
     }
 
@@ -49,7 +49,7 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
         mMenu = menu;
     }
 
-    public static PaymentRequestDialogFragment newInstance(NewBill bill, Menu menu) {
+    public static PaymentRequestDialogFragment newInstance(Bill bill, Menu menu) {
             PaymentRequestDialogFragment paymentRequestDialogFragment = new PaymentRequestDialogFragment();
             paymentRequestDialogFragment.setBill(bill);
             paymentRequestDialogFragment.setRequest(bill.getRequest());
@@ -81,7 +81,7 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
             mTotal = mTotal.plus(item.getPrice().times(item.getQuantity()));
         }
         mGBPAmount.setText(mTotal.toString());*/
-        mGBPAmount.setText(mBill.getAmount().toString());
+        mGBPAmount.setText(mBill.getGbpAmount().toString());
 
         TextView mBitcoinAmount = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogBitcoinAmount);
         mBitcoinAmount.setText("Error");

@@ -3,8 +3,6 @@ package com.g1453012.btill.Bitcoin;
 import android.content.Context;
 import android.util.Log;
 
-import com.g1453012.btill.BTillController;
-
 import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.params.TestNet3Params;
 
@@ -54,6 +52,7 @@ public class WalletKitThread extends Thread {
         //mWalletAppKit.setCheckpoints(mCheckpointStream);
         mWalletAppKit.startAsync();
         Log.d(TAG, "WalletAppKit has started");
+
         mWalletAppKit.awaitRunning();
         Log.d(TAG, "WalletAppKit is running");
 

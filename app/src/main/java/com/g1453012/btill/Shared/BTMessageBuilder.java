@@ -4,6 +4,7 @@ package com.g1453012.btill.Shared;
 import com.google.gson.Gson;
 
 import org.bitcoin.protocols.payments.Protos;
+import org.bitcoinj.core.Coin;
 
 public class BTMessageBuilder {
 
@@ -41,9 +42,9 @@ public class BTMessageBuilder {
         this.header = status.toString();
     }
 
-    public BTMessageBuilder(Protos.Payment payment) {
+    public BTMessageBuilder(Protos.Payment payment, GBP gbpAmount, Coin btcAmount) {
         this.header = "SETTLE_BILL";
-        String json = new Gson().toJson(new SignedBill(payment), SignedBill.class);
+        String json = new Gson().toJson(new SignedBill(payment, gbpAmount, btcAmount), SignedBill.class);
         this.body = json.getBytes();
         //this.body = payment.toByteArray();
     }

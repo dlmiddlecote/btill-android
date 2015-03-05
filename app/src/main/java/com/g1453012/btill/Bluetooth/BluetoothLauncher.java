@@ -47,7 +47,8 @@ public class BluetoothLauncher extends Application implements BootstrapNotifier,
         mBeaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
         //backgroundPowerSaver = new BackgroundPowerSaver(this);
         // TODO remove this small time (5 secs) (This is just for testing)
-        mBeaconManager.setBackgroundBetweenScanPeriod(5000);
+        mBeaconManager.setBackgroundBetweenScanPeriod(60000);
+        mBeaconManager.setForegroundBetweenScanPeriod(60000);
 
         /*mPowerSaver = new BackgroundPowerSaver(this);
         mRegion = new Region(getPackageName(), null, null, null);

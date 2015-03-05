@@ -34,8 +34,6 @@ import org.bitcoinj.core.Wallet;
 import org.bitcoinj.store.UnreadableWalletException;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -172,11 +170,11 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             finish();
         }
         if (connectionTries < MAX_ATTEMPTS) {
-            setWallet();
+            //setWallet();
             generateMenuView();
         } else {
             Log.e(TAG, "Connection Timed out...");
-            setWallet();
+            //setWallet();
             generateServerNotFoundView();
         }
     }
@@ -184,20 +182,21 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
     private void setWallet() {
         File file = new File(this.getExternalFilesDir("/wallet/"), filePrefix + ".wallet");
         WalletKitThread walletKitThread = new WalletKitThread(getApplicationContext(), file);
+        Log.d(TAG, "Starting wallet kit thread");
         walletKitThread.start();
-        File checkpointFile = new File(this.getExternalFilesDir("/wallet/"), "checkpoints");
+        /*File checkpointFile = new File(this.getExternalFilesDir("/wallet/"), "checkpoints");
         try {
             FileInputStream checkpointStream = new FileInputStream(checkpointFile);
         } catch (FileNotFoundException e) {
             Log.e(TAG, "Couldn't find checkpoint file");
-        }
+        }*/
 
         try {
             params.setWallet(Wallet.loadFromFile(file));
             Log.d(TAG, "Loaded Wallet");
-            Log.d(TAG, "Wallet Address: " + params.getWallet().currentReceiveAddress().toString());
+            //Log.d(TAG, "Wallet Address: " + params.getWallet().currentReceiveAddress().toString());
             Log.d(TAG, "Wallet Balance: " + params.getWallet().getBalance().toFriendlyString());
-            //Log.d(TAG, "Wallet: " + mBTillController.getWallet().toString());
+            Log.d(TAG, "Wallet: " + params.getWallet().toString());
         } catch (UnreadableWalletException e) {
             Log.d(TAG, "Error reading the wallet");
         }
@@ -242,12 +241,13 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
     private void generateLoadingView() {
 
         setContentView(R.layout.home);
+        setWallet();
 
         Timer timer = new Timer("timer");
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                setWallet();
+                //setWallet();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

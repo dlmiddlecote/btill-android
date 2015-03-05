@@ -8,8 +8,9 @@ import android.util.Log;
 import com.g1453012.btill.Bluetooth.ConnectedThread;
 import com.g1453012.btill.Shared.BTMessage;
 import com.g1453012.btill.Shared.BTMessageBuilder;
+import com.g1453012.btill.Shared.Bill;
+import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
-import com.g1453012.btill.Shared.NewBill;
 import com.g1453012.btill.Shared.Receipt;
 import com.g1453012.btill.Shared.Status;
 import com.google.common.collect.ImmutableList;
@@ -20,6 +21,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import org.bitcoin.protocols.payments.Protos;
+import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
@@ -107,8 +109,9 @@ public class BTillController {
             //mWallet.signTransaction(Wallet.SendRequest.forTx(mSendRequest.tx));
             try {
                 mWallet.completeTx(Wallet.SendRequest.forTx(mSendRequest.tx));
+                Log.d(TAG, "Signed Transaction");
                 // TODO uncomment this to decrease Bitcoin in wallet, when working.
-                //mWallet.commitTx(mSendRequest.tx);
+                mWallet.commitTx(mSendRequest.tx);
             } catch (InsufficientMoneyException e) {
                 // TODO this
                 Log.e(TAG, "Insufficient Money");
@@ -128,10 +131,10 @@ public class BTillController {
         }
     }
 
-    public static Future<NewBill> processOrders(final Menu menu, final BluetoothSocket socket) {
-        return pool.submit(new Callable<NewBill>() {
+    public static Future<Bill> processOrders(final Menu menu, final BluetoothSocket socket) {
+        return pool.submit(new Callable<Bill>() {
             @Override
-            public NewBill call() throws Exception {
+            public Bill call() throws Exception {
                 while (!sendOrders(menu, socket)) {}
                 return receiveBill(socket);
             }
@@ -151,7 +154,7 @@ public class BTillController {
         return false;
     }
 
-    private static NewBill receiveBill(final BluetoothSocket socket) {
+    private static Bill receiveBill(final BluetoothSocket socket) {
         Future<BTMessage> billMessageFuture = readBT(socket);
         Log.d(TAG, "Starts to read bill");
         //BTMessage billMessage = read();
@@ -171,7 +174,7 @@ public class BTillController {
         }
         if (billMessage.getHeader().equals(Status.OK.toString())) {
 
-            return new Gson().fromJson(billMessage.getBodyString(), NewBill.class);
+            return new Gson().fromJson(billMessage.getBodyString(), Bill.class);
         }
         else {
             return null;
@@ -179,18 +182,18 @@ public class BTillController {
     }
 
 
-    public static Future<Receipt> processPayment(final Protos.Payment payment, final BluetoothSocket socket) {
+    public static Future<Receipt> processPayment(final Protos.Payment payment, final GBP gbpAmount, final Coin btcAmount, final BluetoothSocket socket) {
         return pool.submit(new Callable<Receipt>() {
             @Override
             public Receipt call() throws Exception {
-                while (!sendPayment(payment, socket)) {}
+                while (!sendPayment(payment, gbpAmount, btcAmount, socket)) {}
                 return getReceipt(socket);
             }
         });
     }
 
-    private static boolean sendPayment(Protos.Payment payment, final BluetoothSocket socket) {
-        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(payment).build(), socket);
+    private static boolean sendPayment(Protos.Payment payment, GBP gbpAmount, Coin btcAmount, final BluetoothSocket socket) {
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(payment, gbpAmount, btcAmount).build(), socket);
         try {
             return writeFuture.get().booleanValue();
         }

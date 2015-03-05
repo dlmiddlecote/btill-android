@@ -18,9 +18,9 @@ import com.g1453012.btill.BTillController;
 import com.g1453012.btill.Bluetooth.ConnectThread;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
+import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
-import com.g1453012.btill.Shared.NewBill;
 import com.g1453012.btill.Shared.Receipt;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.BalanceDialogFragment;
@@ -204,7 +204,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 try {
                     if (connectFuture.get()) {
                         params.setSocket(mConnectThread.getSocket());
-                        Future<NewBill> requestFuture = BTillController.processOrders(orders, params.getSocket());
+                        Future<Bill> requestFuture = BTillController.processOrders(orders, params.getSocket());
                         //Protos.PaymentRequest request = null;
                         try {
                             //Blocks here until the request is returned
@@ -219,7 +219,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
                         loadingFragment.dismiss();
                         //final Protos.PaymentRequest finalRequest = params.getRequest();
-                        final NewBill finalBill = params.getBill();
+                        final Bill finalBill = params.getBill();
                         final Menu finalOrders = orders;
 
                         mHandler.post(new Runnable() {
@@ -244,7 +244,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private Thread loadingDialogForSendingPayment(final NewBill bill, final Menu menu) {
+    private Thread loadingDialogForSendingPayment(final Bill bill, final Menu menu) {
         return new Thread(new Runnable() {
             @Override
             public void run() {
@@ -265,7 +265,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 try {
                     if (connectFuture.get()) {
                         params.setSocket(mConnectThread.getSocket());
-                        Future<Receipt> receiptFuture = BTillController.processPayment(payment, params.getSocket());
+                        Future<Receipt> receiptFuture = BTillController.processPayment(payment, bill.getGbpAmount(), bill.getCoinAmount(), params.getSocket());
                         Receipt receipt = null;
                         try {
                             receipt = receiptFuture.get();
