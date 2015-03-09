@@ -47,6 +47,6 @@ public class MenuItemTest extends TestCase {
     }
 
     public void testToString() throws Exception {
-        assertEquals("MenuItem{" + testItem.getName() + ", " + testItem.getPrice() + "}", "MenuItem{Item, £3.00}");
+        assertEquals("MenuItem{" + testItem.getName() + ", " + testItem.getPrice() + "}", testItem.toString());
     }
 }
