@@ -217,7 +217,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
         setContentView(R.layout.server_not_found_home);
 
         TextView mBalanceTotal = (TextView) findViewById(R.id.serverNotFoundBalanceAmount);
-        mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+        mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.AVAILABLE).toFriendlyString());
 
         ImageView mBalanceQR = (ImageView) findViewById(R.id.serverNotFoundQR);
         Bitmap mBitmap = BTillController.generateQR(params.getWallet());
