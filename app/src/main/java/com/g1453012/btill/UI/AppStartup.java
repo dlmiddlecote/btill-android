@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,19 +13,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.g1453012.btill.BTillController;
 import com.g1453012.btill.Bitcoin.WalletKitThread;
 import com.g1453012.btill.Bluetooth.ConnectThread;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.OrderFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.SearchingForShopFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.ServerNotFoundFragment;
 
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
@@ -214,33 +210,21 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
     public void generateServerNotFoundView() {
 
-        setContentView(R.layout.server_not_found_home);
-
-        TextView mBalanceTotal = (TextView) findViewById(R.id.serverNotFoundBalanceAmount);
-        mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.AVAILABLE).toFriendlyString());
-
-        ImageView mBalanceQR = (ImageView) findViewById(R.id.serverNotFoundQR);
-        Bitmap mBitmap = BTillController.generateQR(params.getWallet());
-        mBalanceQR.setImageBitmap(mBitmap);
-        mBalanceQR.setVisibility(View.VISIBLE);
-
-        TextView mWalletAddress = (TextView) findViewById(R.id.serverNotFoundWalletAddress);
-        mWalletAddress.setText(params.getWallet().currentReceiveAddress().toString());
-
-        Button mServerNotFoundButton = (Button) findViewById(R.id.serverNotFoundRetryButton);
-        mServerNotFoundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //onBluetoothEnabled();
-                mBluetoothAdapter.startDiscovery();
-            }
-        });
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = ServerNotFoundFragment.newInstance(params);
+        transaction.replace(R.id.appStartupFragmentFrame, fragment);
+        transaction.commit();
 
     }
 
     private void generateLoadingView() {
 
         setContentView(R.layout.home);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = SearchingForShopFragment.newInstance();
+        transaction.replace(R.id.appStartupFragmentFrame, fragment);
+        transaction.commit();
+
         setWallet();
 
         Timer timer = new Timer("timer");
@@ -289,13 +273,15 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             if (params.getSocket() != null) {
                 params.getSocket().close();
             }
-            if (registered) {
+            if (mBroadcastReceiver != null) {
                 unregisterReceiver(mBroadcastReceiver);
             }
             beaconManager.unbind(this);
-            params.getWallet().cleanup();
-            params.getWallet().saveToFile(file);
-            Log.d(TAG, "Wallet Saved");
+            if (params.getWallet() != null) {
+                params.getWallet().cleanup();
+                params.getWallet().saveToFile(file);
+                Log.d(TAG, "Wallet Saved");
+            }
         } catch (IOException e) {
             Log.e(TAG, "Error saving file");
         }

@@ -259,22 +259,24 @@ public class BTillController {
     public static Bitmap generateQR(Wallet wallet) {
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix bitMatrix = null;
-        Bitmap mBitmap = null;
+        Bitmap mBitmap;
+        Bitmap mapToReturn = null;
         try {
             bitMatrix = writer.encode("bitcoin:" + wallet.currentReceiveAddress().toString(), BarcodeFormat.QR_CODE, 512, 512);
             mBitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
-            for (int x = 0; x < 512; x++) {
-                for (int y = 0; y < 512; y++) {
+            mapToReturn = mBitmap.copy(Bitmap.Config.RGB_565, true);
+            for (int x = 0; x < mapToReturn.getWidth(); x++) {
+                for (int y = 0; y < mapToReturn.getHeight(); y++) {
                     if (bitMatrix.get(x, y))
-                        mBitmap.setPixel(x, y, Color.BLACK);
+                        mapToReturn.setPixel(x, y, Color.BLACK);
                     else
-                        mBitmap.setPixel(x, y, Color.WHITE);
+                        mapToReturn.setPixel(x, y, Color.WHITE);
                 }
             }
         } catch (WriterException e) {
             Log.e(TAG, "QRWriter error");
         }
-        return mBitmap;
+        return mapToReturn;
     }
 
 

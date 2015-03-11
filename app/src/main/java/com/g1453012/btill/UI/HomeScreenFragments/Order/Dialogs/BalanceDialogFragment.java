@@ -16,7 +16,7 @@ import com.g1453012.btill.R;
 
 import org.bitcoinj.core.Wallet;
 
-public class BalanceDialogFragment extends DialogFragment{
+public class BalanceDialogFragment extends DialogFragment {
 
     public Wallet getWallet() {
         return mWallet;

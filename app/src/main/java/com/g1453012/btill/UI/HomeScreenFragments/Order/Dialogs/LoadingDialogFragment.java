@@ -8,23 +8,11 @@ import android.view.Window;
 import android.widget.ProgressBar;
 
 import com.g1453012.btill.R;
-import com.g1453012.btill.Shared.Menu;
-import com.g1453012.btill.Shared.MenuItem;
 
 
 public class LoadingDialogFragment extends DialogFragment{
 
     private static final String TAG = "LoadingDialog";
-
-    /*public Menu getMenu() {
-        return mMenu;
-    }
-
-    public void setMenu(Menu mMenu) {
-        this.mMenu = mMenu;
-    }
-
-    private Menu mMenu;*/
 
     public static LoadingDialogFragment newInstance() {
         LoadingDialogFragment loadingDialogFragment = new LoadingDialogFragment();
@@ -45,50 +33,4 @@ public class LoadingDialogFragment extends DialogFragment{
         mLoadingDialog.setCanceledOnTouchOutside(false);
         return mLoadingDialog;
     }
-
-    /*@Override
-    public void onStart() {
-        super.onStart();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    BTillController mBTillController = new BTillController();
-                    Protos.PaymentRequest request = null;
-                    ConnectThread mConnectThread = new ConnectThread(mBTillController.getBluetoothAdapter());
-                    Future<Boolean> connectionFuture = mConnectThread.runFuture();
-                    if(connectionFuture.get()) {
-                        mBTillController.setBluetoothSocket(mConnectThread.getSocket());
-                        mBTillController.sendOrders(removeNonZero(mMenu));
-                        Log.d(TAG, "Sent orders");
-                        request = mBTillController.getPaymentRequest();
-                        Log.d(TAG, "Got payment request");
-                    }
-                    final Protos.PaymentRequest receivedRequest = request;
-                    mConnectThread.getSocket().close();
-                    if (receivedRequest!=null)
-                        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
-                    else
-                        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
-                } catch (Exception e) {
-
-                }
-
-            }
-        }).start();
-    }*/
-
-    //TODO Not sure about this class - needs to return when connectionFuture.get(). Hopefully using the onStart method to start the thread will work
-
-    private static Menu removeNonZero(Menu menu) {
-        Menu retMenu = new Menu();
-        for (MenuItem item: menu)
-        {
-            if (item.getQuantity()!=0)
-                retMenu.add(item);
-        }
-
-        return retMenu;
-    }
-
 }
