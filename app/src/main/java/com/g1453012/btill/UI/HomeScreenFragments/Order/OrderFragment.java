@@ -308,4 +308,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         menu.sortCategories();
         return menu;
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 }

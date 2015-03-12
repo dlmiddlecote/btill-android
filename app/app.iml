@@ -98,7 +98,7 @@
     <orderEntry type="library" exported="" name="protobuf-java-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="jsr305-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="core-1.51.0.0" level="project" />
-    <orderEntry type="library" exported="" name="gson-1.7.2" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.3" level="project" />
   </component>
 </module>
 

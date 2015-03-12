@@ -1,12 +1,15 @@
 package com.g1453012.btill.Bitcoin;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
 
 import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.params.TestNet3Params;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by dlmiddlecote on 20/02/15.
@@ -36,6 +39,15 @@ public class WalletKitThread extends Thread {
 
         Log.d(TAG, "WalletKitThread has started");
 
+        File checkpointFile = new File("checkpoints");
+        InputStream checkpointStream = null;
+        AssetManager assetManager = mContext.getAssets();
+        try {
+            checkpointStream = assetManager.open("checkpoints");
+        } catch (IOException e) {
+            Log.e(TAG, "Couldn't find checkpoint file");
+        }
+
         mWalletAppKit = new WalletAppKit(mNetParams, mContext.getExternalFilesDir("/wallet/"), filePrefix) {
             @Override
             protected void onSetupCompleted() {
@@ -43,13 +55,17 @@ public class WalletKitThread extends Thread {
                 Log.d(TAG, "Inside WalletKit OnSetupComplete");
                 mWalletAppKit.wallet().allowSpendingUnconfirmedTransactions();
                 mWalletAppKit.peerGroup().setBloomFilterFalsePositiveRate(0.0001);
-                mWalletAppKit.peerGroup().setMaxConnections(11);
+                //mWalletAppKit.peerGroup().setMaxConnections(11);
                 mWalletAppKit.peerGroup().setFastCatchupTimeSecs(mWalletAppKit.wallet().getEarliestKeyCreationTime());
                 //mWalletAppKit.wallet().autosaveToFile(mFile, 1, TimeUnit.MINUTES, null);
+                Log.d(TAG, "Time of earlist creation " + mWalletAppKit.wallet().getEarliestKeyCreationTime());
             }
         };
 
-        //mWalletAppKit.setCheckpoints(mCheckpointStream);
+        if (checkpointStream != null) {
+            mWalletAppKit.setCheckpoints(checkpointStream);
+            Log.d(TAG, "Checkpoints set");
+        }
         mWalletAppKit.startAsync();
         Log.d(TAG, "WalletAppKit has started");
 

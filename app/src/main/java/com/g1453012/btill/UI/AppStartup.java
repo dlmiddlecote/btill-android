@@ -53,6 +53,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
 
     private boolean registered = false;
+    private boolean walletSet = false;
 
     // This is what happens when a device is found
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -180,7 +181,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
         WalletKitThread walletKitThread = new WalletKitThread(getApplicationContext(), file);
         Log.d(TAG, "Starting wallet kit thread");
         walletKitThread.start();
-        /*File checkpointFile = new File(this.getExternalFilesDir("/wallet/"), "checkpoints");
+        /*File checkpointFile = new File("checkpoints");
         try {
             FileInputStream checkpointStream = new FileInputStream(checkpointFile);
         } catch (FileNotFoundException e) {
@@ -224,8 +225,10 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
         Fragment fragment = SearchingForShopFragment.newInstance();
         transaction.replace(R.id.appStartupFragmentFrame, fragment);
         transaction.commit();
-
-        setWallet();
+        if (!walletSet) {
+            setWallet();
+            walletSet = true;
+        }
 
         Timer timer = new Timer("timer");
         timer.schedule(new TimerTask() {
@@ -241,7 +244,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
                     }
                 });
             }
-        }, 5000);
+        }, 7000);
     }
 
     @Override
@@ -254,7 +257,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
         super.onPause();
         if (beaconManager.isBound(this)) {
             beaconManager.setBackgroundMode(true);
-            beaconManager.setBackgroundBetweenScanPeriod(2000l);
+            beaconManager.setBackgroundBetweenScanPeriod(60000l);
         }
     }
     @Override
@@ -273,7 +276,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             if (params.getSocket() != null) {
                 params.getSocket().close();
             }
-            if (mBroadcastReceiver != null) {
+            if (registered) {
                 unregisterReceiver(mBroadcastReceiver);
             }
             beaconManager.unbind(this);
