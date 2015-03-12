@@ -98,7 +98,7 @@ public class BTillController {
 
     }
 
-    public static Protos.Payment transactionSigner(Protos.PaymentRequest request, final Wallet mWallet) throws PaymentProtocolException {
+    public static Protos.Payment transactionSigner(Protos.PaymentRequest request, final PersistentParameters params) throws PaymentProtocolException, InsufficientMoneyException {
         Protos.Payment mPayment = null;
         PaymentSession mPaymentSession = new PaymentSession(request, false);
         if (mPaymentSession.isExpired()) {
@@ -107,17 +107,18 @@ public class BTillController {
         else {
             Wallet.SendRequest mSendRequest = mPaymentSession.getSendRequest();
             //mWallet.signTransaction(Wallet.SendRequest.forTx(mSendRequest.tx));
-            try {
-                mWallet.completeTx(Wallet.SendRequest.forTx(mSendRequest.tx));
+            //try {
+                params.getWallet().completeTx(Wallet.SendRequest.forTx(mSendRequest.tx));
                 Log.d(TAG, "Signed Transaction");
                 // TODO uncomment this to decrease Bitcoin in wallet, when working.
-                mWallet.commitTx(mSendRequest.tx);
-            } catch (InsufficientMoneyException e) {
-                // TODO this
-                Log.e(TAG, "Insufficient Money");
-            }
+                //mWallet.commitTx(mSendRequest.tx);
+                params.setTx(mSendRequest.tx);
+            //} catch (InsufficientMoneyException e) {
+            //    // TODO this
+            //    Log.e(TAG, "Insufficient Money");
+            //}
             try {
-                mPayment = mPaymentSession.getPayment(ImmutableList.of(mSendRequest.tx), mWallet.freshReceiveAddress(), null);
+                mPayment = mPaymentSession.getPayment(ImmutableList.of(mSendRequest.tx), params.getWallet().freshReceiveAddress(), null);
             } catch (IOException e) {
                 // TODO this
                 Log.e(TAG, "Error making payment");

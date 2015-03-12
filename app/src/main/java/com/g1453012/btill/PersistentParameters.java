@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothSocket;
 
 import com.g1453012.btill.Shared.Bill;
 
+import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Wallet;
 
 public class PersistentParameters {
@@ -11,6 +12,7 @@ public class PersistentParameters {
     private Wallet mWallet;
     private BluetoothSocket mSocket;
     private Bill mBill;
+    private Transaction mTx;
 
     public Wallet getWallet() {
         return mWallet;
@@ -18,6 +20,14 @@ public class PersistentParameters {
 
     public void setWallet(Wallet mWallet) {
         this.mWallet = mWallet;
+    }
+
+    public Transaction getTx() {
+        return mTx;
+    }
+
+    public void setTx(Transaction tx) {
+        mTx = tx;
     }
 
     public BluetoothSocket getSocket() {

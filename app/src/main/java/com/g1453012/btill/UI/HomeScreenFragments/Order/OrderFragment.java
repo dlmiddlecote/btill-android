@@ -24,13 +24,14 @@ import com.g1453012.btill.Shared.MenuItem;
 import com.g1453012.btill.Shared.Receipt;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.BalanceDialogFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.InsufficientFundsDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.ReceiptDialogFragment;
 
 import org.bitcoin.protocols.payments.Protos;
-import org.bitcoinj.protocols.payments.PaymentProtocolException;
+import org.bitcoinj.core.InsufficientMoneyException;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -46,6 +47,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     static final int ORDER_DIALOG = 1;
     static final int PAYMENT_REQUEST_DIALOG = 2;
     static final int RECEIPT_DIALOG = 3;
+    static final int INSUFFICIENT_FUNDS = 4;
 
     public PersistentParameters getParams() {
         return params;
@@ -255,8 +257,19 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
                 Protos.Payment payment = null;
                 try {
-                    payment = BTillController.transactionSigner(bill.getRequest(), params.getWallet());
-                } catch (PaymentProtocolException e) {
+                    payment = BTillController.transactionSigner(bill.getRequest(), params);
+                }  catch (InsufficientMoneyException e) {
+                    loadingFragment.dismiss();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            DialogFragment insufficientFundsFragment = InsufficientFundsDialogFragment.newInstance();
+                            insufficientFundsFragment.setTargetFragment(mainFragment, INSUFFICIENT_FUNDS);
+                            insufficientFundsFragment.show(getFragmentManager().beginTransaction(), "INSUFFICIENT FUNDS");
+                        }
+                    });
+                    return;
+                } catch (Exception e) {
                     Log.e(TAG, "Error Signing Payment");
                 }
 
@@ -274,7 +287,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         } catch (ExecutionException e) {
                             Log.e(TAG, "Getting the Receipt had an Execution Exception");
                         }
-
+                        params.getWallet().commitTx(params.getTx());
                         loadingFragment.dismiss();
 
                         final Receipt finalReceipt = receipt;

@@ -30,6 +30,9 @@
     <string name="receipt_dialog_subtitle">Your items will be with you shortly</string>
     <string name="items">Items</string>
     <string name="searching">Searching for a B-Till enabled shop...</string>
+    <string name="insufficientFundsTitle">Uh Oh!</string>
+    <string name="insufficientFundsMessage">Unfortunately, you do not have enough Bitcoin to pay for this order.</string>
+    <string name="insufficientFundsSecondMessage">Please top-up and try again.</string>
 
 
 </resources>

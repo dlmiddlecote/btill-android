@@ -47,7 +47,7 @@ public class ServerNotFoundFragment extends Fragment{
         super.onActivityCreated(savedInstanceState);
 
         TextView mBalanceTotal = (TextView) getActivity().findViewById(R.id.serverNotFoundBalanceAmount);
-        mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.AVAILABLE).toFriendlyString());
+        mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
 
         ImageView mBalanceQR = (ImageView) getActivity().findViewById(R.id.serverNotFoundQR);
         Bitmap mBitmap = BTillController.generateQR(params.getWallet());

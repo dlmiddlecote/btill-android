@@ -43,7 +43,7 @@ public class BalanceDialogFragment extends DialogFragment {
 
         TextView mBalanceTotal = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogBalance);
         Log.d("Address:", mWallet.currentReceiveAddress().toString());
-        mBalanceTotal.setText(mWallet.getBalance(Wallet.BalanceType.AVAILABLE).toFriendlyString());
+        mBalanceTotal.setText(mWallet.getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
 
         ImageView mBalanceQR = (ImageView) mBalanceDialog.findViewById(R.id.balanceDialogQR);
         Bitmap mBitmap = BTillController.generateQR(mWallet);
