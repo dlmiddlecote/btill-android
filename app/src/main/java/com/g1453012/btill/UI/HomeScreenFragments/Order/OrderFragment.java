@@ -282,6 +282,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         Receipt receipt = null;
                         try {
                             receipt = receiptFuture.get();
+                            params.getReceiptStore().add(receipt, 0);
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Getting the Receipt was interrupted");
                         } catch (ExecutionException e) {
@@ -289,13 +290,12 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         }
                         params.getWallet().commitTx(params.getTx());
                         loadingFragment.dismiss();
-
-                        final Receipt finalReceipt = receipt;
+                        //final Receipt finalReceipt = receipt;
                         final Menu finalMenu = menu;
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(finalReceipt, finalMenu);
+                                DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(params, 0, finalMenu);
                                 receiptFragment.setTargetFragment(mainFragment, RECEIPT_DIALOG);
                                 receiptFragment.show(getFragmentManager().beginTransaction(), "RECEIPT_DIALOG");
                             }

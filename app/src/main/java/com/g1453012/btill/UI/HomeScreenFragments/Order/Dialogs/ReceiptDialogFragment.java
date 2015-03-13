@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.Receipt;
@@ -42,9 +43,9 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
         mReceipt = receipt;
     }
 
-    public static ReceiptDialogFragment newInstance(Receipt receipt, Menu menu) {
+    public static ReceiptDialogFragment newInstance(PersistentParameters params, int ID, Menu menu) {
         ReceiptDialogFragment receiptDialogFragment = new ReceiptDialogFragment();
-        receiptDialogFragment.setReceipt(receipt);
+        receiptDialogFragment.setReceipt(params.getReceiptStore().get(ID));
         receiptDialogFragment.setMenu(menu);
         return receiptDialogFragment;
     }

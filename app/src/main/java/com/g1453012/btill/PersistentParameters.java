@@ -13,6 +13,7 @@ public class PersistentParameters {
     private BluetoothSocket mSocket;
     private Bill mBill;
     private Transaction mTx;
+    private ReceiptStore mReceiptStore = new ReceiptStore();
 
     public Wallet getWallet() {
         return mWallet;
@@ -28,6 +29,10 @@ public class PersistentParameters {
 
     public void setTx(Transaction tx) {
         mTx = tx;
+    }
+
+    public ReceiptStore getReceiptStore() {
+        return mReceiptStore;
     }
 
     public BluetoothSocket getSocket() {
