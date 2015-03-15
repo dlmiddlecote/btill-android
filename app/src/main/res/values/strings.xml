@@ -29,10 +29,16 @@
     <string name="receipt_dialog_title">Thanks For Your Order!</string>
     <string name="receipt_dialog_subtitle">Your items will be with you shortly</string>
     <string name="items">Items</string>
-    <string name="searching">Searching for a B-Till enabled shop...</string>
+    <string name="searching">Searching for a B-Till enabled shop…</string>
     <string name="insufficientFundsTitle">Uh Oh!</string>
     <string name="insufficientFundsMessage">Unfortunately, you do not have enough Bitcoin to pay for this order.</string>
     <string name="insufficientFundsSecondMessage">Please top-up and try again.</string>
+    <string name="receiptErrorDialogTitle">There has been an error receiving the receipt</string>
+    <string name="receiptErrorDialogInfo">Please press OK to resubmit your payment</string>
+    <string name="receiptErrorDialogDisclaimer">You will not be charged again</string>
+    <string name="paymentRequestErrorDialogTitle">There has been an error receiving the bill</string>
+
+    <string name="walletError">There is an issue with the wallet.</string>
 
 
 </resources>

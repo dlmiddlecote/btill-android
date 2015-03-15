@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:id="@+id/paymentRequestErrorDialogLayout">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/paymentRequestErrorDialogTitle"
+        android:id="@+id/paymentRequestErrorDialogTitle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="25dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/receiptErrorDialogInfo"
+        android:id="@+id/paymentRequestErrorDialogInfo"
+        android:layout_below="@+id/paymentRequestErrorDialogTitle"
+        android:layout_alignStart="@+id/paymentRequestErrorDialogTitle"
+        android:layout_marginRight="25dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm"
+        android:id="@+id/paymentRequestErrorDialogOKButton"
+        android:layout_below="@+id/paymentRequestErrorDialogInfo"
+        android:layout_alignParentEnd="true"
+        style="?android:borderlessButtonStyle"
+        android:textColor="@android:color/holo_blue_dark"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:id="@+id/paymentRequestErrorDialogCancelButton"
+        android:layout_below="@+id/paymentRequestErrorDialogInfo"
+        android:layout_toStartOf="@+id/paymentRequestErrorDialogOKButton"
+        style="?android:borderlessButtonStyle"
+        android:textColor="@android:color/holo_red_dark"/>
+
+</RelativeLayout>

@@ -108,20 +108,23 @@ public class BTillController {
             Wallet.SendRequest mSendRequest = mPaymentSession.getSendRequest();
             //mWallet.signTransaction(Wallet.SendRequest.forTx(mSendRequest.tx));
             //try {
+            if (params.getWallet() != null) {
                 params.getWallet().completeTx(Wallet.SendRequest.forTx(mSendRequest.tx));
                 Log.d(TAG, "Signed Transaction");
                 // TODO uncomment this to decrease Bitcoin in wallet, when working.
                 //mWallet.commitTx(mSendRequest.tx);
                 params.setTx(mSendRequest.tx);
-            //} catch (InsufficientMoneyException e) {
-            //    // TODO this
-            //    Log.e(TAG, "Insufficient Money");
-            //}
-            try {
-                mPayment = mPaymentSession.getPayment(ImmutableList.of(mSendRequest.tx), params.getWallet().freshReceiveAddress(), null);
-            } catch (IOException e) {
-                // TODO this
-                Log.e(TAG, "Error making payment");
+
+                //} catch (InsufficientMoneyException e) {
+                //    // TODO this
+                //    Log.e(TAG, "Insufficient Money");
+                //}
+                try {
+                    mPayment = mPaymentSession.getPayment(ImmutableList.of(mSendRequest.tx), params.getWallet().freshReceiveAddress(), null);
+                } catch (IOException e) {
+                    // TODO this
+                    Log.e(TAG, "Error making payment");
+                }
             }
             if (mPayment != null) {
                 return mPayment;
@@ -173,8 +176,7 @@ public class BTillController {
         } catch (IOException e) {
             Log.e(TAG, "Couldn't close socket");
         }
-        if (billMessage.getHeader().equals(Status.OK.toString())) {
-
+        if (billMessage != null && billMessage.getHeader().equals(Status.OK.toString())) {
             return new Gson().fromJson(billMessage.getBodyString(), Bill.class);
         }
         else {

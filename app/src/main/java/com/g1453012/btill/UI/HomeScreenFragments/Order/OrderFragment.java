@@ -28,7 +28,9 @@ import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.InsufficientFunds
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDialogFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestErrorDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.ReceiptDialogFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.ReceiptErrorDialogFragment;
 
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.InsufficientMoneyException;
@@ -46,8 +48,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     static final int ORDER_DIALOG = 1;
     static final int PAYMENT_REQUEST_DIALOG = 2;
-    static final int RECEIPT_DIALOG = 3;
-    static final int INSUFFICIENT_FUNDS = 4;
+    static final int PAYMENT_REQUEST_ERROR_DIALOG = 3;
+    static final int RECEIPT_DIALOG = 4;
+    static final int INSUFFICIENT_FUNDS = 5;
+    static final int RECEIPT_ERROR_DIALOG = 6;
 
     public PersistentParameters getParams() {
         return params;
@@ -63,7 +67,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     private Activity mParentActivity;
     private Fragment mainFragment = this;
 
-
+    // TODOD remove, only for testing
+    private int count = 0;
 
 
     public static OrderFragment newInstance(PersistentParameters parameters) {
@@ -170,12 +175,36 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         break;
                 }
                 break;
+            case PAYMENT_REQUEST_ERROR_DIALOG:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        orders = Menu.removeNonZero(orders);
+                        loadingDialogForSendingOrder(orders).start();
+                        break;
+                    default:
+                        break;
+                }
+                break;
             case RECEIPT_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         params.resetBill();
-                       resetMenu();
+                        resetMenu();
                     default:
+                        break;
+                }
+                break;
+            case RECEIPT_ERROR_DIALOG:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        orders = Menu.removeNonZero(orders);
+                        loadingDialogForSendingPayment(params.getBill(), orders).start();
+                        break;
+                    default:
+                        Log.d(TAG, "CANCELLED");
+                        //Cancel transaction
                         break;
                 }
         }
@@ -207,34 +236,52 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                     if (connectFuture.get()) {
                         params.setSocket(mConnectThread.getSocket());
                         Future<Bill> requestFuture = BTillController.processOrders(orders, params.getSocket());
+                        Bill bill = null;
                         //Protos.PaymentRequest request = null;
                         try {
                             //Blocks here until the request is returned
-                            params.setBill(requestFuture.get());
+                            bill = requestFuture.get();
                             Log.d(TAG, "Retrieved request");
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Getting the Request was interrupted");
                         } catch (ExecutionException e) {
                             Log.e(TAG, "Getting the Request had an Execution Exception");
                         }
+                        /*if (count < 1) {
+                            bill = null;
+                            count++;
+                        }*/
                         //this only executes once the request has been retrieved or errored
+                        if (bill != null) {
+                            //count = 0;
+                            params.setBill(bill);
+                            loadingFragment.dismiss();
+                            //final Protos.PaymentRequest finalRequest = params.getRequest();
+                            final Bill finalBill = params.getBill();
+                            final Menu finalOrders = orders;
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //Launches a paymentconfirmation with the new Request
+                                    DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(finalBill, finalOrders);
+                                    paymentFragment.setTargetFragment(mainFragment, PAYMENT_REQUEST_DIALOG);
+                                    paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");
 
-                        loadingFragment.dismiss();
-                        //final Protos.PaymentRequest finalRequest = params.getRequest();
-                        final Bill finalBill = params.getBill();
-                        final Menu finalOrders = orders;
+                                }
+                            });
+                        }
+                        else {
+                            loadingFragment.dismiss();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    DialogFragment paymentErrorFragment = PaymentRequestErrorDialogFragment.newInstance();
+                                    paymentErrorFragment.setTargetFragment(mainFragment, PAYMENT_REQUEST_ERROR_DIALOG);
+                                    paymentErrorFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_ERROR_DIALOG");
 
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                //Launches a paymentconfirmation with the new Request
-                                DialogFragment paymentFragment = PaymentRequestDialogFragment.newInstance(finalBill, finalOrders);
-                                paymentFragment.setTargetFragment(mainFragment, PAYMENT_REQUEST_DIALOG);
-                                paymentFragment.show(getFragmentManager().beginTransaction(), "PAYMENT_REQUEST_DIALOG");
-
-                            }
-                        });
+                                }
+                            });
+                        }
 
                     }
                 } catch (InterruptedException e) {
@@ -283,24 +330,42 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         final int nextID = params.getReceiptStore().next();
                         try {
                             receipt = receiptFuture.get();
-                            params.getReceiptStore().add(receipt, menu, nextID);
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Getting the Receipt was interrupted");
                         } catch (ExecutionException e) {
                             Log.e(TAG, "Getting the Receipt had an Execution Exception");
                         }
-                        //params.getWallet().commitTx(params.getTx());
-                        loadingFragment.dismiss();
-                        //final Receipt finalReceipt = receipt;
-                        //final Menu finalMenu = menu;
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(params, nextID);
-                                receiptFragment.setTargetFragment(mainFragment, RECEIPT_DIALOG);
-                                receiptFragment.show(getFragmentManager().beginTransaction(), "RECEIPT_DIALOG");
-                            }
-                        });
+                        // TODO remove this, only for testing
+                        /*if (count < 1) {
+                            receipt = null;
+                            count++;
+                        }*/
+                        if (receipt != null) {
+                            params.getReceiptStore().add(receipt, menu, nextID);
+                            // TODO uncomment below
+                            params.getWallet().commitTx(params.getTx());
+                            params.resetTx();
+                            loadingFragment.dismiss();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(params, nextID);
+                                    receiptFragment.setTargetFragment(mainFragment, RECEIPT_DIALOG);
+                                    receiptFragment.show(getFragmentManager().beginTransaction(), "RECEIPT_DIALOG");
+                                }
+                            });
+                        }
+                        else {
+                            loadingFragment.dismiss();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    DialogFragment receiptErrorFragment = ReceiptErrorDialogFragment.newInstance();
+                                    receiptErrorFragment.setTargetFragment(mainFragment, RECEIPT_ERROR_DIALOG);
+                                    receiptErrorFragment.show(getFragmentManager().beginTransaction(), "RECEIPT_ERROR_DIALOG");
+                                }
+                            });
+                        }
                     }
                 } catch (InterruptedException e) {
                     Log.e(TAG, "Getting the Connection was interrupted");

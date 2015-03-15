@@ -80,4 +80,14 @@ public class ReceiptStore {
         return mReceipts.size() + 1;
     }
 
+    public void resetStoreForTesting() {
+        mReceipts = new HashMap<Integer, Pair<Receipt, Menu>>();
+        try {
+            write();
+            Log.d(TAG, "Reset Receipt Store");
+        } catch (IOException e) {
+            Log.e(TAG, "Didn't Permanently Reset");
+        }
+    }
+
 }

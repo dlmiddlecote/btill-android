@@ -26,6 +26,9 @@ import com.g1453012.btill.UI.HomeScreenFragments.Order.ServerNotFoundFragment;
 
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
+import org.bitcoinj.core.AbstractWalletEventListener;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.store.UnreadableWalletException;
 
@@ -179,25 +182,42 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
     }
 
     private void setWallet() {
-        File file = new File(this.getExternalFilesDir("/wallet/"), filePrefix + ".wallet");
+        final File file = new File(this.getExternalFilesDir("/wallet/"), filePrefix + ".wallet");
         WalletKitThread walletKitThread = new WalletKitThread(getApplicationContext(), file);
         Log.d(TAG, "Starting wallet kit thread");
         walletKitThread.start();
-        /*File checkpointFile = new File("checkpoints");
-        try {
-            FileInputStream checkpointStream = new FileInputStream(checkpointFile);
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Couldn't find checkpoint file");
-        }*/
 
         try {
             params.setWallet(Wallet.loadFromFile(file));
-            Log.d(TAG, "Loaded Wallet");
-            //Log.d(TAG, "Wallet Address: " + params.getWallet().currentReceiveAddress().toString());
-            Log.d(TAG, "Wallet Balance: " + params.getWallet().getBalance().toFriendlyString());
-            Log.d(TAG, "Wallet: " + params.getWallet().toString());
+            if (params.getWallet() != null) {
+                Log.d(TAG, "Loaded Wallet");
+                Log.d(TAG, "Wallet Balance: " + params.getWallet().getBalance().toFriendlyString());
+                Log.d("WALLET", "Wallet: " + params.getWallet().toString());
+            }
         } catch (UnreadableWalletException e) {
             Log.d(TAG, "Error reading the wallet");
+        }
+
+        if (params.getWallet() != null) {
+            params.getWallet().addEventListener(new AbstractWalletEventListener() {
+                @Override
+                public void onWalletChanged(Wallet wallet) {
+                    wallet.allowSpendingUnconfirmedTransactions();
+                    try {
+                        wallet.cleanup();
+                        wallet.saveToFile(file);
+                        Log.d(TAG, "Wallet Saved");
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error saving file");
+                    }
+                }
+
+                @Override
+                public void onCoinsSent(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
+                    Coin difference = prevBalance.subtract(newBalance);
+                    Log.d("COINS SENT", "Coins have been sent: " + difference.toFriendlyString());
+                }
+            });
         }
 
     }
@@ -273,7 +293,6 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
     @Override
     protected void onStop() {
         super.onStop();
-        File file = new File(this.getExternalFilesDir("/wallet/"), filePrefix + ".wallet");
         try {
             if (params.getSocket() != null) {
                 params.getSocket().close();
@@ -282,13 +301,8 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
                 unregisterReceiver(mBroadcastReceiver);
             }
             beaconManager.unbind(this);
-            if (params.getWallet() != null) {
-                params.getWallet().cleanup();
-                //params.getWallet().saveToFile(file);
-                //Log.d(TAG, "Wallet Saved");
-            }
         } catch (IOException e) {
-            Log.e(TAG, "Error saving file");
+            Log.e(TAG, "Error closing socket");
         }
     }
 }

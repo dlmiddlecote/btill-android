@@ -49,6 +49,7 @@
         android:id="@+id/balanceDialogButton"
         style="?android:borderlessButtonStyle"
         android:layout_below="@+id/balanceDialogAddress"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:textColor="@android:color/holo_blue_dark"/>
 
 </RelativeLayout>

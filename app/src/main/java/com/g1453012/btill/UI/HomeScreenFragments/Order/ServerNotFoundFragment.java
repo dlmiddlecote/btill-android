@@ -21,7 +21,7 @@ import org.bitcoinj.core.Wallet;
 /**
  * Created by dlmiddlecote on 10/03/15.
  */
-public class ServerNotFoundFragment extends Fragment{
+public class ServerNotFoundFragment extends Fragment implements View.OnClickListener {
 
     private PersistentParameters params;
 
@@ -47,24 +47,40 @@ public class ServerNotFoundFragment extends Fragment{
         super.onActivityCreated(savedInstanceState);
 
         TextView mBalanceTotal = (TextView) getActivity().findViewById(R.id.serverNotFoundBalanceAmount);
-        mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
-
         ImageView mBalanceQR = (ImageView) getActivity().findViewById(R.id.serverNotFoundQR);
-        Bitmap mBitmap = BTillController.generateQR(params.getWallet());
-        mBalanceQR.setImageBitmap(mBitmap);
-        mBalanceQR.setVisibility(View.VISIBLE);
-
         TextView mWalletAddress = (TextView) getActivity().findViewById(R.id.serverNotFoundWalletAddress);
-        mWalletAddress.setText(params.getWallet().currentReceiveAddress().toString());
+
+        if (params.getWallet() != null) {
+            mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+
+            Bitmap mBitmap = BTillController.generateQR(params.getWallet());
+            mBalanceQR.setImageBitmap(mBitmap);
+            mBalanceQR.setVisibility(View.VISIBLE);
+
+            mWalletAddress.setText(params.getWallet().currentReceiveAddress().toString());
+        }
+        else {
+            TextView mTitle = (TextView) getActivity().findViewById(R.id.serverNotFoundTitle);
+            mTitle.setText(R.string.walletError);
+
+            mBalanceTotal.setVisibility(View.GONE);
+            mBalanceQR.setVisibility(View.GONE);
+            mWalletAddress.setVisibility(View.GONE);
+        }
 
         Button mServerNotFoundButton = (Button) getActivity().findViewById(R.id.serverNotFoundRetryButton);
-        mServerNotFoundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //onBluetoothEnabled();
-                BluetoothAdapter.getDefaultAdapter().startDiscovery();
-            }
-        });
+        mServerNotFoundButton.setOnClickListener(this);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.serverNotFoundRetryButton:
+                BluetoothAdapter.getDefaultAdapter().startDiscovery();
+                break;
+            default:
+                break;
+        }
     }
 }

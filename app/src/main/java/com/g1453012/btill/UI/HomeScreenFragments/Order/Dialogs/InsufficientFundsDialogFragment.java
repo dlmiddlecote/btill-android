@@ -12,7 +12,7 @@ import com.g1453012.btill.R;
 /**
  * Created by dlmiddlecote on 12/03/15.
  */
-public class InsufficientFundsDialogFragment extends DialogFragment {
+public class InsufficientFundsDialogFragment extends DialogFragment implements View.OnClickListener {
 
     private static final String TAG = "InsufficientFundsDialog";
 
@@ -28,15 +28,15 @@ public class InsufficientFundsDialogFragment extends DialogFragment {
         mFundsDialog.setContentView(R.layout.custom_insufficient_funds_dialog);
 
         Button closeButton = (Button) mFundsDialog.findViewById(R.id.insufficientFundsButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mFundsDialog.dismiss();
-            }
-        });
+        closeButton.setOnClickListener(this);
 
         mFundsDialog.setCanceledOnTouchOutside(false);
 
         return mFundsDialog;
+    }
+
+    @Override
+    public void onClick(View v) {
+        getDialog().dismiss();
     }
 }

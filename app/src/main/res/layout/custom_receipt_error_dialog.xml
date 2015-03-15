@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:id="@+id/receiptErrorDialogLayout">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/receiptErrorDialogTitle"
+        android:id="@+id/receiptErrorDialogTitle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="25dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/receiptErrorDialogInfo"
+        android:id="@+id/receiptErrorDialogInfo"
+        android:layout_below="@+id/receiptErrorDialogTitle"
+        android:layout_alignStart="@+id/receiptErrorDialogTitle"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/receiptErrorDialogDisclaimer"
+        android:id="@+id/receiptErrorDialogDisclaimer"
+        android:layout_below="@+id/receiptErrorDialogInfo"
+        android:layout_alignStart="@+id/receiptErrorDialogInfo"
+        android:layout_marginRight="25dp"
+        android:layout_alignParentEnd="false"
+        android:textColor="@android:color/holo_green_dark"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm"
+        android:id="@+id/receiptErrorDialogOKButton"
+        android:layout_below="@+id/receiptErrorDialogDisclaimer"
+        android:layout_alignParentEnd="true"
+        style="?android:borderlessButtonStyle"
+        android:textColor="@android:color/holo_blue_dark"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:id="@+id/receiptErrorDialogCancelButton"
+        android:layout_below="@+id/receiptErrorDialogDisclaimer"
+        android:layout_toStartOf="@+id/receiptErrorDialogOKButton"
+        style="?android:borderlessButtonStyle"
+        android:textColor="@android:color/holo_red_dark"/>
+</RelativeLayout>

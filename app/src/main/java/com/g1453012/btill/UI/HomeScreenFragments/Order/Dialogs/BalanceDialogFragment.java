@@ -16,7 +16,7 @@ import com.g1453012.btill.R;
 
 import org.bitcoinj.core.Wallet;
 
-public class BalanceDialogFragment extends DialogFragment {
+public class BalanceDialogFragment extends DialogFragment implements View.OnClickListener {
 
     public Wallet getWallet() {
         return mWallet;
@@ -42,26 +42,46 @@ public class BalanceDialogFragment extends DialogFragment {
         mBalanceDialog.setContentView(R.layout.custom_balance_dialog);
 
         TextView mBalanceTotal = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogBalance);
-        Log.d("Address:", mWallet.currentReceiveAddress().toString());
-        mBalanceTotal.setText(mWallet.getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
 
         ImageView mBalanceQR = (ImageView) mBalanceDialog.findViewById(R.id.balanceDialogQR);
-        Bitmap mBitmap = BTillController.generateQR(mWallet);
-        mBalanceQR.setImageBitmap(mBitmap);
-        mBalanceQR.setVisibility(View.VISIBLE);
 
         TextView mBalanceAddress = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogAddress);
-        mBalanceAddress.setText(mWallet.currentReceiveAddress().toString());
 
-        Button dimissButton = (Button)mBalanceDialog.findViewById(R.id.balanceDialogButton);
-        dimissButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        if (mWallet != null) {
+
+            Log.d("Address:", mWallet.currentReceiveAddress().toString());
+            mBalanceTotal.setText(mWallet.getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+
+            Bitmap mBitmap = BTillController.generateQR(mWallet);
+            mBalanceQR.setImageBitmap(mBitmap);
+            mBalanceQR.setVisibility(View.VISIBLE);
+
+            mBalanceAddress.setText(mWallet.currentReceiveAddress().toString());
+        }
+        else {
+            TextView mBalanceTitle = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogTitle);
+            mBalanceTitle.setText(R.string.walletError);
+
+            mBalanceTotal.setVisibility(View.GONE);
+            mBalanceQR.setVisibility(View.GONE);
+            mBalanceAddress.setVisibility(View.GONE);
+        }
+
+        Button dismissButton = (Button)mBalanceDialog.findViewById(R.id.balanceDialogButton);
+        dismissButton.setOnClickListener(this);
 
         return mBalanceDialog;
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.balanceDialogButton:
+                dismiss();
+                break;
+            default:
+                break;
+        }
     }
 }

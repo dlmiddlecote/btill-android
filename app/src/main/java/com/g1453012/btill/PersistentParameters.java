@@ -40,6 +40,10 @@ public class PersistentParameters {
         mTx = tx;
     }
 
+    public void resetTx() {
+        mTx = null;
+    }
+
     public ReceiptStore getReceiptStore() {
         return mReceiptStore;
     }
