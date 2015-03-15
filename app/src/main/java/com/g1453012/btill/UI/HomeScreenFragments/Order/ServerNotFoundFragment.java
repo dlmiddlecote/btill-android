@@ -63,9 +63,9 @@ public class ServerNotFoundFragment extends Fragment implements View.OnClickList
             TextView mTitle = (TextView) getActivity().findViewById(R.id.serverNotFoundTitle);
             mTitle.setText(R.string.walletError);
 
-            mBalanceTotal.setVisibility(View.GONE);
-            mBalanceQR.setVisibility(View.GONE);
-            mWalletAddress.setVisibility(View.GONE);
+            mBalanceTotal.setVisibility(View.INVISIBLE);
+            mBalanceQR.setVisibility(View.INVISIBLE);
+            mWalletAddress.setVisibility(View.INVISIBLE);
         }
 
         Button mServerNotFoundButton = (Button) getActivity().findViewById(R.id.serverNotFoundRetryButton);
