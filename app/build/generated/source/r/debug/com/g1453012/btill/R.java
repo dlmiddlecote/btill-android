@@ -1059,11 +1059,12 @@ containing a value of this type.
         public static final int receipt_dialog_title=0x7f0a0025;
         public static final int retry=0x7f0a0026;
         public static final int searching=0x7f0a0027;
-        public static final int server_not_found_title=0x7f0a0028;
-        public static final int sign_button=0x7f0a0029;
-        public static final int topup=0x7f0a002a;
-        public static final int transaction_confirmed=0x7f0a002b;
-        public static final int walletError=0x7f0a002c;
+        public static final int searchingDialogText=0x7f0a0028;
+        public static final int server_not_found_title=0x7f0a0029;
+        public static final int sign_button=0x7f0a002a;
+        public static final int topup=0x7f0a002b;
+        public static final int transaction_confirmed=0x7f0a002c;
+        public static final int walletError=0x7f0a002d;
     }
     public static final class style {
         /**  Customize your theme here. 

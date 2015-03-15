@@ -40,6 +40,7 @@
     <string name="paymentRequestDialogInfo">Please press OK to resubmit your order</string>
 
     <string name="walletError">There is an issue with the wallet.</string>
+    <string name="searchingDialogText">Searching...</string>
 
 
 </resources>

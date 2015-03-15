@@ -227,7 +227,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
         setContentView(R.layout.activity_home_screen);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = OrderFragment.newInstance(params);
-        transaction.add(R.id.fragmentFrame, fragment);
+        transaction.replace(R.id.fragmentFrame, fragment);
         transaction.commit();
     }
 

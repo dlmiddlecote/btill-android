@@ -10,14 +10,12 @@ import android.widget.ProgressBar;
 import com.g1453012.btill.R;
 
 
-public class LoadingDialogFragment extends DialogFragment{
+public class LoadingDialogFragment extends DialogFragment {
 
     private static final String TAG = "LoadingDialog";
 
     public static LoadingDialogFragment newInstance() {
-        LoadingDialogFragment loadingDialogFragment = new LoadingDialogFragment();
-        //loadingDialogFragment.setMenu(menu);
-        return loadingDialogFragment;
+        return new LoadingDialogFragment();
     }
 
     @Override
