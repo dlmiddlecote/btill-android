@@ -121,6 +121,8 @@ public class BluetoothLauncher extends Application implements BootstrapNotifier,
 
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-
+        for (Beacon beacon: beacons) {
+            Log.d("BEACONS", "Distance: " + beacon.getDistance());
+        }
     }
 }

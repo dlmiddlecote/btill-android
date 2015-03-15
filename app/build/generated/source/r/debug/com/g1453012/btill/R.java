@@ -1047,22 +1047,23 @@ containing a value of this type.
         public static final int items=0x7f0a0019;
         public static final int no_bluetooth=0x7f0a001a;
         public static final int order_dialog_title=0x7f0a001b;
-        public static final int paymentRequestErrorDialogTitle=0x7f0a001c;
-        public static final int payment_dialog_error=0x7f0a001d;
-        public static final int payment_dialog_memo_title=0x7f0a001e;
-        public static final int payment_dialog_title=0x7f0a001f;
-        public static final int receiptErrorDialogDisclaimer=0x7f0a0020;
-        public static final int receiptErrorDialogInfo=0x7f0a0021;
-        public static final int receiptErrorDialogTitle=0x7f0a0022;
-        public static final int receipt_dialog_subtitle=0x7f0a0023;
-        public static final int receipt_dialog_title=0x7f0a0024;
-        public static final int retry=0x7f0a0025;
-        public static final int searching=0x7f0a0026;
-        public static final int server_not_found_title=0x7f0a0027;
-        public static final int sign_button=0x7f0a0028;
-        public static final int topup=0x7f0a0029;
-        public static final int transaction_confirmed=0x7f0a002a;
-        public static final int walletError=0x7f0a002b;
+        public static final int paymentRequestDialogInfo=0x7f0a001c;
+        public static final int paymentRequestErrorDialogTitle=0x7f0a001d;
+        public static final int payment_dialog_error=0x7f0a001e;
+        public static final int payment_dialog_memo_title=0x7f0a001f;
+        public static final int payment_dialog_title=0x7f0a0020;
+        public static final int receiptErrorDialogDisclaimer=0x7f0a0021;
+        public static final int receiptErrorDialogInfo=0x7f0a0022;
+        public static final int receiptErrorDialogTitle=0x7f0a0023;
+        public static final int receipt_dialog_subtitle=0x7f0a0024;
+        public static final int receipt_dialog_title=0x7f0a0025;
+        public static final int retry=0x7f0a0026;
+        public static final int searching=0x7f0a0027;
+        public static final int server_not_found_title=0x7f0a0028;
+        public static final int sign_button=0x7f0a0029;
+        public static final int topup=0x7f0a002a;
+        public static final int transaction_confirmed=0x7f0a002b;
+        public static final int walletError=0x7f0a002c;
     }
     public static final class style {
         /**  Customize your theme here. 

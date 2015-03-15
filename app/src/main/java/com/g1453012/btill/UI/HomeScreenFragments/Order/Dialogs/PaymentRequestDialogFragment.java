@@ -72,15 +72,9 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
         }
 
         TextView mOrderID = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogOrderID);
-        mOrderID.setText("" + mMenu.getOrderId());
+        mOrderID.setText(mBill.getDateAsString() + " - " + mBill.getOrderId());
 
         TextView mGBPAmount = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogPriceAmount);
-        /*GBP mTotal = new GBP(0);
-        for (MenuItem item: mMenu)
-        {
-            mTotal = mTotal.plus(item.getPrice().times(item.getQuantity()));
-        }
-        mGBPAmount.setText(mTotal.toString());*/
         mGBPAmount.setText(mBill.getGbpAmount().toString());
 
         TextView mBitcoinAmount = (TextView) mPaymentDialog.findViewById(R.id.paymentDialogBitcoinAmount);

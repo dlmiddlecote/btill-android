@@ -26,6 +26,8 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
 
     private Menu mMenu;
     private Receipt mReceipt;
+    private int mOrderID;
+    private String mOrderDate;
 
     public Menu getMenu() {
         return mMenu;
@@ -43,10 +45,20 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
         mReceipt = receipt;
     }
 
+    public void setOrderID(int orderID) {
+        mOrderID = orderID;
+    }
+
+    public void setOrderDate(String orderDate) {
+        mOrderDate = orderDate;
+    }
+
     public static ReceiptDialogFragment newInstance(PersistentParameters params, int ID) {
         ReceiptDialogFragment receiptDialogFragment = new ReceiptDialogFragment();
         receiptDialogFragment.setReceipt(params.getReceiptStore().getReceipt(ID));
         receiptDialogFragment.setMenu(params.getReceiptStore().getMenu(ID));
+        receiptDialogFragment.setOrderID(params.getBill().getOrderId());
+        receiptDialogFragment.setOrderDate(params.getBill().getDateAsString());
         return receiptDialogFragment;
     }
 
@@ -57,13 +69,13 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
         mReceiptDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         mReceiptDialog.setContentView(R.layout.custom_receipt_dialog);
 
-        TextView mOrderID = (TextView) mReceiptDialog.findViewById(R.id.receiptDialogOrderID);
+        TextView mOrderIDText = (TextView) mReceiptDialog.findViewById(R.id.receiptDialogOrderID);
         TextView mGBPAmount = (TextView) mReceiptDialog.findViewById(R.id.receiptDialogPriceAmount);
         TextView mBitcoinAmount = (TextView) mReceiptDialog.findViewById(R.id.receiptDialogBitcoinAmount);
         ListView mListView = (ListView) mReceiptDialog.findViewById(R.id.receiptDialogList);
         mListView.setAdapter(new OrderDialogAdapter(getActivity(), mMenu));
 
-        mOrderID.setText("" + mMenu.getOrderId());
+        mOrderIDText.setText(mOrderDate + " - " + mOrderID);
 
         if (mReceipt != null) {
             mGBPAmount.setText(mReceipt.getGbp().toString());

@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/receiptErrorDialogInfo"
+        android:text="@string/paymentRequestDialogInfo"
         android:id="@+id/paymentRequestErrorDialogInfo"
         android:layout_below="@+id/paymentRequestErrorDialogTitle"
         android:layout_alignStart="@+id/paymentRequestErrorDialogTitle"
