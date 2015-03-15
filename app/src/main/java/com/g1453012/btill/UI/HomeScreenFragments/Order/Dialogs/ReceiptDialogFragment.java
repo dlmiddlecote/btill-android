@@ -43,10 +43,10 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
         mReceipt = receipt;
     }
 
-    public static ReceiptDialogFragment newInstance(PersistentParameters params, int ID, Menu menu) {
+    public static ReceiptDialogFragment newInstance(PersistentParameters params, int ID) {
         ReceiptDialogFragment receiptDialogFragment = new ReceiptDialogFragment();
-        receiptDialogFragment.setReceipt(params.getReceiptStore().get(ID));
-        receiptDialogFragment.setMenu(menu);
+        receiptDialogFragment.setReceipt(params.getReceiptStore().getReceipt(ID));
+        receiptDialogFragment.setMenu(params.getReceiptStore().getMenu(ID));
         return receiptDialogFragment;
     }
 

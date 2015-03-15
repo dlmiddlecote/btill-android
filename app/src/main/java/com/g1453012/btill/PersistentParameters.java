@@ -1,6 +1,8 @@
 package com.g1453012.btill;
 
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.util.Log;
 
 import com.g1453012.btill.Shared.Bill;
 
@@ -9,11 +11,18 @@ import org.bitcoinj.core.Wallet;
 
 public class PersistentParameters {
 
+    private final static String TAG = "Persistent Parameters";
+
     private Wallet mWallet;
     private BluetoothSocket mSocket;
     private Bill mBill;
     private Transaction mTx;
-    private ReceiptStore mReceiptStore = new ReceiptStore();
+    private ReceiptStore mReceiptStore;
+
+    public PersistentParameters(Context context, String file) {
+        mReceiptStore = new ReceiptStore(context, file);
+        Log.d(TAG, "Made the Receipt");
+    }
 
     public Wallet getWallet() {
         return mWallet;

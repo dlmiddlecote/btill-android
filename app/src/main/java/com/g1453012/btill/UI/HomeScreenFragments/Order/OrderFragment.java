@@ -280,22 +280,23 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         params.setSocket(mConnectThread.getSocket());
                         Future<Receipt> receiptFuture = BTillController.processPayment(payment, bill.getGbpAmount(), bill.getCoinAmount(), params.getSocket());
                         Receipt receipt = null;
+                        final int nextID = params.getReceiptStore().next();
                         try {
                             receipt = receiptFuture.get();
-                            params.getReceiptStore().add(receipt, 0);
+                            params.getReceiptStore().add(receipt, menu, nextID);
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Getting the Receipt was interrupted");
                         } catch (ExecutionException e) {
                             Log.e(TAG, "Getting the Receipt had an Execution Exception");
                         }
-                        params.getWallet().commitTx(params.getTx());
+                        //params.getWallet().commitTx(params.getTx());
                         loadingFragment.dismiss();
                         //final Receipt finalReceipt = receipt;
-                        final Menu finalMenu = menu;
+                        //final Menu finalMenu = menu;
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(params, 0, finalMenu);
+                                DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(params, nextID);
                                 receiptFragment.setTargetFragment(mainFragment, RECEIPT_DIALOG);
                                 receiptFragment.show(getFragmentManager().beginTransaction(), "RECEIPT_DIALOG");
                             }

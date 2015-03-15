@@ -39,7 +39,6 @@ public class WalletKitThread extends Thread {
 
         Log.d(TAG, "WalletKitThread has started");
 
-        File checkpointFile = new File("checkpoints");
         InputStream checkpointStream = null;
         AssetManager assetManager = mContext.getAssets();
         try {

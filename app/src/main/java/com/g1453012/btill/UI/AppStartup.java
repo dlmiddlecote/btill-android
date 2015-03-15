@@ -39,9 +39,9 @@ import java.util.concurrent.Future;
 
 public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
-    private final static String TAG = "HomeScreen";
+    private final static String TAG = "AppStartup";
 
-    private PersistentParameters params = new PersistentParameters();
+    private PersistentParameters params;
     // Intent request codes
     private static final int REQUEST_ENABLE_BT = 2;
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -80,6 +80,8 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getActionBar().hide();
         super.onCreate(savedInstanceState);
+
+        params = new PersistentParameters(this, "receipt.store");
 
         beaconManager.bind(this);
 
@@ -282,8 +284,8 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             beaconManager.unbind(this);
             if (params.getWallet() != null) {
                 params.getWallet().cleanup();
-                params.getWallet().saveToFile(file);
-                Log.d(TAG, "Wallet Saved");
+                //params.getWallet().saveToFile(file);
+                //Log.d(TAG, "Wallet Saved");
             }
         } catch (IOException e) {
             Log.e(TAG, "Error saving file");
