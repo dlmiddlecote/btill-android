@@ -1,4 +1,4 @@
-package com.g1453012.btill.UI;
+package com.g1453012.btill.UI.HomeScreenFragments.Receipts;
 
 import android.content.Context;
 import android.util.Log;

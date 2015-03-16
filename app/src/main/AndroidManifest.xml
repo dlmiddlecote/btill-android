@@ -17,7 +17,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" >
 
         <activity
-            android:name=".UI.AppStartup"
+            android:name=".UI.AppStartup.AppStartup"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:launchMode="singleInstance">

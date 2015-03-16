@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.g1453012.btill.R;
+import com.g1453012.btill.UI.AppStartup.AppStartup;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.SearchingForShopFragment;
 
 /**

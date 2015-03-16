@@ -1,4 +1,4 @@
-package com.g1453012.btill.UI;
+package com.g1453012.btill.UI.AppStartup;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -13,16 +13,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.g1453012.btill.Bitcoin.WalletKitThread;
 import com.g1453012.btill.Bluetooth.ConnectThread;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
-import com.g1453012.btill.UI.HomeScreenFragments.Order.OrderFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.MainScreen;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.SearchingForShopFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.ServerNotFoundFragment;
 
@@ -82,8 +80,6 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        //getActionBar().hide();
         super.onCreate(savedInstanceState);
 
         params = new PersistentParameters(this, "receipt.store");
@@ -110,28 +106,6 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             mBluetoothAdapter.startDiscovery();
         }
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

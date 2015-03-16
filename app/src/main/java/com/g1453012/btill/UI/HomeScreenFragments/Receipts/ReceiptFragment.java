@@ -1,9 +1,7 @@
-package com.g1453012.btill.UI.HomeScreenFragments;
+package com.g1453012.btill.UI.HomeScreenFragments.Receipts;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +11,7 @@ import android.widget.ListView;
 
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
-import com.g1453012.btill.ReceiptStore;
-import com.g1453012.btill.Shared.Receipt;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.ReceiptDialogFragment;
-import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.ReceiptErrorDialogFragment;
-import com.g1453012.btill.UI.ReceiptListAdapter;
 
 /**
  * Created by Andy on 16/03/2015.

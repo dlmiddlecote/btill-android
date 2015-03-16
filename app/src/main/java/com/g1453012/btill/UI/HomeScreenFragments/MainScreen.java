@@ -1,17 +1,19 @@
-package com.g1453012.btill.UI;
+package com.g1453012.btill.UI.HomeScreenFragments;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
-
-import java.io.IOException;
 
 /**
  * Created by Andy on 16/03/2015.
@@ -51,5 +53,12 @@ public class MainScreen extends Fragment {
 
         ViewPager pager = (ViewPager) getActivity().findViewById(R.id.mainScreenPager);
         pager.setAdapter(new MainTabViewPagerAdapter(getFragmentManager(), params));
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)getActivity().findViewById(R.id.tabs);
+        tabStrip.setViewPager(pager);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

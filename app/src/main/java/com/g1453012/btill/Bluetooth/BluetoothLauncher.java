@@ -11,7 +11,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.g1453012.btill.R;
-import com.g1453012.btill.UI.AppStartup;
+import com.g1453012.btill.UI.AppStartup.AppStartup;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;

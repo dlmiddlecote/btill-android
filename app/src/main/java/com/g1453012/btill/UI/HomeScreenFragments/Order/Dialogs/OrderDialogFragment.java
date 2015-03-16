@@ -14,7 +14,7 @@ import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.GBP;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
-import com.g1453012.btill.UI.OrderDialogAdapter;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.OrderDialogAdapter;
 
 public class OrderDialogFragment extends DialogFragment implements View.OnClickListener{
 

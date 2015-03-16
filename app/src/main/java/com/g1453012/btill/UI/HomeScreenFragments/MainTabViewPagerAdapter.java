@@ -1,18 +1,14 @@
-package com.g1453012.btill.UI;
+package com.g1453012.btill.UI.HomeScreenFragments;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
 import com.g1453012.btill.PersistentParameters;
-import com.g1453012.btill.Shared.Receipt;
-import com.g1453012.btill.UI.HomeScreenFragments.BalanceFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Balance.BalanceFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.OrderFragment;
-import com.g1453012.btill.UI.HomeScreenFragments.ReceiptFragment;
-
-import java.util.ArrayList;
+import com.g1453012.btill.UI.HomeScreenFragments.Receipts.ReceiptFragment;
 
 /**
  * Created by Andy on 16/03/2015.
