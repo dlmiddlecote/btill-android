@@ -12,7 +12,8 @@
         android:text="Chicken and Chips"
         android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/price"
-        android:layout_alignStart="@+id/price" />
+        android:layout_alignStart="@+id/price"
+        android:padding="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -21,62 +22,53 @@
         android:id="@+id/price"
         android:gravity="center_vertical"
         android:text="£0.00"
-        android:layout_below="@+id/itemTitle"
-        android:layout_alignBottom="@+id/relativeLayout2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:padding="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/itemTitle" />
 
     <RelativeLayout
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:id="@+id/relativeLayout2"
-        android:layout_toRightOf="@+id/itemTitle"
-        android:layout_toEndOf="@+id/itemTitle">
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
 
         <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
             android:text="-"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/minusButton"
-            android:layout_gravity="right"
             android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/quantity"
-            android:layout_toStartOf="@+id/quantity" />
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/quantity"/>
 
         <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="0"
             android:id="@+id/quantity"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/plusButton"
-            android:layout_alignBottom="@+id/minusButton"
-            android:layout_toRightOf="@+id/plusButton" />
+            android:textAlignment="gravity"
+            android:gravity="center|center_vertical|center_horizontal"
+            android:layout_width="fill_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
 
         <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
             android:text="+"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/plusButton"
-            android:layout_alignParentEnd="false"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
             android:background="?android:attr/selectableItemBackground"
-            android:layout_alignParentBottom="false"
             android:gravity="center"
-            android:layout_alignParentLeft="false"
-            android:layout_marginLeft="121dp"
-            android:layout_marginTop="0dp" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/quantity" />
+
     </RelativeLayout>
 
 </RelativeLayout>

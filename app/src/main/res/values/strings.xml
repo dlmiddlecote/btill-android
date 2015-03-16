@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BTill</string>
+    <string name="app_name">B-Till</string>
     <string name="action_settings">Settings</string>
 
     <string name="no_bluetooth">Device does not support Bluetooth</string>
+
+    <string name="server_not_found_title">No B-Till shop was found</string>
+
 
     <string name="order_dialog_title">Confirm Your Order</string>
     <string name="confirm">OK</string>
@@ -13,7 +16,31 @@
     <string name="transaction_confirmed">Transaction Confirmed!</string>
 
     <string name="balance">Balance</string>
+    <string name="topup">Top-Up</string>
+    <string name="retry">Retry</string>
+    <string name="balance_topup_title">Balance/ Top-Up</string>
+    <string name="payment_dialog_title">Payment Request</string>
+    <string name="Price">Price</string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="id">Order ID</string>
+    <string name="payment_dialog_memo_title">Message</string>
+    <string name="sign_button">Sign</string>
+    <string name="payment_dialog_error">Error Processing Payment Request</string>
+    <string name="receipt_dialog_title">Thanks For Your Order!</string>
+    <string name="receipt_dialog_subtitle">Your items will be with you shortly</string>
+    <string name="items">Items</string>
+    <string name="searching">Searching for a B-Till enabled shop…</string>
+    <string name="insufficientFundsTitle">Uh Oh!</string>
+    <string name="insufficientFundsMessage">Unfortunately, you do not have enough Bitcoin to pay for this order.</string>
+    <string name="insufficientFundsSecondMessage">Please top-up and try again.</string>
+    <string name="receiptErrorDialogTitle">There has been an error receiving the receipt</string>
+    <string name="receiptErrorDialogInfo">Please press OK to resubmit your payment</string>
+    <string name="receiptErrorDialogDisclaimer">You will not be charged again</string>
+    <string name="paymentRequestErrorDialogTitle">There has been an error receiving the bill</string>
+    <string name="paymentRequestDialogInfo">Please press OK to resubmit your order</string>
 
+    <string name="walletError">There is an issue with the wallet.</string>
+    <string name="searchingDialogText">Searching...</string>
 
 
 </resources>

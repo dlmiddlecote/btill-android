@@ -1,13 +1,17 @@
 apply plugin: 'com.android.application'
+apply plugin: 'jacoco'
 
 android {
-    compileSdkVersion 21
+    signingConfigs {
+        config {
+        }
+    }
+    compileSdkVersion 19
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         applicationId "com.g1453012.btill"
         minSdkVersion 19
-        targetSdkVersion 21
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -16,28 +20,58 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            versionNameSuffix " Debug"
+            debuggable true
+            testCoverageEnabled = true
+        }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
-
-    compile ('org.bitcoinj:bitcoinj-core:0.12.2') {
+    repositories {
+        mavenCentral()
+    }
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:19.+'
+    compile('org.bitcoinj:bitcoinj-core:0.12.2') {
         exclude module: 'scrypt'
     }
-    compile 'com.google.code.gson:gson:1.7.2'
-
+    compile 'com.google.code.gson:gson:2.3'
     compile 'org.apache.commons:commons-lang3:3.3.2'
-
-    compile 'org.altbeacon:android-beacon-library:2+@aar'
+    compile 'org.altbeacon:android-beacon-library:2.1.3'
     compile 'com.google.zxing:core:3.2.0'
+    compile 'org.slf4j:slf4j-simple:1.7.10'
+}
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+}
+
+def coverageSourceDirs = [
+        '../app/src/main/java'
+]
 
 
-
-
-
-
+task jacocoTestReport(type: JacocoReport, dependsOn: "testDebug") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    reports {
+        html.enabled = true
+    }
+    classDirectories = fileTree(
+            dir: '../app/build/intermediates/classes/debug',
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*']
+    )
+    sourceDirectories = files(coverageSourceDirs)
+    additionalSourceDirs = files(coverageSourceDirs)
+    executionData = files('../app/build/jacoco/testDebug.exec')
 
 }
+
+
 

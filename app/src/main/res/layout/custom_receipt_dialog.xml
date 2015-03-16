@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/receipt_dialog_title"
+            android:id="@+id/receiptDialogTitle"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/receipt_dialog_subtitle"
+            android:id="@+id/receiptDialogSubtitle"
+            android:layout_below="@+id/receiptDialogTitle"
+            android:layout_alignStart="@+id/receiptDialogTitle"
+            android:layout_marginLeft="27dp"/>
+
+        <GridLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/receiptDialogSubtitle"
+            android:layout_alignStart="@+id/receiptDialogSubtitle"
+            android:layout_alignParentStart="true"
+            android:columnCount="2"
+            android:rowCount="3"
+            android:useDefaultMargins="true"
+            android:id="@+id/receiptDialogGrid"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/id"
+                android:id="@+id/receiptDialogIDTitle"
+                android:minWidth="55dp"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_column="0"
+                android:layout_row="0"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Order ID"
+                android:id="@+id/receiptDialogOrderID"
+                android:layout_row="0"
+                android:layout_column="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/Price"
+                android:id="@+id/receiptDialogPriceTitle"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:minWidth="55dp"
+                android:textColor="@android:color/holo_blue_dark"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Amount"
+                android:id="@+id/receiptDialogPriceAmount"
+                android:layout_column="1"
+                android:layout_row="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/bitcoin"
+                android:id="@+id/receiptDialogBitcoinTitle"
+                android:layout_column="0"
+                android:layout_row="2"
+                android:textColor="@android:color/holo_blue_dark"
+                android:minWidth="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Amount"
+                android:id="@+id/receiptDialogBitcoinAmount"
+                android:layout_column="1"
+                android:layout_row="2"/>
+        </GridLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/items"
+            android:id="@+id/receiptDialogItemsTitle"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_below="@+id/receiptDialogGrid"
+            android:layout_alignStart="@+id/receiptDialogGrid"
+            android:paddingStart="5dp"
+            android:layout_marginLeft="25dp"/>
+
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/receiptDialogList"
+            android:layout_below="@+id/receiptDialogItemsTitle"
+            android:layout_alignStart="@+id/receiptDialogItemsTitle"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="25dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirm"
+            android:id="@+id/receiptDialogButton"
+            android:layout_below="@+id/receiptDialogList"
+            android:layout_alignParentEnd="true"
+            style="?android:borderlessButtonStyle"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_weight="0"
+            android:layout_gravity="right"/>
+    </LinearLayout>
+
+</RelativeLayout>

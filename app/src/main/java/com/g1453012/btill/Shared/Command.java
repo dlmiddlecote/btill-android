@@ -1,4 +1,4 @@
-package btill.terminal.bluetooth;
+package com.g1453012.btill.Shared;
 
 public enum Command {
     REQUEST_MENU,

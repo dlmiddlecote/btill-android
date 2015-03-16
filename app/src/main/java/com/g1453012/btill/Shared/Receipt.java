@@ -42,4 +42,16 @@ public class Receipt {
         this.bitcoins = bitcoins;
         this.memo = memo;
     }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public GBP getGbp() {
+        return gbp;
+    }
+
+    public Coin getBitcoins() {
+        return bitcoins;
+    }
 }
