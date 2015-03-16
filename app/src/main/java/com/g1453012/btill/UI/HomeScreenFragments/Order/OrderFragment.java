@@ -74,6 +74,16 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public static OrderFragment newInstance(PersistentParameters parameters) {
         OrderFragment orderFragment = new OrderFragment();
         orderFragment.setParams(parameters);
+        Future<Menu> menuFuture = BTillController.getMenuFuture(parameters.getSocket());
+        try {
+            orderFragment.setMenu(menuFuture.get(10, TimeUnit.SECONDS));
+        }
+        catch (TimeoutException tEx) {
+            tEx.printStackTrace();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return orderFragment;
     }
 
@@ -92,24 +102,13 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
         Button cancelButton = (Button)getActivity().findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(this);
         Button balanceButton = (Button)getActivity().findViewById(R.id.balanceButton);
         balanceButton.setOnClickListener(this);
         Button nextButton = (Button)getActivity().findViewById(R.id.nextButton);
         nextButton.setOnClickListener(this);
-        Future<Menu> menuFuture = BTillController.getMenuFuture(params.getSocket());
 
-        try {
-            mMenu = menuFuture.get(10, TimeUnit.SECONDS);
-        }
-        catch (TimeoutException tEx) {
-            tEx.printStackTrace();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
         if (mMenu!=null) {
             mMenu.sortCategories();
             final ViewPager pager = (ViewPager)getActivity().findViewById(R.id.categoryPager);
@@ -391,5 +390,14 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+
+    public Menu getMenu() {
+        return mMenu;
+    }
+
+    public void setMenu(Menu mMenu) {
+        this.mMenu = mMenu;
     }
 }

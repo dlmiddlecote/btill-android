@@ -5,11 +5,14 @@ import android.content.Context;
 import android.util.Log;
 
 import com.g1453012.btill.Shared.Bill;
+import com.google.gson.Gson;
 
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Wallet;
 
-public class PersistentParameters {
+import java.io.Serializable;
+
+public class PersistentParameters{
 
     private final static String TAG = "Persistent Parameters";
 

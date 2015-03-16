@@ -13,7 +13,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.g1453012.btill.Bitcoin.WalletKitThread;
@@ -80,8 +82,8 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        getActionBar().hide();
+        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        //getActionBar().hide();
         super.onCreate(savedInstanceState);
 
         params = new PersistentParameters(this, "receipt.store");
@@ -224,10 +226,9 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
     private void generateMenuView() {
         blockLoadingView = true;
-        setContentView(R.layout.activity_home_screen);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment fragment = OrderFragment.newInstance(params);
-        transaction.replace(R.id.fragmentFrame, fragment);
+        Fragment fragment = MainScreen.newInstance(params);
+        transaction.replace(R.id.appStartupFragmentFrame, fragment);
         transaction.commit();
     }
 

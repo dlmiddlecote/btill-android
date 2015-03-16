@@ -12,12 +12,14 @@ import com.google.gson.reflect.TypeToken;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by dlmiddlecote on 13/03/15.
  */
-public class ReceiptStore {
+public class ReceiptStore{
 
     private static final String TAG = "ReceiptStore";
 
@@ -88,6 +90,16 @@ public class ReceiptStore {
         } catch (IOException e) {
             Log.e(TAG, "Didn't Permanently Reset");
         }
+    }
+
+    public int getSize() { return mReceipts.size(); }
+
+    public Set<Integer> getKeySet() { return mReceipts.keySet(); }
+
+    public Integer getID(int position) {
+        Set<Integer> keys = mReceipts.keySet();
+        Integer[] keyArray = (Integer[])keys.toArray();
+        return keyArray[position];
     }
 
 }

@@ -44,10 +44,10 @@ public class BalanceDialogFragmentTest extends ActivityInstrumentationTestCase2<
     public void testDialog() throws Exception {
         startFragment(fragment);
 
-        TextView mBalanceAddress = (TextView) fragment.getDialog().findViewById(R.id.balanceDialogAddress);
+        TextView mBalanceAddress = (TextView) fragment.getDialog().findViewById(R.id.balanceFragmentAddress);
         assertNotSame("Address", mBalanceAddress);
 
-        TextView mBalanceTotal = (TextView) fragment.getDialog().findViewById(R.id.balanceDialogBalance);
+        TextView mBalanceTotal = (TextView) fragment.getDialog().findViewById(R.id.balanceFragmentBalance);
         assertNotSame("Balance", mBalanceTotal);
 
         ImageView mBalanceQR = (ImageView) fragment.getDialog().findViewById(R.id.balanceDialogQR);
