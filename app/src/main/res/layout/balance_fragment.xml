@@ -42,4 +42,7 @@
         android:minLines="2"
         android:layout_margin="25dp"/>
 
+    <View style="@style/Divider"
+          android:layout_alignParentBottom="true"/>
+
 </RelativeLayout>

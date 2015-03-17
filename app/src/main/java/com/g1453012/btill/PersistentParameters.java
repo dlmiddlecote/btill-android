@@ -5,12 +5,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.g1453012.btill.Shared.Bill;
-import com.google.gson.Gson;
+import com.g1453012.btill.UI.HomeScreenFragments.Balance.BalanceFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Receipts.ReceiptFragment;
 
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Wallet;
-
-import java.io.Serializable;
 
 public class PersistentParameters{
 
@@ -21,9 +20,12 @@ public class PersistentParameters{
     private Bill mBill;
     private Transaction mTx;
     private ReceiptStore mReceiptStore;
+    private ReceiptFragment mReceiptFragment;
+    private BalanceFragment mBalanceFragment;
 
     public PersistentParameters(Context context, String file) {
         mReceiptStore = new ReceiptStore(context, file);
+        //mReceiptStore.resetStoreForTesting();
         Log.d(TAG, "Made the Receipt");
     }
 
@@ -51,6 +53,10 @@ public class PersistentParameters{
         return mReceiptStore;
     }
 
+    public void refreshReceiptStore() {
+        mReceiptStore.refreshReceipts();
+    }
+
     public BluetoothSocket getSocket() {
         return mSocket;
     }
@@ -69,5 +75,21 @@ public class PersistentParameters{
 
     public void resetBill() {
         mBill = null;
+    }
+
+    public ReceiptFragment getReceiptFragment() {
+        return mReceiptFragment;
+    }
+
+    public void setReceiptFragment(ReceiptFragment receiptFragment) {
+        mReceiptFragment = receiptFragment;
+    }
+
+    public BalanceFragment getBalanceFragment() {
+        return mBalanceFragment;
+    }
+
+    public void setBalanceFragment(BalanceFragment balanceFragment) {
+        mBalanceFragment = balanceFragment;
     }
 }

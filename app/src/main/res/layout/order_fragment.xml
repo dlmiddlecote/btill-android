@@ -25,6 +25,35 @@
 
         </android.support.v4.view.ViewPager>
 
+    <ImageButton
+        android:id="@+id/add_to_cart_button"
+        android:layout_width="@dimen/fab_button_diameter"
+        android:layout_height="@dimen/fab_button_diameter"
+        android:layout_marginRight="@dimen/fab_button_margin_right"
+        android:background="@drawable/fab_shape_blue"
+        android:src="@drawable/ic_add_shopping_cart_white_36dp"
+        android:tint="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/fab_button_margin_bottom"/>
+
+    <ImageButton
+        android:id="@+id/clear_cart_button"
+        android:layout_width="@dimen/fab_button_diameter"
+        android:layout_height="@dimen/fab_button_diameter"
+        android:background="@drawable/fab_shape_grey"
+        android:src="@drawable/ic_close_white_36dp"
+        android:tint="@android:color/white"
+        android:layout_alignTop="@+id/add_to_cart_button"
+        android:layout_toEndOf="@+id/relativeLayout"
+        android:layout_marginLeft="@dimen/fab_button_margin_right"
+        android:layout_marginBottom="@dimen/fab_button_margin_bottom"/>
+
+    <View style="@style/Divider"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentStart="true"/>
+
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -34,7 +63,8 @@
         android:id="@+id/relativeLayout"
         android:layout_alignParentBottom="true"
         android:paddingTop="0dp"
-        android:paddingBottom="0dp">
+        android:paddingBottom="0dp"
+        android:visibility="gone">
 
         <Button
             android:layout_width="wrap_content"
@@ -58,7 +88,8 @@
             android:layout_centerHorizontal="true"
             android:textColor="@color/white"
             android:textAppearance="@android:style/TextAppearance.Medium"
-            style="?android:borderlessButtonStyle"/>
+            style="?android:borderlessButtonStyle"
+            android:visibility="invisible"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -72,6 +103,7 @@
             android:textAppearance="@android:style/TextAppearance.Medium"
             style="?android:borderlessButtonStyle"
             android:paddingRight="10dp" />
+
     </RelativeLayout>
 
 </RelativeLayout>

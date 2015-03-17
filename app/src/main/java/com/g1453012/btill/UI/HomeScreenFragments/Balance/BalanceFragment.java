@@ -77,4 +77,30 @@ public class BalanceFragment extends Fragment {
             mBalanceAddress.setVisibility(View.GONE);
         }
     }
+
+    public void refresh() {
+        TextView mBalanceTotal = (TextView) getActivity().findViewById(R.id.balanceFragmentBalance);
+        ImageView mBalanceQR = (ImageView) getActivity().findViewById(R.id.balanceDialogQR);
+        TextView mBalanceAddress = (TextView) getActivity().findViewById(R.id.balanceFragmentAddress);
+
+        if (params.getWallet() != null) {
+
+            Log.d("Address:", params.getWallet().currentReceiveAddress().toString());
+            mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+
+            Bitmap mBitmap = BTillController.generateQR(params.getWallet());
+            mBalanceQR.setImageBitmap(mBitmap);
+            mBalanceQR.setVisibility(View.VISIBLE);
+
+            mBalanceAddress.setText(params.getWallet().currentReceiveAddress().toString());
+        }
+        else {
+            TextView mBalanceTitle = (TextView) getActivity().findViewById(R.id.balanceFragmentTitle);
+            mBalanceTitle.setText(R.string.walletError);
+
+            mBalanceTotal.setVisibility(View.GONE);
+            mBalanceQR.setVisibility(View.GONE);
+            mBalanceAddress.setVisibility(View.GONE);
+        }
+    }
 }

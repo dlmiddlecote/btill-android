@@ -1,6 +1,5 @@
 package com.g1453012.btill.UI.HomeScreenFragments;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -51,14 +50,39 @@ public class MainScreen extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ViewPager pager = (ViewPager) getActivity().findViewById(R.id.mainScreenPager);
+        final ViewPager pager = (ViewPager) getActivity().findViewById(R.id.mainScreenPager);
         pager.setAdapter(new MainTabViewPagerAdapter(getFragmentManager(), params));
         PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)getActivity().findViewById(R.id.tabs);
         tabStrip.setViewPager(pager);
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                pager.setCurrentItem(position, true);
+                if (position == 1) {
+                    params.getReceiptFragment().refreshAdapter();
+                }
+                else if (position == 1) {
+                    params.getBalanceFragment().refresh();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+
+
 }

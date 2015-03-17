@@ -3,6 +3,7 @@ package com.g1453012.btill.UI.HomeScreenFragments;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.g1453012.btill.PersistentParameters;
@@ -26,7 +27,9 @@ public class MainTabViewPagerAdapter extends FragmentPagerAdapter{
 
         this.orderFragment = OrderFragment.newInstance(params);
         this.receiptFragment = ReceiptFragment.newInstance(params);
+        params.setReceiptFragment(this.receiptFragment);
         this.balanceFragment = BalanceFragment.newInstance(params);
+        params.setBalanceFragment(this.balanceFragment);
     }
 
     @Override
@@ -37,7 +40,8 @@ public class MainTabViewPagerAdapter extends FragmentPagerAdapter{
             case 1:
                 return receiptFragment;
             default:
-                return balanceFragment;
+                Log.d("Changer", "New balance");
+                return BalanceFragment.newInstance(params);
         }
     }
 
@@ -63,4 +67,5 @@ public class MainTabViewPagerAdapter extends FragmentPagerAdapter{
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
     }
+
 }

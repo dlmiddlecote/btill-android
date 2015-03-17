@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.g1453012.btill.BTillController;
@@ -23,7 +24,6 @@ import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
 import com.g1453012.btill.Shared.Receipt;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment;
-import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.BalanceDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.InsufficientFundsDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
@@ -52,6 +52,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     static final int RECEIPT_DIALOG = 4;
     static final int INSUFFICIENT_FUNDS = 5;
     static final int RECEIPT_ERROR_DIALOG = 6;
+
 
     public PersistentParameters getParams() {
         return params;
@@ -102,12 +103,16 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Button cancelButton = (Button)getActivity().findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(this);
-        Button balanceButton = (Button)getActivity().findViewById(R.id.balanceButton);
-        balanceButton.setOnClickListener(this);
+        //Button cancelButton = (Button)getActivity().findViewById(R.id.cancelButton);
+        //cancelButton.setOnClickListener(this);
+        //Button balanceButton = (Button)getActivity().findViewById(R.id.balanceButton);
+        //balanceButton.setOnClickListener(this);
         Button nextButton = (Button)getActivity().findViewById(R.id.nextButton);
         nextButton.setOnClickListener(this);
+        ImageButton cartButton = (ImageButton)getActivity().findViewById(R.id.add_to_cart_button);
+        cartButton.setOnClickListener(this);
+        ImageButton cancelButton = (ImageButton)getActivity().findViewById(R.id.clear_cart_button);
+        cancelButton.setOnClickListener(this);
 
         if (mMenu!=null) {
             mMenu.sortCategories();
@@ -121,17 +126,22 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.cancelButton:
+            case R.id.clear_cart_button:
                 resetMenu();
                 Toast.makeText(getActivity(), "Menu reset", Toast.LENGTH_SHORT).show();
                 break;
 
-            case R.id.balanceButton:
+            /*case R.id.balanceButton:
                 DialogFragment balanceDialogFragment = BalanceDialogFragment.newInstance(params.getWallet());
                 balanceDialogFragment.show(getFragmentManager(), "BALANCE_DIALOG");
                 break;
 
             case R.id.nextButton:
+                DialogFragment orderDialogFragment = OrderDialogFragment.newInstance(mMenu);
+                orderDialogFragment.setTargetFragment(mainFragment, ORDER_DIALOG);
+                orderDialogFragment.show(getFragmentManager().beginTransaction(), "ORDER_DIALOG");
+                break;*/
+            case R.id.add_to_cart_button:
                 DialogFragment orderDialogFragment = OrderDialogFragment.newInstance(mMenu);
                 orderDialogFragment.setTargetFragment(mainFragment, ORDER_DIALOG);
                 orderDialogFragment.show(getFragmentManager().beginTransaction(), "ORDER_DIALOG");
@@ -189,6 +199,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         params.resetBill();
+                        params.refreshReceiptStore();
                         resetMenu();
                     default:
                         break;
@@ -400,4 +411,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     public void setMenu(Menu mMenu) {
         this.mMenu = mMenu;
     }
+
+
 }

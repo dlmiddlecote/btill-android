@@ -62,7 +62,7 @@ public class ReceiptStore{
         }
     }
 
-    public void read() throws Exception {
+    private void read() throws Exception {
         FileInputStream fileIn = mContext.openFileInput(mReceiptStoreFile);
         byte[] read = new byte[1048576];
         int bytes = fileIn.read(read);
@@ -70,11 +70,19 @@ public class ReceiptStore{
         mReceipts = new Gson().fromJson(string , new TypeToken<HashMap<Integer, Pair<Receipt, Menu>>>() {}.getType());
     }
 
-    public void write() throws IOException {
+    private void write() throws IOException {
         FileOutputStream fileOut = mContext.openFileOutput(mReceiptStoreFile, Context.MODE_PRIVATE);
         String mReceiptsJson = new Gson().toJson(mReceipts);
         fileOut.write(mReceiptsJson.getBytes());
         fileOut.close();
+    }
+
+    public void refreshReceipts() {
+        try {
+            read();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Receipt getReceipt(int ID) {
@@ -104,9 +112,6 @@ public class ReceiptStore{
     public Set<Integer> getKeySet() { return mReceipts.keySet(); }
 
     public Integer getID(int position) {
-        //Set<Integer> keys = mReceipts.keySet();
-        //Integer[] keyArray = (Integer[]) keys.toArray();
-        //return keyArray[position];
         return keys.get(position);
 
     }

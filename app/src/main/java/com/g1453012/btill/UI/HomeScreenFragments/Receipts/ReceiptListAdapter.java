@@ -16,7 +16,7 @@ import com.g1453012.btill.Shared.Receipt;
 /**
  * Created by Andy on 16/03/2015.
  */
-public class ReceiptListAdapter extends BaseAdapter{
+public class ReceiptListAdapter extends BaseAdapter {
 
     private static final String TAG = "ReceiptListAdapter";
 

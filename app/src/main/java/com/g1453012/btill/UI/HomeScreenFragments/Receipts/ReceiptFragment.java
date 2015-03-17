@@ -3,6 +3,7 @@ package com.g1453012.btill.UI.HomeScreenFragments.Receipts;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,15 @@ import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.ReceiptDialogFrag
 /**
  * Created by Andy on 16/03/2015.
  */
-public class ReceiptFragment extends Fragment{
+public class ReceiptFragment extends Fragment {
+
+    private final static String TAG = "ReceiptFragment";
 
     private PersistentParameters params;
+
+    private ReceiptListAdapter adapter;
+
+    private ListView listView = null;
 
     public PersistentParameters getParams() {
         return params;
@@ -50,6 +57,23 @@ public class ReceiptFragment extends Fragment{
         super.onActivityCreated(savedInstanceState);
 
         ListView listView = (ListView)getActivity().findViewById(R.id.receiptListView);
+        adapter = new ReceiptListAdapter(params.getReceiptStore(), getActivity());
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ReceiptDialogFragment receiptDialogFragment = ReceiptDialogFragment.newInstance(params, (int)id);
+                receiptDialogFragment.show(getFragmentManager().beginTransaction(), "RECEIPT");
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "OnResume Called");
+        params.refreshReceiptStore();
+        listView = (ListView) getActivity().findViewById(R.id.receiptListView);
         listView.setAdapter(new ReceiptListAdapter(params.getReceiptStore(), getActivity()));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -60,4 +84,11 @@ public class ReceiptFragment extends Fragment{
         });
     }
 
+    public void refreshAdapter() {
+        if (listView != null) {
+            listView.setAdapter(new ReceiptListAdapter(params.getReceiptStore(), getActivity()));
+            ReceiptListAdapter receiptListAdapter = (ReceiptListAdapter) listView.getAdapter();
+            receiptListAdapter.notifyDataSetChanged();
+        }
+    }
 }
