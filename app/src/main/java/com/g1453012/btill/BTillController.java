@@ -185,18 +185,18 @@ public class BTillController {
     }
 
 
-    public static Future<Receipt> processPayment(final Protos.Payment payment, final GBP gbpAmount, final Coin btcAmount, final BluetoothSocket socket) {
+    public static Future<Receipt> processPayment(final Protos.Payment payment, final GBP gbpAmount, final Coin btcAmount, final int orderId, final BluetoothSocket socket) {
         return pool.submit(new Callable<Receipt>() {
             @Override
             public Receipt call() throws Exception {
-                while (!sendPayment(payment, gbpAmount, btcAmount, socket)) {}
+                while (!sendPayment(payment, gbpAmount, btcAmount, orderId, socket)) {}
                 return getReceipt(socket);
             }
         });
     }
 
-    private static boolean sendPayment(Protos.Payment payment, GBP gbpAmount, Coin btcAmount, final BluetoothSocket socket) {
-        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(payment, gbpAmount, btcAmount).build(), socket);
+    private static boolean sendPayment(Protos.Payment payment, GBP gbpAmount, Coin btcAmount, int orderId, final BluetoothSocket socket) {
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(payment, gbpAmount, btcAmount, orderId).build(), socket);
         try {
             return writeFuture.get().booleanValue();
         }

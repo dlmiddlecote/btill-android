@@ -13,11 +13,13 @@ public class SignedBill {
     private byte[] serialisedPayment;
     private GBP gbpAmount;
     private Coin btcAmount;
+    private int orderId;
 
-    public SignedBill(Protos.Payment payment, GBP gbpAmount, Coin btcAmount) {
+    public SignedBill(Protos.Payment payment, GBP gbpAmount, Coin btcAmount, int orderId) {
         serialisedPayment = payment.toByteArray();
         this.gbpAmount = gbpAmount;
         this.btcAmount = btcAmount;
+        this.orderId = orderId;
     }
 
     public byte[] getSerialisedPayment() {
@@ -34,5 +36,9 @@ public class SignedBill {
 
     public Coin getBtcAmount() {
         return btcAmount;
+    }
+
+    public int getOrderId() {
+        return orderId;
     }
 }

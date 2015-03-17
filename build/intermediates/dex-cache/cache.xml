@@ -2,60 +2,11 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Andy\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67">
-        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-a1871028811456ae39f53fb1f638302252b6f498.jar" />
-    </item>
-    <item
-        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\org.slf4j\slf4j-simple\1.7.10\5b0027a74461a877acb12602ac141da9161304dd\slf4j-simple-1.7.10.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="5b0027a74461a877acb12602ac141da9161304dd">
-        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\slf4j-simple-1.7.10-05c607e7772394edf4ea97e638cd8cf9e7edd5d4.jar" />
-    </item>
-    <item
-        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.3\5fc52c41ef0239d1093a1eb7c3697036183677ce\gson-2.3.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce">
-        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\gson-2.3-2203476d1f4346aad04138d7346875fa42ef7ead.jar" />
-    </item>
-    <item
-        jar="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\exploded-aar\com.astuetz\pagerslidingtabstrip\1.0.1\classes.jar"
+        jar="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/exploded-aar/com.astuetz/pagerslidingtabstrip/1.0.1/classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="7912610ed96381c25c36d986eba422731b9641b6">
-        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\classes-2c26494300f21686b4813c15b01c06b22d374df1.jar" />
-    </item>
-    <item
-        jar="C:\Users\Andy\.gradle\caches\modules-2\files-2.1\org.slf4j\slf4j-api\1.7.10\5b338f206827d88acd890739f400a9b7664e5984\slf4j-api-1.7.10.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="5b338f206827d88acd890739f400a9b7664e5984">
-        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\slf4j-api-1.7.10-3459d8fca7526db87d7985564e23e45da339e9a1.jar" />
-    </item>
-    <item
-        jar="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\exploded-aar\org.altbeacon\android-beacon-library\2.1.3\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="54ff0c82277895632a46392a3663e73645ac2b0d">
-        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\classes-9da451ffa7f3cd67e224b8728d0048b7f1982139.jar" />
-    </item>
-    <item
-        jar="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\jacoco\jacocoagent.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="e084e6b8a000c2a3fd71fa1c6f603f47f90ea7c4">
-        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\jacocoagent-c3d9ab63989ff253097c45d63940fd4e66d6976d.jar" />
-    </item>
-    <item
-        jar="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28">
-        <dex dex="C:\Users\Andy\AndroidStudioProjects\btill-android-app\app\build\intermediates\pre-dexed\debug\classes-64bb4d486f29e0ac1548667b5e2d49d6245a233f.jar" />
+        <dex dex="/Volumes/Nifty/AndroidDevelopment/BTill/app/build/intermediates/pre-dexed/debug/classes-d45579faaf798d6f74aa27dd707eaadc9ccc66a0.jar" />
     </item>
 
 </items>

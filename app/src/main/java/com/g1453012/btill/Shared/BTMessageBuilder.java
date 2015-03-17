@@ -42,9 +42,9 @@ public class BTMessageBuilder {
         this.header = status.toString();
     }*/
 
-    public BTMessageBuilder(Protos.Payment payment, GBP gbpAmount, Coin btcAmount) {
+    public BTMessageBuilder(Protos.Payment payment, GBP gbpAmount, Coin btcAmount, int orderId) {
         this.header = "SETTLE_BILL";
-        String json = new Gson().toJson(new SignedBill(payment, gbpAmount, btcAmount), SignedBill.class);
+        String json = new Gson().toJson(new SignedBill(payment, gbpAmount, btcAmount, orderId), SignedBill.class);
         this.body = json.getBytes();
         //this.body = payment.toByteArray();
     }

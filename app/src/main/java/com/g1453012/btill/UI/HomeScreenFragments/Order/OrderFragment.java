@@ -1,6 +1,5 @@
 package com.g1453012.btill.UI.HomeScreenFragments.Order;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -325,7 +324,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 try {
                     if (connectFuture.get()) {
                         params.setSocket(mConnectThread.getSocket());
-                        Future<Receipt> receiptFuture = BTillController.processPayment(payment, bill.getGbpAmount(), bill.getCoinAmount(), params.getSocket());
+                        Future<Receipt> receiptFuture = BTillController.processPayment(payment, bill.getGbpAmount(), bill.getCoinAmount(), bill.getOrderId(), params.getSocket());
                         Receipt receipt = null;
                         final int nextID = params.getReceiptStore().next();
                         try {

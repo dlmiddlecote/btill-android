@@ -1,18 +1,29 @@
 package com.g1453012.btill.Shared;
 
 
-import org.bitcoinj.core.Coin;
+import com.google.protobuf.InvalidProtocolBufferException;
 
+import org.bitcoin.protocols.payments.Protos;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.protocols.payments.PaymentProtocol;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Receipt {
-    public static Receipt receipt(GBP gbp, Coin bitcoins, String memo) {
-        return new Receipt(new Date(), gbp, bitcoins,memo );
-    }
 
+    private final GBP gbp;
+    private final Coin bitcoins;
+    private byte[] paymentACKbytes = null;
+    private Date date;
+    private int orderId;
 
-    public Date getDate() {
-        return date;
+    public Receipt(Protos.Payment forPayment, GBP amount, Coin btcAmount, Date date, int orderId) {
+        paymentACKbytes = PaymentProtocol.createPaymentAck(forPayment, "TRANSACTION SUCCEEDED:\n" + forPayment.getMemo()).toByteArray();
+        gbp = amount;
+        bitcoins = btcAmount;
+        this.date = date;
+        this.orderId = orderId;
     }
 
     public GBP getGbp() {
@@ -23,23 +34,21 @@ public class Receipt {
         return bitcoins;
     }
 
-    public String getMemo() {
-        return memo;
+    public String getDateAsString() {
+        SimpleDateFormat format = new SimpleDateFormat("d/M/y HH:mm");
+        return format.format(date);
     }
 
-    private final Date date;
+    public int getOrderId() {
+        return orderId;
+    }
 
-    private final GBP gbp;
-    private final Coin bitcoins;
-    private final String memo;
-
-
-
-
-    public Receipt(Date date, GBP gbp, Coin bitcoins, String memo) {
-        this.date = date;
-        this.gbp = gbp;
-        this.bitcoins = bitcoins;
-        this.memo = memo;
+    public Protos.PaymentACK getPaymentACK() {
+        try {
+            return Protos.PaymentACK.parseFrom(paymentACKbytes);
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -1,13 +1,11 @@
 package com.g1453012.btill.UI.HomeScreenFragments.Receipts;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.g1453012.btill.R;
@@ -15,12 +13,12 @@ import com.g1453012.btill.ReceiptStore;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.Receipt;
 
-import java.util.Set;
-
 /**
  * Created by Andy on 16/03/2015.
  */
 public class ReceiptListAdapter extends BaseAdapter{
+
+    private static final String TAG = "ReceiptListAdapter";
 
     ReceiptStore receiptStore;
     LayoutInflater layoutInflater;
@@ -58,10 +56,11 @@ public class ReceiptListAdapter extends BaseAdapter{
             TextView title = (TextView)rowView.findViewById(R.id.receiptListItemTitle);
             TextView date = (TextView)rowView.findViewById(R.id.receiptListItemDate);
             TextView amount = (TextView)rowView.findViewById(R.id.receiptListItemAmount);
-
-            title.setText("Dummy Restaurant"); //programmatic
-            date.setText(receiptStore.getReceipt(receiptStore.getID(position)).getDate().toString());
-            amount.setText(receiptStore.getReceipt(receiptStore.getID(position)).getGbp().toString());
+            if (receiptStore.getSize() > 0) {
+                title.setText("Dummy Restaurant"); //programmatic
+                date.setText(receiptStore.getReceipt(receiptStore.getID(position)).getDateAsString());
+                amount.setText(receiptStore.getReceipt(receiptStore.getID(position)).getGbp().toString());
+            }
         }
 
         return rowView;

@@ -57,8 +57,8 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
         ReceiptDialogFragment receiptDialogFragment = new ReceiptDialogFragment();
         receiptDialogFragment.setReceipt(params.getReceiptStore().getReceipt(ID));
         receiptDialogFragment.setMenu(params.getReceiptStore().getMenu(ID));
-        receiptDialogFragment.setOrderID(params.getBill().getOrderId());
-        receiptDialogFragment.setOrderDate(params.getBill().getDateAsString());
+        receiptDialogFragment.setOrderID(params.getReceiptStore().getReceipt(ID).getOrderId());
+        receiptDialogFragment.setOrderDate(params.getReceiptStore().getReceipt(ID).getDateAsString());
         return receiptDialogFragment;
     }
 

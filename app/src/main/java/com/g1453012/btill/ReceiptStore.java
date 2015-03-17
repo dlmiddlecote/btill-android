@@ -12,7 +12,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -26,6 +26,7 @@ public class ReceiptStore{
     private HashMap<Integer, Pair<Receipt, Menu>> mReceipts;
     private String mReceiptStoreFile;
     private Context mContext;
+    ArrayList<Integer> keys;
 
     public ReceiptStore(Context context, String file) {
         Log.d(TAG, "Inside Constructor");
@@ -38,11 +39,17 @@ public class ReceiptStore{
             Log.d(TAG, "Error loading from file");
             mReceipts = new HashMap<Integer, Pair<Receipt, Menu>>();
         }
+        keys = new ArrayList<Integer>();
+        for (HashMap.Entry<Integer, Pair<Receipt, Menu>> entry : mReceipts.entrySet()) {
+            keys.add(entry.getKey());
+            Log.d(TAG, "" + entry.getKey());
+        }
     }
 
     public void add(Receipt receipt, Menu menu, int id) {
         if (receipt != null) {
             mReceipts.put(id, new Pair(receipt, menu));
+            keys.add(id);
             try {
                 write();
                 Log.d(TAG, "Written Receipt Store");
@@ -97,9 +104,11 @@ public class ReceiptStore{
     public Set<Integer> getKeySet() { return mReceipts.keySet(); }
 
     public Integer getID(int position) {
-        Set<Integer> keys = mReceipts.keySet();
-        Integer[] keyArray = (Integer[])keys.toArray();
-        return keyArray[position];
+        //Set<Integer> keys = mReceipts.keySet();
+        //Integer[] keyArray = (Integer[]) keys.toArray();
+        //return keyArray[position];
+        return keys.get(position);
+
     }
 
 }
