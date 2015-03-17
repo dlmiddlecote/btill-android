@@ -64,6 +64,7 @@ public class Bill implements Serializable {
         buildPaymentRequest();
     }
 
+
     public GBP getGbpAmount() {
         return gbpAmount;
     }
