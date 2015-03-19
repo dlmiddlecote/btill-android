@@ -132,17 +132,40 @@
             android:layout_marginLeft="25dp"
             android:layout_weight="1"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/confirm"
-            android:id="@+id/receiptDialogButton"
-            android:layout_below="@+id/receiptDialogList"
-            android:layout_alignParentEnd="true"
-            style="?android:borderlessButtonStyle"
-            android:textColor="@android:color/holo_blue_dark"
-            android:layout_weight="0"
-            android:layout_gravity="right"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/confirm"
+                    android:id="@+id/receiptDialogButton"
+                    android:layout_alignParentEnd="true"
+                    style="?android:borderlessButtonStyle"
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:layout_weight="1"
+                    android:layout_gravity="right"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete"
+                    android:id="@+id/receiptDialogDeleteButton"
+                    style="?android:borderlessButtonStyle"
+                    android:textColor="@color/myComplementaryOrange"
+                    android:layout_alignParentTop="true"
+                    android:layout_toStartOf="@+id/receiptDialogButton"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

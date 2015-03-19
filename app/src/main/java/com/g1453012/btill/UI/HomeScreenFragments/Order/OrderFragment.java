@@ -199,7 +199,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         params.resetBill();
-                        params.refreshReceiptStore();
                         resetMenu();
                     default:
                         break;
@@ -359,7 +358,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(params, nextID);
+                                    DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(params, nextID, false);
                                     receiptFragment.setTargetFragment(mainFragment, RECEIPT_DIALOG);
                                     receiptFragment.show(getFragmentManager().beginTransaction(), "RECEIPT_DIALOG");
                                 }

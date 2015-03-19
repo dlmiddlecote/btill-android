@@ -56,29 +56,13 @@ public class ReceiptFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListView listView = (ListView)getActivity().findViewById(R.id.receiptListView);
+        ListView listView = (ListView) getActivity().findViewById(R.id.receiptListView);
         adapter = new ReceiptListAdapter(params.getReceiptStore(), getActivity());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ReceiptDialogFragment receiptDialogFragment = ReceiptDialogFragment.newInstance(params, (int)id);
-                receiptDialogFragment.show(getFragmentManager().beginTransaction(), "RECEIPT");
-            }
-        });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "OnResume Called");
-        params.refreshReceiptStore();
-        listView = (ListView) getActivity().findViewById(R.id.receiptListView);
-        listView.setAdapter(new ReceiptListAdapter(params.getReceiptStore(), getActivity()));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ReceiptDialogFragment receiptDialogFragment = ReceiptDialogFragment.newInstance(params, (int)id);
+                ReceiptDialogFragment receiptDialogFragment = ReceiptDialogFragment.newInstance(params, (int)id, true);
                 receiptDialogFragment.show(getFragmentManager().beginTransaction(), "RECEIPT");
             }
         });
@@ -86,9 +70,12 @@ public class ReceiptFragment extends Fragment {
 
     public void refreshAdapter() {
         if (listView != null) {
-            listView.setAdapter(new ReceiptListAdapter(params.getReceiptStore(), getActivity()));
-            ReceiptListAdapter receiptListAdapter = (ReceiptListAdapter) listView.getAdapter();
-            receiptListAdapter.notifyDataSetChanged();
+            Log.d(TAG, "Refreshing view");
+            adapter.setReceiptStore(params.getReceiptStore().refreshReceipts());
+            ((ReceiptListAdapter) listView.getAdapter()).notifyDataSetChanged();
+            //adapter = new ReceiptListAdapter(params.getReceiptStore().refreshReceipts(), getActivity());
+            //listView.setAdapter(adapter);
+
         }
     }
 }

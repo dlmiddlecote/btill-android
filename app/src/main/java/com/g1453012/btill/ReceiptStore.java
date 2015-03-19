@@ -13,8 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by dlmiddlecote on 13/03/15.
@@ -23,7 +22,7 @@ public class ReceiptStore{
 
     private static final String TAG = "ReceiptStore";
 
-    private HashMap<Integer, Pair<Receipt, Menu>> mReceipts;
+    private TreeMap<Integer, Pair<Receipt, Menu>> mReceipts;
     private String mReceiptStoreFile;
     private Context mContext;
     ArrayList<Integer> keys;
@@ -37,10 +36,10 @@ public class ReceiptStore{
             Log.d(TAG, "Read Receipt Store");
         } catch (Exception e) {
             Log.d(TAG, "Error loading from file");
-            mReceipts = new HashMap<Integer, Pair<Receipt, Menu>>();
+            mReceipts = new TreeMap<Integer, Pair<Receipt, Menu>>();
         }
         keys = new ArrayList<Integer>();
-        for (HashMap.Entry<Integer, Pair<Receipt, Menu>> entry : mReceipts.entrySet()) {
+        for (TreeMap.Entry<Integer, Pair<Receipt, Menu>> entry : mReceipts.entrySet()) {
             keys.add(entry.getKey());
             Log.d(TAG, "" + entry.getKey());
         }
@@ -53,12 +52,23 @@ public class ReceiptStore{
             try {
                 write();
                 Log.d(TAG, "Written Receipt Store");
-                for (int i = 1; i <= mReceipts.size(); i++) {
+                /*for (int i = 1; i <= mReceipts.size(); i++) {
                     Log.d(TAG, mReceipts.get(i).first.getGbp().toString());
-                }
+                }*/
             } catch (IOException e) {
                 Log.e(TAG, "Didn't write");
             }
+        }
+    }
+
+    public void remove(int id) {
+        Log.d(TAG, "Inside Remove");
+        mReceipts.remove(id);
+        try {
+            write();
+            Log.d(TAG, "Written Receipt Store");
+        } catch (IOException e) {
+            Log.e(TAG, "Didn't write");
         }
     }
 
@@ -67,7 +77,7 @@ public class ReceiptStore{
         byte[] read = new byte[1048576];
         int bytes = fileIn.read(read);
         String string = new String(read, 0, bytes);
-        mReceipts = new Gson().fromJson(string , new TypeToken<HashMap<Integer, Pair<Receipt, Menu>>>() {}.getType());
+        mReceipts = new Gson().fromJson(string , new TypeToken<TreeMap<Integer, Pair<Receipt, Menu>>>() {}.getType());
     }
 
     private void write() throws IOException {
@@ -77,12 +87,9 @@ public class ReceiptStore{
         fileOut.close();
     }
 
-    public void refreshReceipts() {
-        try {
-            read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public ReceiptStore refreshReceipts() {
+        Log.d(TAG, "Refreshing Receipts");
+        return new ReceiptStore(mContext, mReceiptStoreFile);
     }
 
     public Receipt getReceipt(int ID) {
@@ -98,7 +105,7 @@ public class ReceiptStore{
     }
 
     public void resetStoreForTesting() {
-        mReceipts = new HashMap<Integer, Pair<Receipt, Menu>>();
+        mReceipts = new TreeMap<Integer, Pair<Receipt, Menu>>();
         try {
             write();
             Log.d(TAG, "Reset Receipt Store");
@@ -108,8 +115,6 @@ public class ReceiptStore{
     }
 
     public int getSize() { return mReceipts.size(); }
-
-    public Set<Integer> getKeySet() { return mReceipts.keySet(); }
 
     public Integer getID(int position) {
         return keys.get(position);

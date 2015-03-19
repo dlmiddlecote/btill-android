@@ -23,6 +23,10 @@ import org.bitcoinj.core.Wallet;
 public class BalanceFragment extends Fragment {
 
     private PersistentParameters params;
+    private TextView mBalanceTotal;
+    private ImageView mBalanceQR;
+    private TextView mBalanceAddress;
+    private TextView mBalanceTitle;
 
     public PersistentParameters getParams() {
         return params;
@@ -53,9 +57,9 @@ public class BalanceFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        TextView mBalanceTotal = (TextView) getActivity().findViewById(R.id.balanceFragmentBalance);
-        ImageView mBalanceQR = (ImageView) getActivity().findViewById(R.id.balanceDialogQR);
-        TextView mBalanceAddress = (TextView) getActivity().findViewById(R.id.balanceFragmentAddress);
+        mBalanceTotal = (TextView) getActivity().findViewById(R.id.balanceFragmentBalance);
+        mBalanceQR = (ImageView) getActivity().findViewById(R.id.balanceDialogQR);
+        mBalanceAddress = (TextView) getActivity().findViewById(R.id.balanceFragmentAddress);
 
         if (params.getWallet() != null) {
 
@@ -69,7 +73,7 @@ public class BalanceFragment extends Fragment {
             mBalanceAddress.setText(params.getWallet().currentReceiveAddress().toString());
         }
         else {
-            TextView mBalanceTitle = (TextView) getActivity().findViewById(R.id.balanceFragmentTitle);
+            mBalanceTitle = (TextView) getActivity().findViewById(R.id.balanceFragmentTitle);
             mBalanceTitle.setText(R.string.walletError);
 
             mBalanceTotal.setVisibility(View.GONE);
@@ -79,28 +83,24 @@ public class BalanceFragment extends Fragment {
     }
 
     public void refresh() {
-        TextView mBalanceTotal = (TextView) getActivity().findViewById(R.id.balanceFragmentBalance);
-        ImageView mBalanceQR = (ImageView) getActivity().findViewById(R.id.balanceDialogQR);
-        TextView mBalanceAddress = (TextView) getActivity().findViewById(R.id.balanceFragmentAddress);
 
-        if (params.getWallet() != null) {
+        if (mBalanceTotal != null) {
+            if (params.getWallet() != null) {
 
-            Log.d("Address:", params.getWallet().currentReceiveAddress().toString());
-            mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+                mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
 
-            Bitmap mBitmap = BTillController.generateQR(params.getWallet());
-            mBalanceQR.setImageBitmap(mBitmap);
-            mBalanceQR.setVisibility(View.VISIBLE);
+                Bitmap mBitmap = BTillController.generateQR(params.getWallet());
+                mBalanceQR.setImageBitmap(mBitmap);
+                mBalanceQR.setVisibility(View.VISIBLE);
 
-            mBalanceAddress.setText(params.getWallet().currentReceiveAddress().toString());
-        }
-        else {
-            TextView mBalanceTitle = (TextView) getActivity().findViewById(R.id.balanceFragmentTitle);
-            mBalanceTitle.setText(R.string.walletError);
+                mBalanceAddress.setText(params.getWallet().currentReceiveAddress().toString());
+            } else {
+                mBalanceTitle.setText(R.string.walletError);
 
-            mBalanceTotal.setVisibility(View.GONE);
-            mBalanceQR.setVisibility(View.GONE);
-            mBalanceAddress.setVisibility(View.GONE);
+                mBalanceTotal.setVisibility(View.GONE);
+                mBalanceQR.setVisibility(View.GONE);
+                mBalanceAddress.setVisibility(View.GONE);
+            }
         }
     }
 }

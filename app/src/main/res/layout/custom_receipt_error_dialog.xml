@@ -36,7 +36,7 @@
         android:layout_alignStart="@+id/receiptErrorDialogInfo"
         android:layout_marginRight="25dp"
         android:layout_alignParentEnd="false"
-        android:textColor="@android:color/holo_green_dark"/>
+        android:textColor="@color/myGreen"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -56,5 +56,5 @@
         android:layout_below="@+id/receiptErrorDialogDisclaimer"
         android:layout_toStartOf="@+id/receiptErrorDialogOKButton"
         style="?android:borderlessButtonStyle"
-        android:textColor="@android:color/holo_red_dark"/>
+        android:textColor="@color/myComplementaryOrange"/>
 </RelativeLayout>

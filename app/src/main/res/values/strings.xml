@@ -41,6 +41,7 @@
 
     <string name="walletError">There is an issue with the wallet.</string>
     <string name="searchingDialogText">Searching...</string>
+    <string name="delete">Delete</string>
 
 
 </resources>

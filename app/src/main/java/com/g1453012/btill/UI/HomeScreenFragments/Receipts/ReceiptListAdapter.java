@@ -65,4 +65,8 @@ public class ReceiptListAdapter extends BaseAdapter {
 
         return rowView;
     }
+
+    public void setReceiptStore(ReceiptStore receiptStore) {
+        this.receiptStore = receiptStore;
+    }
 }

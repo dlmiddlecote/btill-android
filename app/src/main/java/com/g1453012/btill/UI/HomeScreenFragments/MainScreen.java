@@ -52,7 +52,7 @@ public class MainScreen extends Fragment {
 
         final ViewPager pager = (ViewPager) getActivity().findViewById(R.id.mainScreenPager);
         pager.setAdapter(new MainTabViewPagerAdapter(getFragmentManager(), params));
-        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)getActivity().findViewById(R.id.tabs);
+        final PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)getActivity().findViewById(R.id.tabs);
         tabStrip.setViewPager(pager);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -63,11 +63,15 @@ public class MainScreen extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 pager.setCurrentItem(position, true);
+                tabStrip.notifyDataSetChanged();
                 if (position == 1) {
+                    //params.getReceiptStore().refreshReceipts();
                     params.getReceiptFragment().refreshAdapter();
+                    pager.getAdapter().notifyDataSetChanged();
                 }
-                else if (position == 1) {
+                else if (position == 2) {
                     params.getBalanceFragment().refresh();
+                    //pager.setOffscreenPageLimit();
                 }
             }
 

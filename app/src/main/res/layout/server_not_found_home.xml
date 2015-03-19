@@ -12,7 +12,8 @@
         android:id="@+id/serverNotFoundTitle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:textColor="@color/myDarkerBlue"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -22,7 +23,8 @@
         android:id="@+id/serverNotFoundBalanceTitle"
         android:layout_below="@+id/serverNotFoundTitle"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="40dp"
+        android:textColor="@color/myBlue"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,7 +34,8 @@
         android:id="@+id/serverNotFoundBalanceAmount"
         android:layout_below="@+id/serverNotFoundBalanceTitle"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"/>
+        android:layout_marginTop="25dp"
+        android:textColor="@color/myBlue"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -42,7 +45,8 @@
         android:id="@+id/serverNotFoundTopUpTitle"
         android:layout_below="@+id/serverNotFoundBalanceAmount"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"/>
+        android:layout_marginTop="25dp"
+        android:textColor="@color/myBlue"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -65,7 +69,8 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:textColor="@color/myBlue"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -75,5 +80,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="25dp"
-        style="?android:borderlessButtonStyle"/>
+        style="?android:borderlessButtonStyle"
+        android:textColor="@color/myDarkerBlue"/>
 </RelativeLayout>

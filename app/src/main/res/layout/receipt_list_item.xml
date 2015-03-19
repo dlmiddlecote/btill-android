@@ -21,7 +21,8 @@
         android:layout_below="@+id/receiptListItemTitle"
         android:layout_alignStart="@+id/receiptListItemTitle"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/myBlueGrey"/>
 
     <TextView
         android:layout_width="wrap_content"

@@ -25,9 +25,12 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
     private static final String TAG = "ReceiptFragment";
 
     private Menu mMenu;
+    private PersistentParameters params;
     private Receipt mReceipt;
+    private int receiptStoreID;
     private int mOrderID;
     private String mOrderDate;
+    private boolean mFromStore;
 
     public Menu getMenu() {
         return mMenu;
@@ -35,6 +38,14 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
 
     public void setMenu(Menu menu) {
         mMenu = menu;
+    }
+
+    public PersistentParameters getParams() {
+        return params;
+    }
+
+    public void setParams(PersistentParameters params) {
+        this.params = params;
     }
 
     public Receipt getReceipt() {
@@ -45,6 +56,14 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
         mReceipt = receipt;
     }
 
+    public int getReceiptStoreID() {
+        return receiptStoreID;
+    }
+
+    public void setReceiptStoreID(int receiptStoreID) {
+        this.receiptStoreID = receiptStoreID;
+    }
+
     public void setOrderID(int orderID) {
         mOrderID = orderID;
     }
@@ -53,12 +72,19 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
         mOrderDate = orderDate;
     }
 
-    public static ReceiptDialogFragment newInstance(PersistentParameters params, int ID) {
+    public void setFromStore(boolean fromStore) {
+        mFromStore = fromStore;
+    }
+
+    public static ReceiptDialogFragment newInstance(PersistentParameters params, int ID, boolean fromStore) {
         ReceiptDialogFragment receiptDialogFragment = new ReceiptDialogFragment();
+        receiptDialogFragment.setParams(params);
         receiptDialogFragment.setReceipt(params.getReceiptStore().getReceipt(ID));
         receiptDialogFragment.setMenu(params.getReceiptStore().getMenu(ID));
+        receiptDialogFragment.setReceiptStoreID(ID);
         receiptDialogFragment.setOrderID(params.getReceiptStore().getReceipt(ID).getOrderId());
         receiptDialogFragment.setOrderDate(params.getReceiptStore().getReceipt(ID).getDateAsString());
+        receiptDialogFragment.setFromStore(fromStore);
         return receiptDialogFragment;
     }
 
@@ -87,13 +113,32 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
 
         mReceiptDialog.setCanceledOnTouchOutside(false);
 
+        if (mFromStore) {
+            Button mDeleteButton = (Button) mReceiptDialog.findViewById(R.id.receiptDialogDeleteButton);
+            mDeleteButton.setOnClickListener(this);
+            mDeleteButton.setVisibility(View.VISIBLE);
+        }
+
         return mReceiptDialog;
     }
 
     @Override
     public void onClick(View v) {
-        if (getTargetFragment()!=null)
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
-        dismiss();
+        //if (getTargetFragment()!=null) {
+            switch(v.getId()) {
+                case R.id.receiptDialogButton:
+                    if (getTargetFragment() != null) {
+                        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
+                    }
+                    dismiss();
+                    break;
+                case R.id.receiptDialogDeleteButton:
+                    params.getReceiptStore().remove(receiptStoreID);
+                    params.getReceiptFragment().refreshAdapter();
+                    dismiss();
+                    break;
+            }
+        //}
+
     }
 }

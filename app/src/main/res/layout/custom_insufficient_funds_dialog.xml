@@ -41,7 +41,7 @@
         android:text="@string/confirm"
         android:id="@+id/insufficientFundsButton"
         style="?android:borderlessButtonStyle"
-        android:textColor="@android:color/holo_blue_dark"
+        android:textColor="@color/myBlue"
         android:layout_below="@+id/insuffientFundsSecondMessage"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="10dp"/>

@@ -6,4 +6,11 @@
     <color name="purple">#800080</color>
     <color name="white">#ffffff</color>
     <color name="darkBlue">#2E5A96</color>
+    <color name="myBlue">#2962FF</color>
+    <color name="myDarkerBlue">#073CCC</color>
+    <color name="myLighterBlue">#6FBFFF</color>
+    <color name="myLighterBlueOther">#239DFF</color>
+    <color name="myBlueGrey">#38607F</color>
+    <color name="myComplementaryOrange">#FF4D23</color>
+    <color name="myGreen">#AEFF3C</color>
 </resources>

@@ -36,7 +36,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginBottom="10dp"
         android:layout_alignParentTop="false"
-        android:textColor="@android:color/holo_blue_dark"/>
+        android:textColor="@color/myBlue"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
         style="?android:borderlessButtonStyle"
         android:layout_alignParentBottom="true"
         android:layout_toStartOf="@+id/dialogConfirmButton"
-        android:textColor="@android:color/holo_red_dark"/>
+        android:textColor="@color/myComplementaryOrange"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
         style="?android:borderlessButtonStyle"
         android:layout_below="@+id/dialogAmountText"
         android:layout_alignParentEnd="true"
-        android:textColor="@android:color/holo_blue_dark"/>
+        android:textColor="@color/myBlue"/>
 
     <LinearLayout
         android:orientation="vertical"

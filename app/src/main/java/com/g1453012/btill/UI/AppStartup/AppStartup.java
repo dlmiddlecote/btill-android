@@ -11,9 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.Window;
 import android.widget.Toast;
 
 import com.g1453012.btill.Bitcoin.WalletKitThread;
@@ -88,9 +85,9 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
         generateLoadingView();
 
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        /*IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mBroadcastReceiver, filter);
-        registered = true;
+        registered = true;*/
 
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.no_bluetooth, Toast.LENGTH_SHORT).show();
@@ -260,6 +257,11 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
     @Override
     protected void onResume() {
         super.onResume();
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mBroadcastReceiver, filter);
+        registered = true;
+
         if (beaconManager.isBound(this)) {
             beaconManager.setBackgroundMode(false);
         }
