@@ -79,11 +79,15 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
     public static ReceiptDialogFragment newInstance(PersistentParameters params, int ID, boolean fromStore) {
         ReceiptDialogFragment receiptDialogFragment = new ReceiptDialogFragment();
         receiptDialogFragment.setParams(params);
-        receiptDialogFragment.setReceipt(params.getReceiptStore().getReceipt(ID));
-        receiptDialogFragment.setMenu(params.getReceiptStore().getMenu(ID));
+        //receiptDialogFragment.setReceipt(params.getReceiptStore().getReceipt(ID));
+        receiptDialogFragment.setReceipt(params.getNewReceiptStore().getReceipt(ID));
+        //receiptDialogFragment.setMenu(params.getReceiptStore().getMenu(ID));
+        receiptDialogFragment.setMenu(params.getNewReceiptStore().getMenu(ID));
         receiptDialogFragment.setReceiptStoreID(ID);
-        receiptDialogFragment.setOrderID(params.getReceiptStore().getReceipt(ID).getOrderId());
-        receiptDialogFragment.setOrderDate(params.getReceiptStore().getReceipt(ID).getDateAsString());
+        //receiptDialogFragment.setOrderID(params.getReceiptStore().getReceipt(ID).getOrderId());
+        receiptDialogFragment.setOrderID(params.getNewReceiptStore().getReceipt(ID).getOrderId());
+        //receiptDialogFragment.setOrderDate(params.getReceiptStore().getReceipt(ID).getDateAsString());
+        receiptDialogFragment.setOrderDate(params.getNewReceiptStore().getReceipt(ID).getDateAsString());
         receiptDialogFragment.setFromStore(fromStore);
         return receiptDialogFragment;
     }
@@ -133,7 +137,8 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
                     dismiss();
                     break;
                 case R.id.receiptDialogDeleteButton:
-                    params.getReceiptStore().remove(receiptStoreID);
+                    //params.getReceiptStore().remove(receiptStoreID);
+                    params.getNewReceiptStore().remove(receiptStoreID);
                     params.getReceiptFragment().refreshAdapter();
                     dismiss();
                     break;

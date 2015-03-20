@@ -336,7 +336,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         params.setSocket(mConnectThread.getSocket());
                         Future<Receipt> receiptFuture = BTillController.processPayment(payment, bill.getGbpAmount(), bill.getCoinAmount(), bill.getOrderId(), params.getSocket());
                         Receipt receipt = null;
-                        final int nextID = params.getReceiptStore().next();
+                        //final int nextID = params.getReceiptStore().next();
+                        final int nextID = params.getNewReceiptStore().next();
                         try {
                             receipt = receiptFuture.get();
                         } catch (InterruptedException e) {
@@ -350,7 +351,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                             count++;
                         }*/
                         if (receipt != null) {
-                            params.getReceiptStore().add(receipt, menu, nextID);
+                            //params.getReceiptStore().add(receipt, menu, nextID);
+                            params.getNewReceiptStore().add(nextID, "Dan's Restaurant", receipt, menu);
                             // TODO uncomment below
                             params.getWallet().commitTx(params.getTx());
                             params.resetTx();

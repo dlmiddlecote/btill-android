@@ -20,12 +20,17 @@ public class PersistentParameters{
     private Bill mBill;
     private Transaction mTx;
     private ReceiptStore mReceiptStore;
+
+    // TODO testing
+    private NewReceiptStore mNewReceiptStore;
+
     private ReceiptFragment mReceiptFragment;
     private BalanceFragment mBalanceFragment;
 
     public PersistentParameters(Context context, String file) {
-        mReceiptStore = new ReceiptStore(context, file);
+        //mReceiptStore = new ReceiptStore(context, file);
         //mReceiptStore.resetStoreForTesting();
+        mNewReceiptStore = new NewReceiptStore(context, file);
         Log.d(TAG, "Made the Receipt");
     }
 
@@ -53,9 +58,13 @@ public class PersistentParameters{
         return mReceiptStore;
     }
 
-    public void refreshReceiptStore() {
-        mReceiptStore.refreshReceipts();
+    public NewReceiptStore getNewReceiptStore() {
+        return mNewReceiptStore;
     }
+
+    /*public void refreshReceiptStore() {
+        mReceiptStore.refreshReceipts();
+    }*/
 
     public BluetoothSocket getSocket() {
         return mSocket;

@@ -23,7 +23,8 @@ public class ReceiptFragment extends Fragment {
 
     private PersistentParameters params;
 
-    private ReceiptListAdapter adapter;
+    //private ReceiptListAdapter adapter;
+    private NewReceiptListAdapter adapter;
 
     private ListView listView = null;
 
@@ -57,12 +58,13 @@ public class ReceiptFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         ListView listView = (ListView) getActivity().findViewById(R.id.receiptListView);
-        adapter = new ReceiptListAdapter(params.getReceiptStore(), getActivity());
+        //adapter = new ReceiptListAdapter(params.getReceiptStore(), getActivity());
+        adapter = new NewReceiptListAdapter(params.getNewReceiptStore(), getActivity());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ReceiptDialogFragment receiptDialogFragment = ReceiptDialogFragment.newInstance(params, (int)id, true);
+                ReceiptDialogFragment receiptDialogFragment = ReceiptDialogFragment.newInstance(params, (int) id, true);
                 receiptDialogFragment.show(getFragmentManager().beginTransaction(), "RECEIPT");
             }
         });
