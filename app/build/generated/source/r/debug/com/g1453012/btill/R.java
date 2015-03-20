@@ -792,18 +792,26 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f050005;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f06000b;
+        public static final int abc_search_url_text_holo=0x7f060013;
         public static final int abc_search_url_text_normal=0x7f060000;
         public static final int abc_search_url_text_pressed=0x7f060001;
         public static final int abc_search_url_text_selected=0x7f060002;
-        public static final int background_tab_pressed=0x7f060003;
-        public static final int blue=0x7f060004;
-        public static final int darkBlue=0x7f060005;
-        public static final int green=0x7f060006;
-        public static final int myBlue=0x7f060007;
-        public static final int purple=0x7f060008;
-        public static final int red=0x7f060009;
-        public static final int white=0x7f06000a;
+        public static final int alternativeGreen=0x7f060003;
+        public static final int alternativeOrange=0x7f060004;
+        public static final int background_tab_pressed=0x7f060005;
+        public static final int blue=0x7f060006;
+        public static final int darkBlue=0x7f060007;
+        public static final int green=0x7f060008;
+        public static final int myBlue=0x7f060009;
+        public static final int myBlueGrey=0x7f06000a;
+        public static final int myComplementaryOrange=0x7f06000b;
+        public static final int myDarkerBlue=0x7f06000c;
+        public static final int myGreen=0x7f06000d;
+        public static final int myLighterBlue=0x7f06000e;
+        public static final int myLighterBlueOther=0x7f06000f;
+        public static final int purple=0x7f060010;
+        public static final int red=0x7f060011;
+        public static final int white=0x7f060012;
     }
     public static final class dimen {
         public static final int abc_action_bar_default_height=0x7f070000;

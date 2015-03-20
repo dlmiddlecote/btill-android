@@ -87,9 +87,14 @@ public class ReceiptStore{
         fileOut.close();
     }
 
-    public ReceiptStore refreshReceipts() {
+    public void refreshReceipts() {
         Log.d(TAG, "Refreshing Receipts");
-        return new ReceiptStore(mContext, mReceiptStoreFile);
+        mReceipts.clear();
+        try {
+            read();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Receipt getReceipt(int ID) {

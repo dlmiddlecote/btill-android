@@ -71,8 +71,10 @@ public class ReceiptFragment extends Fragment {
     public void refreshAdapter() {
         if (listView != null) {
             Log.d(TAG, "Refreshing view");
-            adapter.setReceiptStore(params.getReceiptStore().refreshReceipts());
-            ((ReceiptListAdapter) listView.getAdapter()).notifyDataSetChanged();
+            params.getReceiptStore().refreshReceipts();
+            adapter.notifyDataSetChanged();
+            //adapter.setReceiptStore(params.getReceiptStore().refreshReceipts());
+            //((ReceiptListAdapter) listView.getAdapter()).notifyDataSetChanged();
             //adapter = new ReceiptListAdapter(params.getReceiptStore().refreshReceipts(), getActivity());
             //listView.setAdapter(adapter);
 

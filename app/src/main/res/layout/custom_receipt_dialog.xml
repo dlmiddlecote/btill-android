@@ -54,7 +54,7 @@
                 android:text="@string/id"
                 android:id="@+id/receiptDialogIDTitle"
                 android:minWidth="55dp"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@color/myBlue"
                 android:layout_column="0"
                 android:layout_row="0"
                 />
@@ -77,7 +77,7 @@
                 android:layout_column="0"
                 android:layout_row="1"
                 android:minWidth="55dp"
-                android:textColor="@android:color/holo_blue_dark"/>
+                android:textColor="@color/myBlue"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
                 android:id="@+id/receiptDialogBitcoinTitle"
                 android:layout_column="0"
                 android:layout_row="2"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@color/myBlue"
                 android:minWidth="5dp"/>
 
             <TextView
@@ -115,7 +115,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/items"
             android:id="@+id/receiptDialogItemsTitle"
-            android:textColor="@android:color/holo_blue_dark"
+            android:textColor="@color/myBlue"
             android:layout_below="@+id/receiptDialogGrid"
             android:layout_alignStart="@+id/receiptDialogGrid"
             android:paddingStart="5dp"
@@ -148,7 +148,7 @@
                     android:id="@+id/receiptDialogButton"
                     android:layout_alignParentEnd="true"
                     style="?android:borderlessButtonStyle"
-                    android:textColor="@android:color/holo_blue_dark"
+                    android:textColor="@color/myBlue"
                     android:layout_weight="1"
                     android:layout_gravity="right"/>
 
