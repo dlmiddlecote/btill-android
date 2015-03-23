@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/receipt_dialog_title"
+            android:text="@string/receiptTitle"
             android:id="@+id/receiptDialogTitle"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
@@ -21,16 +21,6 @@
             android:layout_marginTop="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginBottom="5dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/receipt_dialog_subtitle"
-            android:id="@+id/receiptDialogSubtitle"
-            android:layout_below="@+id/receiptDialogTitle"
-            android:layout_alignStart="@+id/receiptDialogTitle"
-            android:layout_marginLeft="27dp"/>
 
         <GridLayout
             android:layout_width="fill_parent"

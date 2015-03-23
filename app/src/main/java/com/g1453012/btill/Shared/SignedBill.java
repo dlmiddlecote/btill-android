@@ -14,12 +14,14 @@ public class SignedBill {
     private GBP gbpAmount;
     private Coin btcAmount;
     private int orderId;
+    private LocationData locationData;
 
-    public SignedBill(Protos.Payment payment, GBP gbpAmount, Coin btcAmount, int orderId) {
+    public SignedBill(int orderId, Protos.Payment payment, GBP gbpAmount, Coin btcAmount, LocationData locationData) {
+        this.orderId = orderId;
         serialisedPayment = payment.toByteArray();
         this.gbpAmount = gbpAmount;
         this.btcAmount = btcAmount;
-        this.orderId = orderId;
+        this.locationData = locationData;
     }
 
     public byte[] getSerialisedPayment() {
@@ -40,5 +42,9 @@ public class SignedBill {
 
     public int getOrderId() {
         return orderId;
+    }
+
+    public LocationData getLocationData() {
+        return locationData;
     }
 }

@@ -6,9 +6,10 @@
     <color name="purple">#800080</color>
     <color name="white">#ffffff</color>
     <color name="darkBlue">#2E5A96</color>
-    <color name="myBlue">#004D40</color>
+    <color name="myBlue">#01799f</color>
     <color name="alternativeOrange">#E64A19</color>
-    <color name="alternativeGreen">#2962FF</color>
+    <color name="alternativeGreen">#004D40</color>
+    <color name="altBlue">#2962FF</color>
     <color name="myDarkerBlue">#073CCC</color>
     <color name="myLighterBlue">#6FBFFF</color>
     <color name="myLighterBlueOther">#239DFF</color>

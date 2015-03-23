@@ -66,7 +66,9 @@ public class MainScreen extends Fragment {
                 tabStrip.notifyDataSetChanged();
                 if (position == 1) {
                     //params.getReceiptStore().refreshReceipts();
+                    params.getNewReceiptStore().refreshReceipts();
                     params.getReceiptFragment().refreshAdapter();
+
                     pager.getAdapter().notifyDataSetChanged();
                 }
                 else if (position == 2) {

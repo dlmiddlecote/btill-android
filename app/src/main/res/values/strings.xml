@@ -42,6 +42,12 @@
     <string name="walletError">There is an issue with the wallet.</string>
     <string name="searchingDialogText">Searching...</string>
     <string name="delete">Delete</string>
+    <string name="orderConfirmationTitle">Order Confirmation</string>
+    <string name="orderConfirmationTableNumberTitle">Table</string>
+    <string name="orderConfirmationTableErrorText">We think you are sat at the table above. If this is incorrect, please contact a member of staff.</string>
+    <string name="orderConfirmationReceiptText">If you would like to view your receipt, press the receipt button.\nYou can always view your receipts later.</string>
+    <string name="orderConfirmationReceiptButton">Receipt</string>
+    <string name="receiptTitle">Your Receipt</string>
 
 
 </resources>

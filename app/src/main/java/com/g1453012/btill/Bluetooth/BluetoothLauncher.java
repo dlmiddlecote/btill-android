@@ -10,8 +10,11 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
+import com.g1453012.btill.Shared.LocationData;
 import com.g1453012.btill.UI.AppStartup.AppStartup;
+import com.google.gson.Gson;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
@@ -30,6 +33,8 @@ import java.util.Collection;
 public class BluetoothLauncher extends Application implements BootstrapNotifier, RangeNotifier {
 
     private static final String TAG = "BluetoothLauncherApp";
+
+    private PersistentParameters params;
     private RegionBootstrap mRegionBootstrap;
     private Region mRegion;
     BeaconManager mBeaconManager;
@@ -38,6 +43,9 @@ public class BluetoothLauncher extends Application implements BootstrapNotifier,
     @Override
     public void onCreate() {
         super.onCreate();
+
+        params = new PersistentParameters(this, "newReceipt.store", true);
+        AppStartup.setParams(params);
 
         mRegion = new Region(getPackageName(), null, null, null);
 
@@ -123,6 +131,8 @@ public class BluetoothLauncher extends Application implements BootstrapNotifier,
     public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
         for (Beacon beacon: beacons) {
             Log.d("BEACONS", "Distance: " + beacon.getDistance());
+            params.getLocationData().add(beacon.getBluetoothAddress(), beacon.getDistance());
         }
+        Log.d("BEACONS", "Location Data:" + new Gson().toJson(params.getLocationData(), LocationData.class));
     }
 }

@@ -10,8 +10,9 @@ import com.g1453012.btill.Shared.BTMessage;
 import com.g1453012.btill.Shared.BTMessageBuilder;
 import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.GBP;
+import com.g1453012.btill.Shared.LocationData;
 import com.g1453012.btill.Shared.Menu;
-import com.g1453012.btill.Shared.Receipt;
+import com.g1453012.btill.Shared.OrderConfirmation;
 import com.g1453012.btill.Shared.Status;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
@@ -185,18 +186,18 @@ public class BTillController {
     }
 
 
-    public static Future<Receipt> processPayment(final Protos.Payment payment, final GBP gbpAmount, final Coin btcAmount, final int orderId, final BluetoothSocket socket) {
-        return pool.submit(new Callable<Receipt>() {
+    public static Future<OrderConfirmation> processPayment(final int orderId, final Protos.Payment payment, final GBP gbpAmount, final Coin btcAmount, final LocationData locationData, final BluetoothSocket socket) {
+        return pool.submit(new Callable<OrderConfirmation>() {
             @Override
-            public Receipt call() throws Exception {
-                while (!sendPayment(payment, gbpAmount, btcAmount, orderId, socket)) {}
-                return getReceipt(socket);
+            public OrderConfirmation call() throws Exception {
+                while (!sendPayment(orderId, payment, gbpAmount, btcAmount, locationData, socket)) {}
+                return getOrderConfirmation(socket);
             }
         });
     }
 
-    private static boolean sendPayment(Protos.Payment payment, GBP gbpAmount, Coin btcAmount, int orderId, final BluetoothSocket socket) {
-        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(payment, gbpAmount, btcAmount, orderId).build(), socket);
+    private static boolean sendPayment(int orderId, Protos.Payment payment, GBP gbpAmount, Coin btcAmount, LocationData locationData, final BluetoothSocket socket) {
+        Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(orderId, payment, gbpAmount, btcAmount, locationData).build(), socket);
         try {
             return writeFuture.get().booleanValue();
         }
@@ -208,22 +209,22 @@ public class BTillController {
         return false;
     }
 
-    private static Receipt getReceipt(final BluetoothSocket socket) {
-        Future<BTMessage> receiptFuture = readBT(socket);
-        BTMessage receiptMessage = null;
+    private static OrderConfirmation getOrderConfirmation(final BluetoothSocket socket) {
+        Future<BTMessage> confFuture = readBT(socket);
+        BTMessage confMessage = null;
         try {
-            receiptMessage = receiptFuture.get();
+            confMessage = confFuture.get();
         } catch (InterruptedException e) {
             Log.e(TAG, "Getting the BTMessage was interrupted");
         } catch (ExecutionException e) {
             Log.e(TAG, "Getting the BTMessage had an Execution Exception");
         }
         try {
-            if (receiptMessage != null && receiptMessage.getHeader().equals(Status.OK.toString())) {
-                Log.d(TAG, "Created Receipt");
+            if (confMessage != null && confMessage.getHeader().equals(Status.OK.toString())) {
+                Log.d(TAG, "Created Order Confirmation");
                 //closeBluetoothSocket();
                 socket.close();
-                return new Gson().fromJson(receiptMessage.getBodyString(), Receipt.class);
+                return new Gson().fromJson(confMessage.getBodyString(), OrderConfirmation.class);
             } else {
                 Log.e(TAG, "Receipt is null");
                 //closeBluetoothSocket();

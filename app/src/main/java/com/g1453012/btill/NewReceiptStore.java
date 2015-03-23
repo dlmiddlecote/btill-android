@@ -22,6 +22,7 @@ public class NewReceiptStore {
     private static final String TAG = "NewReceiptStore";
 
     private ArrayList<SavedReceipt> mReceipts;
+    private ArrayList<SavedReceipt> receiptsToAdd;
     private String mReceiptStoreFile;
     private Context mContext;
     ArrayList<Integer> keys;
@@ -30,7 +31,10 @@ public class NewReceiptStore {
         mReceiptStoreFile = receiptStoreFile;
         mContext = context;
         mReceipts = new ArrayList<SavedReceipt>();
-        mReceipts.addAll(read());
+        receiptsToAdd = read();
+        if (receiptsToAdd != null) {
+            mReceipts.addAll(receiptsToAdd);
+        }
         keys = extractKeys();
     }
 
@@ -58,13 +62,17 @@ public class NewReceiptStore {
                 } catch (IOException e) {
                     Log.e(TAG, "Didn't write");
                 }
+                break;
             }
         }
     }
 
     public void refreshReceipts() {
         mReceipts.clear();
-        mReceipts.addAll(read());
+        receiptsToAdd = read();
+        if (receiptsToAdd != null) {
+            mReceipts.addAll(receiptsToAdd);
+        }
     }
 
     public String getRestaurant(int receiptID) {
@@ -127,7 +135,11 @@ public class NewReceiptStore {
             return null;
         }
         String string = new String(inputBytes, 0, bytes);
-        return new Gson().fromJson(string , new TypeToken<ArrayList<SavedReceipt>>() {}.getType());
+        if (string != null) {
+            return new Gson().fromJson(string, new TypeToken<ArrayList<SavedReceipt>>() {
+            }.getType());
+        }
+        return null;
     }
 
     private void write() throws IOException {

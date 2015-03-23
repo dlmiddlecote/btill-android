@@ -41,7 +41,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
     private final static String TAG = "AppStartup";
 
-    private PersistentParameters params;
+    private static PersistentParameters params;
     // Intent request codes
     private static final int REQUEST_ENABLE_BT = 2;
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -75,11 +75,15 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
         }
     };
 
+    public static void setParams(PersistentParameters param) {
+        params = param;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        params = new PersistentParameters(this, "receipt.store");
+        //params = new PersistentParameters(this, "newReceipt.store", true);
 
         beaconManager.bind(this);
 

@@ -22,10 +22,11 @@ import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.MenuItem;
-import com.g1453012.btill.Shared.Receipt;
+import com.g1453012.btill.Shared.OrderConfirmation;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Category.CategoryFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.InsufficientFundsDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderConfirmationDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.OrderDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestErrorDialogFragment;
@@ -52,6 +53,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     static final int RECEIPT_DIALOG = 4;
     static final int INSUFFICIENT_FUNDS = 5;
     static final int RECEIPT_ERROR_DIALOG = 6;
+    static final int ORDER_CONFIRMATION_DIALOG = 7;
 
 
     public PersistentParameters getParams() {
@@ -196,6 +198,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case RECEIPT_DIALOG:
+                params.getReceiptFragment().refreshAdapter();
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         params.resetBill();
@@ -214,6 +217,18 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                     default:
                         Log.d(TAG, "CANCELLED");
                         //Cancel transaction
+                        break;
+                }
+                break;
+            case ORDER_CONFIRMATION_DIALOG:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        params.resetBill();
+                        resetMenu();
+                        break;
+                    default:
+                        ReceiptDialogFragment receiptDialogFragment = ReceiptDialogFragment.newInstance(params, resultCode, false);
+                        receiptDialogFragment.show(getFragmentManager().beginTransaction(), "RECEIPT");
                         break;
                 }
         }
@@ -307,7 +322,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 //Creates new loading dialog
-                //TODO this shouldn't need a menu it is just loading
                 DialogFragment loadingFragment = LoadingDialogFragment.newInstance();
                 loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
 
@@ -334,12 +348,12 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 try {
                     if (connectFuture.get()) {
                         params.setSocket(mConnectThread.getSocket());
-                        Future<Receipt> receiptFuture = BTillController.processPayment(payment, bill.getGbpAmount(), bill.getCoinAmount(), bill.getOrderId(), params.getSocket());
-                        Receipt receipt = null;
+                        Future<OrderConfirmation> confirmationFuture = BTillController.processPayment(bill.getOrderId(), payment, bill.getGbpAmount(), bill.getCoinAmount(), params.getLocationData(), params.getSocket());
+                        OrderConfirmation orderConfirmation = null;
                         //final int nextID = params.getReceiptStore().next();
                         final int nextID = params.getNewReceiptStore().next();
                         try {
-                            receipt = receiptFuture.get();
+                            orderConfirmation = confirmationFuture.get();
                         } catch (InterruptedException e) {
                             Log.e(TAG, "Getting the Receipt was interrupted");
                         } catch (ExecutionException e) {
@@ -350,19 +364,25 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                             receipt = null;
                             count++;
                         }*/
-                        if (receipt != null) {
+                        if (orderConfirmation != null) {
                             //params.getReceiptStore().add(receipt, menu, nextID);
-                            params.getNewReceiptStore().add(nextID, "Dan's Restaurant", receipt, menu);
+                            params.getNewReceiptStore().add(nextID, "Dummy Restaurant", orderConfirmation.getReceipt(), menu);
                             // TODO uncomment below
                             params.getWallet().commitTx(params.getTx());
                             params.resetTx();
                             loadingFragment.dismiss();
+                            final OrderConfirmation finalOrderConfirmation = orderConfirmation;
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(params, nextID, false);
+                                    /*DialogFragment receiptFragment = ReceiptDialogFragment.newInstance(params, nextID, false);
                                     receiptFragment.setTargetFragment(mainFragment, RECEIPT_DIALOG);
-                                    receiptFragment.show(getFragmentManager().beginTransaction(), "RECEIPT_DIALOG");
+                                    receiptFragment.show(getFragmentManager().beginTransaction(), "RECEIPT_DIALOG");*/
+
+
+                                    DialogFragment orderConfirmationFragment = OrderConfirmationDialogFragment.newInstance(params, finalOrderConfirmation, nextID);
+                                    orderConfirmationFragment.setTargetFragment(mainFragment, ORDER_CONFIRMATION_DIALOG);
+                                    orderConfirmationFragment.show(getFragmentManager().beginTransaction(), "ORDER_CONFIRMATION_DIALOG");
                                 }
                             });
                         }
