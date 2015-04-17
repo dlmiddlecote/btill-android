@@ -26,6 +26,7 @@ import org.altbeacon.beacon.startup.BootstrapNotifier;
 import org.altbeacon.beacon.startup.RegionBootstrap;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Created by dlmiddlecote on 03/03/15.
@@ -130,8 +131,13 @@ public class BluetoothLauncher extends Application implements BootstrapNotifier,
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
         for (Beacon beacon: beacons) {
-            Log.d("BEACONS", "Distance: " + beacon.getDistance());
+            Log.d("BEACONS", "Address: " + beacon.getBluetoothAddress() + ", Distance: " + beacon.getDistance());
+            if (params.getLocationData().size() > 0 && params.getLocationData().getTime()
+                    .before(new Date(System.currentTimeMillis() - 30000))) {
+                params.getLocationData().clear();
+            }
             params.getLocationData().add(beacon.getBluetoothAddress(), beacon.getDistance());
+            params.getLocationData().setTime(System.currentTimeMillis());
         }
         Log.d("BEACONS", "Location Data:" + new Gson().toJson(params.getLocationData(), LocationData.class));
     }

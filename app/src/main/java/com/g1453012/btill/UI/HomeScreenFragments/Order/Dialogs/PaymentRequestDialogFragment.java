@@ -87,7 +87,7 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
 
             mBitcoinAmount.setText(mSession.getValue().toFriendlyString());
 
-            mMessage.setText(mSession.getMemo() + "\nfrom " + mSession.getPaymentUrl());
+            mMessage.setText(mSession.getMemo() + "\nPaying \'" + mMenu.getRestaurantName() + "\'.");
         }
 
         Button mSignButton = (Button) mPaymentDialog.findViewById(R.id.paymentDialogSignButton);

@@ -7,6 +7,8 @@ import android.util.Log;
 import com.g1453012.btill.Shared.Bill;
 import com.g1453012.btill.Shared.LocationData;
 import com.g1453012.btill.UI.HomeScreenFragments.Balance.BalanceFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.MainScreen;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.OrderFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Receipts.ReceiptFragment;
 
 import org.bitcoinj.core.Transaction;
@@ -24,12 +26,22 @@ public class PersistentParameters{
     private Transaction mTx;
     private ReceiptStore mReceiptStore;
     private LocationData mLocationData;
+    private MainScreen mMainScreen;
+
+    public MainScreen getMainScreen() {
+        return mMainScreen;
+    }
+
+    public void setMainScreen(MainScreen mainScreen) {
+        mMainScreen = mainScreen;
+    }
 
     // TODO testing
     private NewReceiptStore mNewReceiptStore;
 
     private ReceiptFragment mReceiptFragment;
     private BalanceFragment mBalanceFragment;
+    private OrderFragment mOrderFragment;
 
     public PersistentParameters(Context context, String file, boolean loadReceipts) {
         //mReceiptStore = new ReceiptStore(context, file);
@@ -108,6 +120,14 @@ public class PersistentParameters{
 
     public void setBalanceFragment(BalanceFragment balanceFragment) {
         mBalanceFragment = balanceFragment;
+    }
+
+    public OrderFragment getOrderFragment() {
+        return mOrderFragment;
+    }
+
+    public void setOrderFragment(OrderFragment orderFragment) {
+        mOrderFragment = orderFragment;
     }
 
     public LocationData getLocationData() {

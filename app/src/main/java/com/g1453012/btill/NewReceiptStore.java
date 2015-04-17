@@ -22,26 +22,27 @@ public class NewReceiptStore {
     private static final String TAG = "NewReceiptStore";
 
     private ArrayList<SavedReceipt> mReceipts;
-    private ArrayList<SavedReceipt> receiptsToAdd;
     private String mReceiptStoreFile;
     private Context mContext;
-    ArrayList<Integer> keys;
+    //private ArrayList<Integer> keys;
+    private Integer maxReceiptId;
 
     public NewReceiptStore(Context context, String receiptStoreFile) {
         mReceiptStoreFile = receiptStoreFile;
         mContext = context;
         mReceipts = new ArrayList<SavedReceipt>();
-        receiptsToAdd = read();
+        ArrayList<SavedReceipt> receiptsToAdd = read();
         if (receiptsToAdd != null) {
             mReceipts.addAll(receiptsToAdd);
         }
-        keys = extractKeys();
+        //keys = extractKeys();
+        maxReceiptId = maxReceiptId();
     }
 
     public void add(int receiptID, String restaurant, Receipt receipt, Menu orderedMenu) {
         if (receipt != null && orderedMenu != null) {
             mReceipts.add(new SavedReceipt(receiptID, restaurant, receipt, orderedMenu));
-            keys.add(receiptID);
+            //keys.add(receiptID);
             try {
                 write();
                 Log.d(TAG, "Written Receipt Store");
@@ -52,25 +53,41 @@ public class NewReceiptStore {
     }
 
     public void remove(int receiptID) {
+        Log.d(TAG, "" + receiptID);
+        int i = 0;
+        Log.d(TAG, "Step 1");
         for (SavedReceipt receipt: mReceipts) {
+            Log.d(TAG, "Step 2" + i);
             if (receipt.getReceiptID() == receiptID) {
-                mReceipts.remove(receipt);
-                keys.remove(receiptID);
+                Log.d(TAG, "Step 3");
+                mReceipts.remove(i);
+                Log.d(TAG, "Step 4");
+                //keys.remove(receiptID);
+                Log.d(TAG, "Step 5");
                 try {
                     write();
                     Log.d(TAG, "Written Receipt Store");
                 } catch (IOException e) {
                     Log.e(TAG, "Didn't write");
                 }
+                Log.d(TAG, "Step 6");
                 break;
             }
+            Log.d(TAG, "Step 7");
+            i++;
+        }
+        Log.d(TAG, "Step 8");
+        ArrayList<SavedReceipt> receiptsToAdd = read();
+        if (receiptsToAdd != null) {
+            mReceipts.clear();
+            mReceipts.addAll(receiptsToAdd);
         }
     }
 
     public void refreshReceipts() {
-        mReceipts.clear();
-        receiptsToAdd = read();
+        ArrayList<SavedReceipt> receiptsToAdd = read();
         if (receiptsToAdd != null) {
+            mReceipts.clear();
             mReceipts.addAll(receiptsToAdd);
         }
     }
@@ -107,11 +124,12 @@ public class NewReceiptStore {
     }
 
     public int getID(int position) {
-        return keys.get(position);
+        return mReceipts.get(position).getReceiptID();
     }
 
     public int next() {
-        return mReceipts.size() + 1;
+        maxReceiptId++;
+        return maxReceiptId;
     }
 
     public void resetForTesting() {
@@ -155,6 +173,16 @@ public class NewReceiptStore {
             keyList.add(receipt.getReceiptID());
         }
         return keyList;
+    }
+
+    private Integer maxReceiptId() {
+        Integer max = new Integer(0);
+        for (SavedReceipt receipt: mReceipts) {
+            if (receipt.getReceiptID() > max) {
+                max = receipt.getReceiptID();
+            }
+        }
+        return max;
     }
 
 

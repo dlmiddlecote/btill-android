@@ -40,7 +40,7 @@
     <string name="paymentRequestDialogInfo">Please press OK to resubmit your order</string>
 
     <string name="walletError">There is an issue with the wallet.</string>
-    <string name="searchingDialogText">Searching...</string>
+    <string name="searchingDialogText">Searching&#8230;</string>
     <string name="delete">Delete</string>
     <string name="orderConfirmationTitle">Order Confirmation</string>
     <string name="orderConfirmationTableNumberTitle">Table</string>
@@ -48,6 +48,10 @@
     <string name="orderConfirmationReceiptText">If you would like to view your receipt, press the receipt button.\nYou can always view your receipts later.</string>
     <string name="orderConfirmationReceiptButton">Receipt</string>
     <string name="receiptTitle">Your Receipt</string>
+    <string name="welcomeTitle">Welcome!</string>
+    <string name="welcomeBlurbText">Come on in, sit down, order, and we\'ll be with you shortly!</string>
+    <string name="welcomeWalkthrough">If you would like a walkthrough of the app, please choose walkthrough below, otherwise, order away!</string>
+    <string name="walkthrough">Walkthrough</string>
 
 
 </resources>

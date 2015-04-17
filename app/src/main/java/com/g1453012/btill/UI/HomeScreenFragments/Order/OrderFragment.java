@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.g1453012.btill.BTillController;
@@ -32,6 +33,7 @@ import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestDia
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.PaymentRequestErrorDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.ReceiptDialogFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.ReceiptErrorDialogFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.WelcomeDialogFragment;
 
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.InsufficientMoneyException;
@@ -54,6 +56,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     static final int INSUFFICIENT_FUNDS = 5;
     static final int RECEIPT_ERROR_DIALOG = 6;
     static final int ORDER_CONFIRMATION_DIALOG = 7;
+    static final int WELCOME_DIALOG = 8;
 
 
     public PersistentParameters getParams() {
@@ -70,21 +73,20 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     private Activity mParentActivity;
     private Fragment mainFragment = this;
 
-    // TODOD remove, only for testing
+    // TODO remove, only for testing
     private int count = 0;
 
 
     public static OrderFragment newInstance(PersistentParameters parameters) {
         OrderFragment orderFragment = new OrderFragment();
         orderFragment.setParams(parameters);
+
         Future<Menu> menuFuture = BTillController.getMenuFuture(parameters.getSocket());
         try {
             orderFragment.setMenu(menuFuture.get(10, TimeUnit.SECONDS));
-        }
-        catch (TimeoutException tEx) {
+        } catch (TimeoutException tEx) {
             tEx.printStackTrace();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return orderFragment;
@@ -109,25 +111,37 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         //cancelButton.setOnClickListener(this);
         //Button balanceButton = (Button)getActivity().findViewById(R.id.balanceButton);
         //balanceButton.setOnClickListener(this);
-        Button nextButton = (Button)getActivity().findViewById(R.id.nextButton);
+        Button nextButton = (Button) getActivity().findViewById(R.id.nextButton);
         nextButton.setOnClickListener(this);
-        ImageButton cartButton = (ImageButton)getActivity().findViewById(R.id.add_to_cart_button);
+        ImageButton cartButton = (ImageButton) getActivity().findViewById(R.id.add_to_cart_button);
         cartButton.setOnClickListener(this);
-        ImageButton cancelButton = (ImageButton)getActivity().findViewById(R.id.clear_cart_button);
+        ImageButton cancelButton = (ImageButton) getActivity().findViewById(R.id.clear_cart_button);
         cancelButton.setOnClickListener(this);
 
-        if (mMenu!=null) {
+        if (mMenu != null) {
+
+            TextView restaurantName = (TextView) params.getMainScreen().getActivity().findViewById(R.id.restaurant);
+            restaurantName.setText(mMenu.getRestaurantName());
+
             mMenu.sortCategories();
-            final ViewPager pager = (ViewPager)getActivity().findViewById(R.id.categoryPager);
+            final ViewPager pager = (ViewPager) getActivity().findViewById(R.id.categoryPager);
             final OrderFragmentPagerAdapter adapter = new OrderFragmentPagerAdapter(getFragmentManager(), mMenu);
             mOrderFragmentPagerAdapter = adapter;
             pager.setAdapter(adapter);
+
+            DialogFragment welcomeDialogFragment = WelcomeDialogFragment.newInstance(mMenu.getRestaurantName());
+            welcomeDialogFragment.setTargetFragment(mainFragment, WELCOME_DIALOG);
+            welcomeDialogFragment.show(getFragmentManager().beginTransaction(), "WELCOME_DIALOG");
+        }
+        else {
+            TextView restaurantName = (TextView) params.getMainScreen().getActivity().findViewById(R.id.restaurant);
+            restaurantName.setText("THERE IS AN ISSUE");
         }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.clear_cart_button:
                 resetMenu();
                 Toast.makeText(getActivity(), "Menu reset", Toast.LENGTH_SHORT).show();
@@ -144,9 +158,13 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 orderDialogFragment.show(getFragmentManager().beginTransaction(), "ORDER_DIALOG");
                 break;*/
             case R.id.add_to_cart_button:
-                DialogFragment orderDialogFragment = OrderDialogFragment.newInstance(mMenu);
-                orderDialogFragment.setTargetFragment(mainFragment, ORDER_DIALOG);
-                orderDialogFragment.show(getFragmentManager().beginTransaction(), "ORDER_DIALOG");
+                if (isOrderValid(mOrderFragmentPagerAdapter)) {
+                    DialogFragment orderDialogFragment = OrderDialogFragment.newInstance(mMenu);
+                    orderDialogFragment.setTargetFragment(mainFragment, ORDER_DIALOG);
+                    orderDialogFragment.show(getFragmentManager().beginTransaction(), "ORDER_DIALOG");
+                } else {
+                    Toast.makeText(getActivity(), "Please add items to order!", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
 
@@ -159,7 +177,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         //Pulls orders out of the adapter and sorts out non zero
-                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter, mMenu.getRestaurantName());
                         orders = Menu.removeNonZero(orders);
                         loadingDialogForSendingOrder(orders).start();
                         break;
@@ -174,7 +192,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         //Would be really cool to have the loading dialog take a Future<Obj> and return when the object is not null
                         //This would allow reuse of the loading dialog
                         //Show success/failure
-                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter, mMenu.getRestaurantName());
                         orders = Menu.removeNonZero(orders);
 
                         loadingDialogForSendingPayment(params.getBill(), orders).start();
@@ -189,7 +207,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             case PAYMENT_REQUEST_ERROR_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter, mMenu.getRestaurantName());
                         orders = Menu.removeNonZero(orders);
                         loadingDialogForSendingOrder(orders).start();
                         break;
@@ -210,7 +228,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             case RECEIPT_ERROR_DIALOG:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter);
+                        Menu orders = getOrdersFromAdapter(mOrderFragmentPagerAdapter, mMenu.getRestaurantName());
                         orders = Menu.removeNonZero(orders);
                         loadingDialogForSendingPayment(params.getBill(), orders).start();
                         break;
@@ -237,7 +255,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     private void resetMenu() {
         mMenu.resetQuantities();
         mMenu.sortCategories();
-        final ViewPager pager = (ViewPager)getActivity().findViewById(R.id.categoryPager);
+        final ViewPager pager = (ViewPager) getActivity().findViewById(R.id.categoryPager);
         final OrderFragmentPagerAdapter adapter = new OrderFragmentPagerAdapter(getFragmentManager(), mMenu);
         mOrderFragmentPagerAdapter = adapter;
         pager.setAdapter(adapter);
@@ -293,8 +311,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             loadingFragment.dismiss();
                             mHandler.post(new Runnable() {
                                 @Override
@@ -328,7 +345,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 Protos.Payment payment = null;
                 try {
                     payment = BTillController.transactionSigner(bill.getRequest(), params);
-                }  catch (InsufficientMoneyException e) {
+                } catch (InsufficientMoneyException e) {
                     loadingFragment.dismiss();
                     mHandler.post(new Runnable() {
                         @Override
@@ -352,6 +369,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         OrderConfirmation orderConfirmation = null;
                         //final int nextID = params.getReceiptStore().next();
                         final int nextID = params.getNewReceiptStore().next();
+
                         try {
                             orderConfirmation = confirmationFuture.get();
                         } catch (InterruptedException e) {
@@ -366,7 +384,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                         }*/
                         if (orderConfirmation != null) {
                             //params.getReceiptStore().add(receipt, menu, nextID);
-                            params.getNewReceiptStore().add(nextID, "Dummy Restaurant", orderConfirmation.getReceipt(), menu);
+                            params.getNewReceiptStore().add(nextID, menu.getRestaurantName(), orderConfirmation.getReceipt(), menu);
                             // TODO uncomment below
                             params.getWallet().commitTx(params.getTx());
                             params.resetTx();
@@ -385,8 +403,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                                     orderConfirmationFragment.show(getFragmentManager().beginTransaction(), "ORDER_CONFIRMATION_DIALOG");
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             loadingFragment.dismiss();
                             mHandler.post(new Runnable() {
                                 @Override
@@ -409,14 +426,20 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     //Goes through the category fragments in the adapter and adds up their menus into a new one
     //This is used to pull the orders and post them to the server
-    private static Menu getOrdersFromAdapter(OrderFragmentPagerAdapter adapter) {
+    private static Menu getOrdersFromAdapter(OrderFragmentPagerAdapter adapter, String restaurant) {
         ArrayList<MenuItem> items = new ArrayList<MenuItem>();
-        for (CategoryFragment fragment: adapter.getCategoryFragments()) {
+        for (CategoryFragment fragment : adapter.getCategoryFragments()) {
             items.addAll(fragment.getItems());
         }
-        Menu menu = new Menu(items);
+        Menu menu = new Menu(restaurant, items);
         menu.sortCategories();
         return menu;
+    }
+
+    private static boolean isOrderValid(OrderFragmentPagerAdapter adapter) {
+        Menu menu = getOrdersFromAdapter(adapter, null);
+        return menu.totalPence() > 0;
+
     }
 
     @Override
@@ -433,5 +456,16 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         this.mMenu = mMenu;
     }
 
+    public void replaceMenu(Menu menu) {
+        mMenu = menu;
+        mMenu.sortCategories();
+        final ViewPager pager = (ViewPager) getActivity().findViewById(R.id.categoryPager);
+        final OrderFragmentPagerAdapter adapter = new OrderFragmentPagerAdapter(getFragmentManager(), mMenu);
+        mOrderFragmentPagerAdapter = adapter;
+        pager.setAdapter(adapter);
+    }
 
+    public OrderFragmentPagerAdapter getOrderFragmentPagerAdapter() {
+        return mOrderFragmentPagerAdapter;
+    }
 }

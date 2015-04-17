@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -94,6 +95,8 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        Log.d(TAG, "ID: " + receiptStoreID);
 
         final Dialog mReceiptDialog = new Dialog(getActivity());
         mReceiptDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);

@@ -13,4 +13,9 @@
         <item name="android:background">@color/myBlue</item>
     </style>
 
+    <style name="TopBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">45dp</item>
+    </style>
+
 </resources>

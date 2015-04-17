@@ -104,6 +104,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
         else {
+            Log.d(TAG, "Starting");
             mBluetoothAdapter.startDiscovery();
         }
 
@@ -200,6 +201,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
     }
 
     private void generateMenuView() {
+
         blockLoadingView = true;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = MainScreen.newInstance(params);

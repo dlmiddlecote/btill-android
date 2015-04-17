@@ -5,13 +5,19 @@
     android:layout_height="match_parent"
     tools:context=".HomeScreen">
 
+    <View style="@style/TopBar"
+          android:layout_alignParentTop="true"
+          android:layout_alignParentLeft="true"
+          android:layout_width="match_parent"
+          android:id="@+id/TopBar"
+          android:background="@drawable/top_bar_gradient"/>
+
     <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mainScreenPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/tabs" />
+        android:layout_above="@+id/tabs"
+        android:layout_below="@+id/TopBar"/>
 
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/tabs"
@@ -21,5 +27,28 @@
         android:layout_width="fill_parent"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_height="48dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Restaurant Title"
+        android:id="@+id/restaurant"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffffffff"
+        android:layout_marginTop="12dp"
+        android:textStyle="italic"
+        android:typeface="sans"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:id="@+id/refreshButton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_autorenew_white_36dp"
+        style="?android:borderlessButtonStyle"
+        android:layout_marginTop="7dp"/>
 </RelativeLayout>
 

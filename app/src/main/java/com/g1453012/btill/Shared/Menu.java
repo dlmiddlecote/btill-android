@@ -5,11 +5,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Menu implements Iterable<MenuItem> {
-    private ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+    private String restaurantName;
+    private List<MenuItem> items = new ArrayList<MenuItem>();
     private ArrayList<String> categories = new ArrayList<String>();
     private int mOrderId;
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
 
     public int getOrderId() {
         return mOrderId;
@@ -23,9 +29,10 @@ public class Menu implements Iterable<MenuItem> {
         return categories;
     }
 
-    public Menu(ArrayList<MenuItem> items) {
+    public Menu(String restaurantName, List<MenuItem> items) {
+        this.restaurantName = restaurantName;
         this.items = items;
-        for (MenuItem item: items) {
+        for (MenuItem item : items) {
             if (!categories.contains(item.getCategory()))
                 categories.add(item.getCategory());
         }
@@ -38,7 +45,13 @@ public class Menu implements Iterable<MenuItem> {
         }
     }
 
-    public Menu(){}
+    public Menu(){
+
+    }
+
+    public Menu(String restaurant) {
+        restaurantName = restaurant;
+    }
 
     @Override
     public Iterator<MenuItem> iterator() {
@@ -89,14 +102,23 @@ public class Menu implements Iterable<MenuItem> {
     }
 
     public static Menu removeNonZero(Menu menu) {
-        Menu retMenu = new Menu();
+        Menu retMenu = new Menu(menu.getRestaurantName());
         for (MenuItem item: menu)
         {
             if (item.getQuantity()!=0)
                 retMenu.add(item);
         }
-
         return retMenu;
+    }
+
+    public int totalPence() {
+        GBP total = new GBP(0);
+        for (MenuItem item : items) {
+            if (item.getQuantity() != 0) {
+                total = total.plus(item.getPrice().times(item.getQuantity()));
+            }
+        }
+        return total.getPence();
     }
 
     public void resetQuantities() {

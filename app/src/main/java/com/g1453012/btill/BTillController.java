@@ -72,7 +72,7 @@ public class BTillController {
         BTMessage menuMessage = null;
         try {
             menuMessage = menuMessageFuture.get();
-            Log.d(TAG, "Received in menu");
+            Log.d(TAG, "Received menu");
         } catch (InterruptedException e) {
             Log.e(TAG, "Getting the BTMessage was interrupted");
         } catch (ExecutionException e) {

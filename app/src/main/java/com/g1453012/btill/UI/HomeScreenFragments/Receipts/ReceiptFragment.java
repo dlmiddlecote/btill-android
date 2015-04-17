@@ -71,7 +71,25 @@ public class ReceiptFragment extends Fragment {
     }
 
     public void refreshAdapter() {
-        if (listView != null && listView.getAdapter() != null) {
+        Log.d(TAG, "Refreshing view");
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ListView listView = (ListView) getActivity().findViewById(R.id.receiptListView);
+                //adapter = new ReceiptListAdapter(params.getReceiptStore(), getActivity());
+                adapter = new NewReceiptListAdapter(params.getNewReceiptStore(), getActivity());
+                listView.setAdapter(adapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        ReceiptDialogFragment receiptDialogFragment = ReceiptDialogFragment.newInstance(params, (int) id, true);
+                        receiptDialogFragment.show(getFragmentManager().beginTransaction(), "RECEIPT");
+                    }
+                });
+            }
+        });
+
+        /*if (listView != null && listView.getAdapter() != null) {
             Log.d(TAG, "Refreshing view");
             params.getNewReceiptStore().refreshReceipts();
             ((NewReceiptListAdapter) listView.getAdapter()).notifyDataSetChanged();
@@ -81,6 +99,6 @@ public class ReceiptFragment extends Fragment {
             //adapter = new ReceiptListAdapter(params.getReceiptStore().refreshReceipts(), getActivity());
             //listView.setAdapter(adapter);
 
-        }
+        }*/
     }
 }

@@ -22,11 +22,14 @@ import org.bitcoinj.core.Wallet;
  */
 public class BalanceFragment extends Fragment {
 
+    private final static String TAG = "BalanceFragment";
+
     private PersistentParameters params;
     private TextView mBalanceTotal;
     private ImageView mBalanceQR;
     private TextView mBalanceAddress;
     private TextView mBalanceTitle;
+    private boolean balanceLoaded;
 
     public PersistentParameters getParams() {
         return params;
@@ -36,9 +39,14 @@ public class BalanceFragment extends Fragment {
         this.params = params;
     }
 
+    public void setBalanceLoaded(boolean balanceLoaded) {
+        this.balanceLoaded = balanceLoaded;
+    }
+
     public static BalanceFragment newInstance(PersistentParameters params) {
         BalanceFragment balanceFragment = new BalanceFragment();
         balanceFragment.setParams(params);
+        balanceFragment.setBalanceLoaded(false);
         return balanceFragment;
     }
 
@@ -71,6 +79,8 @@ public class BalanceFragment extends Fragment {
             mBalanceQR.setVisibility(View.VISIBLE);
 
             mBalanceAddress.setText(params.getWallet().currentReceiveAddress().toString());
+
+            balanceLoaded = true;
         }
         else {
             mBalanceTitle = (TextView) getActivity().findViewById(R.id.balanceFragmentTitle);
@@ -83,8 +93,33 @@ public class BalanceFragment extends Fragment {
     }
 
     public void refresh() {
+        if (balanceLoaded) {
+            this.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mBalanceTotal != null) {
+                        if (params.getWallet() != null) {
 
-        if (mBalanceTotal != null) {
+                            mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
+
+                            Bitmap mBitmap = BTillController.generateQR(params.getWallet());
+                            mBalanceQR.setImageBitmap(mBitmap);
+                            mBalanceQR.setVisibility(View.VISIBLE);
+
+                            mBalanceAddress.setText(params.getWallet().currentReceiveAddress().toString());
+                            Log.d(TAG, "Refreshed Balance");
+                        } else {
+                            mBalanceTitle.setText(R.string.walletError);
+
+                            mBalanceTotal.setVisibility(View.GONE);
+                            mBalanceQR.setVisibility(View.GONE);
+                            mBalanceAddress.setVisibility(View.GONE);
+                        }
+                    }
+                }
+            });
+        }
+        /*if (mBalanceTotal != null) {
             if (params.getWallet() != null) {
 
                 mBalanceTotal.setText(params.getWallet().getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString());
@@ -101,6 +136,6 @@ public class BalanceFragment extends Fragment {
                 mBalanceQR.setVisibility(View.GONE);
                 mBalanceAddress.setVisibility(View.GONE);
             }
-        }
+        }*/
     }
 }

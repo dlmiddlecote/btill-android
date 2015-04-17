@@ -2,22 +2,34 @@ package com.g1453012.btill.UI.HomeScreenFragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.g1453012.btill.BTillController;
+import com.g1453012.btill.Bluetooth.ConnectThread;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
+import com.g1453012.btill.Shared.Menu;
+import com.g1453012.btill.UI.HomeScreenFragments.Order.Dialogs.LoadingDialogFragment;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Created by Andy on 16/03/2015.
  */
-public class MainScreen extends Fragment {
+public class MainScreen extends Fragment implements View.OnClickListener {
+
+    private static final String TAG = "MainScreen";
 
     private PersistentParameters params;
 
@@ -31,6 +43,7 @@ public class MainScreen extends Fragment {
 
     public static MainScreen newInstance(PersistentParameters params) {
         MainScreen mainScreen = new MainScreen();
+        params.setMainScreen(mainScreen);
         mainScreen.setParams(params);
         return mainScreen;
     }
@@ -50,9 +63,15 @@ public class MainScreen extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        TextView restaurantName = (TextView) getActivity().findViewById(R.id.restaurant);
+        restaurantName.setText("B-Till");
+
+        ImageButton refreshButton = (ImageButton) getActivity().findViewById(R.id.refreshButton);
+        refreshButton.setOnClickListener(this);
+
         final ViewPager pager = (ViewPager) getActivity().findViewById(R.id.mainScreenPager);
         pager.setAdapter(new MainTabViewPagerAdapter(getFragmentManager(), params));
-        final PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)getActivity().findViewById(R.id.tabs);
+        final PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) getActivity().findViewById(R.id.tabs);
         tabStrip.setViewPager(pager);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -70,9 +89,9 @@ public class MainScreen extends Fragment {
                     params.getReceiptFragment().refreshAdapter();
 
                     pager.getAdapter().notifyDataSetChanged();
-                }
-                else if (position == 2) {
+                } else if (position == 2) {
                     params.getBalanceFragment().refresh();
+                    pager.getAdapter().notifyDataSetChanged();
                     //pager.setOffscreenPageLimit();
                 }
             }
@@ -85,10 +104,63 @@ public class MainScreen extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.refreshButton:
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DialogFragment loadingFragment = LoadingDialogFragment.newInstance();
+                        loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
+
+                        ConnectThread mConnectThread = new ConnectThread();
+                        Future<Boolean> connectFuture = mConnectThread.runFuture();
+
+                        try {
+                            if (connectFuture.get()) {
+                                params.setSocket(mConnectThread.getSocket());
+                                Future<Menu> menuFuture = BTillController.getMenuFuture(params.getSocket());
+                                try {
+                                    final Menu refreshedMenu = menuFuture.get();
+
+                                    params.getOrderFragment().getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (refreshedMenu != null) {
+                                                params.getOrderFragment().replaceMenu(refreshedMenu);
+                                                TextView restaurant = (TextView) params.getMainScreen().getActivity()
+                                                        .findViewById(R.id.restaurant);
+                                                restaurant.setText(refreshedMenu.getRestaurantName());
+
+                                                Toast.makeText(getActivity(), "Refreshed Menu", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(getActivity(), "Error Refreshing Menu", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                    // params.getOrderFragment().getOrderFragmentPagerAdapter().notifyDataSetChanged();
+                                    //Log.d(TAG, "Menu has been found : " + refreshedMenu.getRestaurantName());
+                                } catch (ExecutionException ex) {
+                                    Log.d(TAG, "There was an issue");
+                                } catch (InterruptedException e) {
+                                    Log.d(TAG, "There was an issue");
+                                }
+                            }
+                        } catch (ExecutionException e) {
+                            Log.d(TAG, "There was an issue in the connection future");
+                        } catch (InterruptedException e) {
+                            Log.d(TAG, "There was an issue in the connection future");
+                        }
+
+                        loadingFragment.dismiss();
+                    }
+                }).start();
+
+
+                break;
+            default:
+                break;
+        }
     }
-
-
-
 }
