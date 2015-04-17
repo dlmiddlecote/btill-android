@@ -17,7 +17,6 @@ import com.g1453012.btill.Shared.Menu;
 import com.g1453012.btill.Shared.Receipt;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.OrderDialogAdapter;
 
-
 /**
  * Created by dlmiddlecote on 01/03/15.
  */
@@ -32,6 +31,18 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
     private int mOrderID;
     private String mOrderDate;
     private boolean mFromStore;
+
+    public static ReceiptDialogFragment newInstance(PersistentParameters params, int ID, boolean fromStore) {
+        ReceiptDialogFragment receiptDialogFragment = new ReceiptDialogFragment();
+        receiptDialogFragment.setParams(params);
+        receiptDialogFragment.setReceipt(params.getReceiptStore().getReceipt(ID));
+        receiptDialogFragment.setMenu(params.getReceiptStore().getMenu(ID));
+        receiptDialogFragment.setReceiptStoreID(ID);
+        receiptDialogFragment.setOrderID(params.getReceiptStore().getReceipt(ID).getOrderId());
+        receiptDialogFragment.setOrderDate(params.getReceiptStore().getReceipt(ID).getDateAsString());
+        receiptDialogFragment.setFromStore(fromStore);
+        return receiptDialogFragment;
+    }
 
     public Menu getMenu() {
         return mMenu;
@@ -77,22 +88,6 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
         mFromStore = fromStore;
     }
 
-    public static ReceiptDialogFragment newInstance(PersistentParameters params, int ID, boolean fromStore) {
-        ReceiptDialogFragment receiptDialogFragment = new ReceiptDialogFragment();
-        receiptDialogFragment.setParams(params);
-        //receiptDialogFragment.setReceipt(params.getReceiptStore().getReceipt(ID));
-        receiptDialogFragment.setReceipt(params.getNewReceiptStore().getReceipt(ID));
-        //receiptDialogFragment.setMenu(params.getReceiptStore().getMenu(ID));
-        receiptDialogFragment.setMenu(params.getNewReceiptStore().getMenu(ID));
-        receiptDialogFragment.setReceiptStoreID(ID);
-        //receiptDialogFragment.setOrderID(params.getReceiptStore().getReceipt(ID).getOrderId());
-        receiptDialogFragment.setOrderID(params.getNewReceiptStore().getReceipt(ID).getOrderId());
-        //receiptDialogFragment.setOrderDate(params.getReceiptStore().getReceipt(ID).getDateAsString());
-        receiptDialogFragment.setOrderDate(params.getNewReceiptStore().getReceipt(ID).getDateAsString());
-        receiptDialogFragment.setFromStore(fromStore);
-        return receiptDialogFragment;
-    }
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -132,20 +127,20 @@ public class ReceiptDialogFragment extends DialogFragment implements View.OnClic
     @Override
     public void onClick(View v) {
         //if (getTargetFragment()!=null) {
-            switch(v.getId()) {
-                case R.id.receiptDialogButton:
-                    if (getTargetFragment() != null) {
-                        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
-                    }
-                    dismiss();
-                    break;
-                case R.id.receiptDialogDeleteButton:
-                    //params.getReceiptStore().remove(receiptStoreID);
-                    params.getNewReceiptStore().remove(receiptStoreID);
-                    params.getReceiptFragment().refreshAdapter();
-                    dismiss();
-                    break;
-            }
+        switch (v.getId()) {
+            case R.id.receiptDialogButton:
+                if (getTargetFragment() != null) {
+                    getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
+                }
+                dismiss();
+                break;
+            case R.id.receiptDialogDeleteButton:
+                params.getReceiptStore().remove(receiptStoreID);
+                params.getReceiptFragment().needsUpdating();
+                params.getReceiptFragment().refreshAdapter();
+                dismiss();
+                break;
+        }
         //}
 
     }

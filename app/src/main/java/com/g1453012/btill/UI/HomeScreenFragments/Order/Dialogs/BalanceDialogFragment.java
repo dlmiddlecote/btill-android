@@ -18,20 +18,20 @@ import org.bitcoinj.core.Wallet;
 
 public class BalanceDialogFragment extends DialogFragment implements View.OnClickListener {
 
-    public Wallet getWallet() {
-        return mWallet;
-    }
-
-    public void setWallet(Wallet wallet) {
-        this.mWallet = wallet;
-    }
-
     private Wallet mWallet;
 
     public static BalanceDialogFragment newInstance(Wallet wallet) {
         BalanceDialogFragment balanceDialogFragment = new BalanceDialogFragment();
         balanceDialogFragment.setWallet(wallet);
         return balanceDialogFragment;
+    }
+
+    public Wallet getWallet() {
+        return mWallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.mWallet = wallet;
     }
 
     @Override
@@ -57,8 +57,7 @@ public class BalanceDialogFragment extends DialogFragment implements View.OnClic
             mBalanceQR.setVisibility(View.VISIBLE);
 
             mBalanceAddress.setText(mWallet.currentReceiveAddress().toString());
-        }
-        else {
+        } else {
             TextView mBalanceTitle = (TextView) mBalanceDialog.findViewById(R.id.balanceDialogTitle);
             mBalanceTitle.setText(R.string.walletError);
 
@@ -67,7 +66,7 @@ public class BalanceDialogFragment extends DialogFragment implements View.OnClic
             mBalanceAddress.setVisibility(View.GONE);
         }
 
-        Button dismissButton = (Button)mBalanceDialog.findViewById(R.id.balanceDialogButton);
+        Button dismissButton = (Button) mBalanceDialog.findViewById(R.id.balanceDialogButton);
         dismissButton.setOnClickListener(this);
 
         return mBalanceDialog;

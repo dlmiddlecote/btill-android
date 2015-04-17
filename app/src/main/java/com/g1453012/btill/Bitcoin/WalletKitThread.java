@@ -17,13 +17,11 @@ import java.io.InputStream;
 public class WalletKitThread extends Thread {
 
     private final static String TAG = "WalletKitThread";
-
-    private WalletAppKit mWalletAppKit;
-
     private final String filePrefix = "Bitcoin-test";
     private final TestNet3Params mNetParams = TestNet3Params.get();
     private final Context mContext;
     private final File mFile;
+    private WalletAppKit mWalletAppKit;
 
     public WalletKitThread(Context context, File file) {
         mContext = context;
@@ -72,10 +70,6 @@ public class WalletKitThread extends Thread {
         Log.d(TAG, "WalletAppKit is running");
 
     }
-
-
-
-
 
 }
 

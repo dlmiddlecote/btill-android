@@ -9,6 +9,12 @@ public class MenuItem {
     private int quantity = 0;
     private String category;
 
+    public MenuItem(String name, GBP price, String category) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
     public String getCategory() {
         return category;
     }
@@ -33,23 +39,18 @@ public class MenuItem {
         this.quantity = quantity;
     }
 
-    public MenuItem(String name, GBP price, String category) {
-        this.name = name;
-        this.price = price;
-        this.category = category;
-    }
-
     public void incrementQuantity() {
-        if (quantity<10)
+        if (quantity < 10)
             this.quantity++;
     }
 
     public void decrementQuantity() {
-        if (quantity>0)
+        if (quantity > 0)
             this.quantity--;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "MenuItem{" + name + ", " + price + '}';
     }
 

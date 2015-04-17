@@ -13,6 +13,32 @@ public class Menu implements Iterable<MenuItem> {
     private ArrayList<String> categories = new ArrayList<String>();
     private int mOrderId;
 
+    public Menu(String restaurantName, List<MenuItem> items) {
+        this.restaurantName = restaurantName;
+        this.items = items;
+        for (MenuItem item : items) {
+            if (!categories.contains(item.getCategory()))
+                categories.add(item.getCategory());
+        }
+    }
+
+    public Menu() {
+
+    }
+
+    public Menu(String restaurant) {
+        restaurantName = restaurant;
+    }
+
+    public static Menu removeNonZero(Menu menu) {
+        Menu retMenu = new Menu(menu.getRestaurantName());
+        for (MenuItem item : menu) {
+            if (item.getQuantity() != 0)
+                retMenu.add(item);
+        }
+        return retMenu;
+    }
+
     public String getRestaurantName() {
         return restaurantName;
     }
@@ -29,35 +55,17 @@ public class Menu implements Iterable<MenuItem> {
         return categories;
     }
 
-    public Menu(String restaurantName, List<MenuItem> items) {
-        this.restaurantName = restaurantName;
-        this.items = items;
+    public void sortCategories() {
         for (MenuItem item : items) {
             if (!categories.contains(item.getCategory()))
                 categories.add(item.getCategory());
         }
     }
 
-    public void sortCategories() {
-        for (MenuItem item: items) {
-            if (!categories.contains(item.getCategory()))
-                categories.add(item.getCategory());
-        }
-    }
-
-    public Menu(){
-
-    }
-
-    public Menu(String restaurant) {
-        restaurantName = restaurant;
-    }
-
     @Override
     public Iterator<MenuItem> iterator() {
         return items.iterator();
     }
-
 
     @Override
     public String toString() {
@@ -82,33 +90,23 @@ public class Menu implements Iterable<MenuItem> {
         return items.get(position);
     }
 
-    public int size() {
-        return items.size();
-    }
-
     /*public void resetQuantities() {
         for (MenuItem item : items) {
             item.setQuantity(0);
         }
     }*/
 
+    public int size() {
+        return items.size();
+    }
+
     public ArrayList<MenuItem> getCategoryItems(String category) {
         ArrayList<MenuItem> sortedItems = new ArrayList<MenuItem>();
-        for (MenuItem item: items) {
+        for (MenuItem item : items) {
             if (item.getCategory().equals(category))
                 sortedItems.add(item);
         }
         return sortedItems;
-    }
-
-    public static Menu removeNonZero(Menu menu) {
-        Menu retMenu = new Menu(menu.getRestaurantName());
-        for (MenuItem item: menu)
-        {
-            if (item.getQuantity()!=0)
-                retMenu.add(item);
-        }
-        return retMenu;
     }
 
     public int totalPence() {
@@ -122,7 +120,7 @@ public class Menu implements Iterable<MenuItem> {
     }
 
     public void resetQuantities() {
-        for (MenuItem item: items) {
+        for (MenuItem item : items) {
             item.setQuantity(0);
         }
     }

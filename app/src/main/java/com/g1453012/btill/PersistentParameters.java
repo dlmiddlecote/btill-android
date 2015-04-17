@@ -10,13 +10,14 @@ import com.g1453012.btill.UI.HomeScreenFragments.Balance.BalanceFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.MainScreen;
 import com.g1453012.btill.UI.HomeScreenFragments.Order.OrderFragment;
 import com.g1453012.btill.UI.HomeScreenFragments.Receipts.ReceiptFragment;
+import com.g1453012.btill.UI.HomeScreenFragments.Receipts.ReceiptStore;
 
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Wallet;
 
 import java.util.TreeMap;
 
-public class PersistentParameters{
+public class PersistentParameters {
 
     private final static String TAG = "Persistent Parameters";
 
@@ -24,9 +25,20 @@ public class PersistentParameters{
     private BluetoothSocket mSocket;
     private Bill mBill;
     private Transaction mTx;
-    private ReceiptStore mReceiptStore;
     private LocationData mLocationData;
     private MainScreen mMainScreen;
+    private ReceiptStore mReceiptStore;
+    private ReceiptFragment mReceiptFragment;
+    private BalanceFragment mBalanceFragment;
+    private OrderFragment mOrderFragment;
+
+    public PersistentParameters(Context context, String file, boolean loadReceipts) {
+        if (loadReceipts) {
+            mReceiptStore = new ReceiptStore(context, file);
+            Log.d(TAG, "Made the Receipt");
+        }
+        mLocationData = new LocationData(new TreeMap<String, Double>());
+    }
 
     public MainScreen getMainScreen() {
         return mMainScreen;
@@ -34,24 +46,6 @@ public class PersistentParameters{
 
     public void setMainScreen(MainScreen mainScreen) {
         mMainScreen = mainScreen;
-    }
-
-    // TODO testing
-    private NewReceiptStore mNewReceiptStore;
-
-    private ReceiptFragment mReceiptFragment;
-    private BalanceFragment mBalanceFragment;
-    private OrderFragment mOrderFragment;
-
-    public PersistentParameters(Context context, String file, boolean loadReceipts) {
-        //mReceiptStore = new ReceiptStore(context, file);
-        //mReceiptStore.resetStoreForTesting();
-        if (loadReceipts) {
-            mNewReceiptStore = new NewReceiptStore(context, file);
-            //mNewReceiptStore.resetForTesting();
-            Log.d(TAG, "Made the Receipt");
-        }
-        mLocationData = new LocationData(new TreeMap<String, Double>());
     }
 
     public Wallet getWallet() {
@@ -77,14 +71,6 @@ public class PersistentParameters{
     public ReceiptStore getReceiptStore() {
         return mReceiptStore;
     }
-
-    public NewReceiptStore getNewReceiptStore() {
-        return mNewReceiptStore;
-    }
-
-    /*public void refreshReceiptStore() {
-        mReceiptStore.refreshReceipts();
-    }*/
 
     public BluetoothSocket getSocket() {
         return mSocket;

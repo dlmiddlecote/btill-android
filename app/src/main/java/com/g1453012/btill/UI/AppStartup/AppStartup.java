@@ -36,25 +36,9 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-
 public class AppStartup extends FragmentActivity implements BeaconConsumer {
 
     private final static String TAG = "AppStartup";
-
-    private static PersistentParameters params;
-    // Intent request codes
-    private static final int REQUEST_ENABLE_BT = 2;
-    private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    private final String filePrefix = "Bitcoin-test";
-
-    com.g1453012.btill.Shared.Menu mMenu;
-    private boolean blockLoadingView = false;
-
-    private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
-
-    private boolean registered = false;
-    private boolean walletSet = false;
-
     // This is what happens when a device is found
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -74,6 +58,16 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             }
         }
     };
+    // Intent request codes
+    private static final int REQUEST_ENABLE_BT = 2;
+    private static PersistentParameters params;
+    private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private final String filePrefix = "Bitcoin-test";
+    com.g1453012.btill.Shared.Menu mMenu;
+    private boolean blockLoadingView = false;
+    private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
+    private boolean registered = false;
+    private boolean walletSet = false;
 
     public static void setParams(PersistentParameters param) {
         params = param;
@@ -102,8 +96,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-        else {
+        } else {
             Log.d(TAG, "Starting");
             mBluetoothAdapter.startDiscovery();
         }
@@ -117,8 +110,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
                 if (mBluetoothAdapter.startDiscovery()) {
                     Log.d("DISCOVERY", "STARTED DISCOVERY");
                 }
-            }
-            else {
+            } else {
                 finish();
                 return;
             }
@@ -180,6 +172,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             params.getWallet().addEventListener(new AbstractWalletEventListener() {
                 @Override
                 public void onWalletChanged(Wallet wallet) {
+                    params.getBalanceFragment().needsUpdating();
                     wallet.allowSpendingUnconfirmedTransactions();
                     try {
                         wallet.cleanup();
@@ -260,6 +253,7 @@ public class AppStartup extends FragmentActivity implements BeaconConsumer {
             beaconManager.setBackgroundBetweenScanPeriod(60000l);
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();

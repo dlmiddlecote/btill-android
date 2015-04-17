@@ -13,7 +13,7 @@ import com.g1453012.btill.UI.HomeScreenFragments.Receipts.ReceiptFragment;
 /**
  * Created by Andy on 16/03/2015.
  */
-public class MainTabViewPagerAdapter extends FragmentPagerAdapter{
+public class MainTabViewPagerAdapter extends FragmentPagerAdapter {
 
     private PersistentParameters params;
     private OrderFragment orderFragment;
@@ -23,10 +23,9 @@ public class MainTabViewPagerAdapter extends FragmentPagerAdapter{
     public MainTabViewPagerAdapter(FragmentManager fm, PersistentParameters params) {
         super(fm);
         this.params = params;
-
         this.orderFragment = OrderFragment.newInstance(params);
         params.setOrderFragment(this.orderFragment);
-        this.receiptFragment = ReceiptFragment.newInstance(params);
+        this.receiptFragment = ReceiptFragment.newInstance(params, false);
         params.setReceiptFragment(this.receiptFragment);
         this.balanceFragment = BalanceFragment.newInstance(params);
         params.setBalanceFragment(this.balanceFragment);
@@ -66,5 +65,6 @@ public class MainTabViewPagerAdapter extends FragmentPagerAdapter{
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
     }
+
 
 }

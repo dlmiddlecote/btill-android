@@ -52,6 +52,7 @@
     <string name="welcomeBlurbText">Come on in, sit down, order, and we\'ll be with you shortly!</string>
     <string name="welcomeWalkthrough">If you would like a walkthrough of the app, please choose walkthrough below, otherwise, order away!</string>
     <string name="walkthrough">Walkthrough</string>
+    <string name="receipts">Receipts</string>
 
 
 </resources>

@@ -3,7 +3,8 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <View style="@style/Divider"
-          android:layout_alignParentBottom="true"/>
+          android:layout_alignParentBottom="true"
+          android:id="@+id/view"/>
 
     <ListView
         android:layout_width="fill_parent"
@@ -11,4 +12,16 @@
         android:id="@+id/receiptListView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="@dimen/fab_button_diameter"
+        android:layout_height="@dimen/fab_button_diameter"
+        android:background="@drawable/fab_shape_grey"
+        android:src="@drawable/ic_close_white_36dp"
+        android:tint="@android:color/white"
+        android:layout_marginLeft="@dimen/fab_button_margin_right"
+        android:layout_above="@+id/view"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="@dimen/fab_button_margin_bottom"/>
 </RelativeLayout>

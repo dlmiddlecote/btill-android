@@ -24,6 +24,14 @@ public class OrderConfirmationDialogFragment extends DialogFragment implements V
     private OrderConfirmation mOrderConfirmation;
     private int receiptID;
 
+    public static OrderConfirmationDialogFragment newInstance(PersistentParameters params, OrderConfirmation orderConfirmation, int receiptID) {
+        OrderConfirmationDialogFragment orderConfirmationDialogFragment = new OrderConfirmationDialogFragment();
+        orderConfirmationDialogFragment.setParams(params);
+        orderConfirmationDialogFragment.setOrderConfirmation(orderConfirmation);
+        orderConfirmationDialogFragment.setReceiptID(receiptID);
+        return orderConfirmationDialogFragment;
+    }
+
     public void setParams(PersistentParameters params) {
         this.params = params;
     }
@@ -34,14 +42,6 @@ public class OrderConfirmationDialogFragment extends DialogFragment implements V
 
     public void setReceiptID(int receiptID) {
         this.receiptID = receiptID;
-    }
-
-    public static OrderConfirmationDialogFragment newInstance(PersistentParameters params, OrderConfirmation orderConfirmation, int receiptID) {
-        OrderConfirmationDialogFragment orderConfirmationDialogFragment = new OrderConfirmationDialogFragment();
-        orderConfirmationDialogFragment.setParams(params);
-        orderConfirmationDialogFragment.setOrderConfirmation(orderConfirmation);
-        orderConfirmationDialogFragment.setReceiptID(receiptID);
-        return orderConfirmationDialogFragment;
     }
 
     @Override

@@ -17,34 +17,19 @@ import java.util.concurrent.Future;
  */
 public class ConnectThread extends Thread {
 
-    private static final String TAG = "ConnectThread";
-    private BluetoothSocket mSocket = null;
-
-    private static UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     public static final String ANDYSMAC = "00:03:C9:EA:E1:C7";
     public static final String LUKESMAC = "48:5D:60:FC:B0:46";
     public static final String DANSMAC = "00:15:83:64:83:DE";
     public static final String PIMAC = "00:15:83:64:94:62";
-    private static volatile BluetoothDevice mBluetoothDevice = null;
-    private ConnectedThread mConnectedThread;
-
-    private final ExecutorService pool = Executors.newFixedThreadPool(10);
+    private static final String TAG = "ConnectThread";
     private final static ExecutorService poolStatic = Executors.newFixedThreadPool(10);
-
+    private static UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static volatile BluetoothDevice mBluetoothDevice = null;
+    private final ExecutorService pool = Executors.newFixedThreadPool(10);
+    private BluetoothSocket mSocket = null;
+    private ConnectedThread mConnectedThread;
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     //private BluetoothAdapter mBluetoothAdapter;
-
-    public BluetoothSocket getSocket() {
-        return mSocket;
-    }
-
-    public static void setBluetoothDevice(BluetoothDevice bluetoothDevice) {
-        mBluetoothDevice = bluetoothDevice;
-    }
-
-    public static BluetoothDevice getBluetoothDevice() {
-        return mBluetoothDevice;
-    }
 
     public ConnectThread() {
 
@@ -59,6 +44,18 @@ public class ConnectThread extends Thread {
         // Set the temp socket to be the socket in the thread
         mSocket = tmp;
 
+    }
+
+    public static BluetoothDevice getBluetoothDevice() {
+        return mBluetoothDevice;
+    }
+
+    public static void setBluetoothDevice(BluetoothDevice bluetoothDevice) {
+        mBluetoothDevice = bluetoothDevice;
+    }
+
+    public BluetoothSocket getSocket() {
+        return mSocket;
     }
 
     // What to do when the ConnectThread is started
@@ -76,9 +73,9 @@ public class ConnectThread extends Thread {
                     return Boolean.TRUE;
                 } catch (IOException e) {
                     //try {
-                        Log.e(TAG, "Couldn't connect to Server, retry...");
-                        //mSocket.close();
-                        return Boolean.FALSE;
+                    Log.e(TAG, "Couldn't connect to Server, retry...");
+                    //mSocket.close();
+                    return Boolean.FALSE;
                     //} catch (IOException f) {
                     //    Log.e(TAG, "Couldn't close socket");
                     //}
@@ -87,6 +84,5 @@ public class ConnectThread extends Thread {
             }
         });
     }
-
 
 }

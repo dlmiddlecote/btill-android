@@ -79,7 +79,30 @@
         android:id="@+id/serverNotFoundRetryButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="25dp"
         style="?android:borderlessButtonStyle"
-        />
+        android:layout_marginBottom="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/myBlue"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/receipts"
+        android:id="@+id/serverNotFoundReceiptButton"
+        android:layout_alignBottom="@+id/serverNotFoundRetryButton"
+        android:layout_toLeftOf="@+id/serverNotFoundRetryButton"
+        style="?android:borderlessButtonStyle"
+        android:textColor="@color/alternativeGreen"
+        android:layout_marginLeft="10dp"/>
+
+    <Button
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/walkthrough"
+        android:id="@+id/serverNotFoundWalkthroughButton"
+        android:textColor="@color/alternativeGreen"
+        android:layout_alignBottom="@+id/serverNotFoundReceiptButton"
+        android:layout_toStartOf="@+id/serverNotFoundReceiptButton"/>
 </RelativeLayout>

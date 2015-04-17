@@ -30,6 +30,15 @@ public class BalanceFragment extends Fragment {
     private TextView mBalanceAddress;
     private TextView mBalanceTitle;
     private boolean balanceLoaded;
+    private boolean needsUpdating;
+
+    public static BalanceFragment newInstance(PersistentParameters params) {
+        BalanceFragment balanceFragment = new BalanceFragment();
+        balanceFragment.setParams(params);
+        balanceFragment.setBalanceLoaded(false);
+        balanceFragment.setNeedsUpdating(false);
+        return balanceFragment;
+    }
 
     public PersistentParameters getParams() {
         return params;
@@ -43,11 +52,8 @@ public class BalanceFragment extends Fragment {
         this.balanceLoaded = balanceLoaded;
     }
 
-    public static BalanceFragment newInstance(PersistentParameters params) {
-        BalanceFragment balanceFragment = new BalanceFragment();
-        balanceFragment.setParams(params);
-        balanceFragment.setBalanceLoaded(false);
-        return balanceFragment;
+    private void setNeedsUpdating(boolean needsUpdating) {
+        this.needsUpdating = needsUpdating;
     }
 
     @Override
@@ -81,8 +87,7 @@ public class BalanceFragment extends Fragment {
             mBalanceAddress.setText(params.getWallet().currentReceiveAddress().toString());
 
             balanceLoaded = true;
-        }
-        else {
+        } else {
             mBalanceTitle = (TextView) getActivity().findViewById(R.id.balanceFragmentTitle);
             mBalanceTitle.setText(R.string.walletError);
 
@@ -92,11 +97,15 @@ public class BalanceFragment extends Fragment {
         }
     }
 
+    public void needsUpdating() {
+        needsUpdating = true;
+    }
+
     public void refresh() {
-        if (balanceLoaded) {
-            this.getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+        if (balanceLoaded && needsUpdating) {
+            //getActivity().runOnUiThread(new Runnable() {
+            //    @Override
+            //    public void run() {
                     if (mBalanceTotal != null) {
                         if (params.getWallet() != null) {
 
@@ -116,8 +125,9 @@ public class BalanceFragment extends Fragment {
                             mBalanceAddress.setVisibility(View.GONE);
                         }
                     }
-                }
-            });
+            needsUpdating = false;
+            //    }
+            //});
         }
         /*if (mBalanceTotal != null) {
             if (params.getWallet() != null) {

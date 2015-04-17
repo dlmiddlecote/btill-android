@@ -34,11 +34,10 @@ import java.util.Date;
 public class BluetoothLauncher extends Application implements BootstrapNotifier, RangeNotifier {
 
     private static final String TAG = "BluetoothLauncherApp";
-
+    BeaconManager mBeaconManager;
     private PersistentParameters params;
     private RegionBootstrap mRegionBootstrap;
     private Region mRegion;
-    BeaconManager mBeaconManager;
     private BackgroundPowerSaver mPowerSaver;
 
     @Override
@@ -71,14 +70,11 @@ public class BluetoothLauncher extends Application implements BootstrapNotifier,
 
     @Override
     public void didEnterRegion(Region region) {
-       try
-        {
+        try {
             Log.d(TAG, "entered region.  starting ranging");
             mBeaconManager.setRangeNotifier(this);
             mBeaconManager.startRangingBeaconsInRegion(mRegion);
-        }
-        catch(RemoteException e)
-        {
+        } catch (RemoteException e) {
             Log.e(TAG, "Cannot start ranging");
         }
         /*
@@ -130,7 +126,7 @@ public class BluetoothLauncher extends Application implements BootstrapNotifier,
 
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-        for (Beacon beacon: beacons) {
+        for (Beacon beacon : beacons) {
             Log.d("BEACONS", "Address: " + beacon.getBluetoothAddress() + ", Distance: " + beacon.getDistance());
             if (params.getLocationData().size() > 0 && params.getLocationData().getTime()
                     .before(new Date(System.currentTimeMillis() - 30000))) {

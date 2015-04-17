@@ -22,7 +22,7 @@ public class ConnectedThread extends Thread {
 
     private final ExecutorService pool = Executors.newFixedThreadPool(10);
 
-   // New Socket
+    // New Socket
     private final BluetoothSocket mSocket;
 
     // New Input Stream
@@ -30,7 +30,6 @@ public class ConnectedThread extends Thread {
 
     // New Output Stream
     private final OutputStream mOutStream;
-
 
     // ConnectedThread Constructor
     public ConnectedThread(BluetoothSocket socket) {
@@ -53,7 +52,6 @@ public class ConnectedThread extends Thread {
     public void run() {
         // TODO what we want it to do
     }
-
 
     public Future<String> readFuture() {
         return pool.submit(new Callable<String>() {
@@ -104,7 +102,6 @@ public class ConnectedThread extends Thread {
             }
         });
     }
-
 
     // Cancel ConnectedThread method
     public void cancel() {

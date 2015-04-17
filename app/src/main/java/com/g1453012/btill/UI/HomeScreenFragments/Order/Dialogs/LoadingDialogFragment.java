@@ -9,7 +9,6 @@ import android.widget.ProgressBar;
 
 import com.g1453012.btill.R;
 
-
 public class LoadingDialogFragment extends DialogFragment {
 
     private static final String TAG = "LoadingDialog";

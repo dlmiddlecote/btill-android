@@ -1,6 +1,5 @@
 package com.g1453012.btill.Shared;
 
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -24,11 +23,11 @@ public class GBP {
     }
 
     public GBP minus(GBP that) {
-        return new GBP(pence  - that.pence);
+        return new GBP(pence - that.pence);
     }
 
     public GBP times(int mult) {
-        return new GBP(pence*mult);
+        return new GBP(pence * mult);
     }
 
     @Override

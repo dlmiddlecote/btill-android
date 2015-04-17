@@ -29,6 +29,14 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
     private Menu mMenu;
     private Bill mBill;
 
+    public static PaymentRequestDialogFragment newInstance(Bill bill, Menu menu) {
+        PaymentRequestDialogFragment paymentRequestDialogFragment = new PaymentRequestDialogFragment();
+        paymentRequestDialogFragment.setBill(bill);
+        paymentRequestDialogFragment.setRequest(bill.getRequest());
+        paymentRequestDialogFragment.setMenu(menu);
+        return paymentRequestDialogFragment;
+    }
+
     public Protos.PaymentRequest getRequest() {
         return mRequest;
     }
@@ -47,14 +55,6 @@ public class PaymentRequestDialogFragment extends DialogFragment implements View
 
     public void setMenu(Menu menu) {
         mMenu = menu;
-    }
-
-    public static PaymentRequestDialogFragment newInstance(Bill bill, Menu menu) {
-            PaymentRequestDialogFragment paymentRequestDialogFragment = new PaymentRequestDialogFragment();
-            paymentRequestDialogFragment.setBill(bill);
-            paymentRequestDialogFragment.setRequest(bill.getRequest());
-            paymentRequestDialogFragment.setMenu(menu);
-            return paymentRequestDialogFragment;
     }
 
     @Override

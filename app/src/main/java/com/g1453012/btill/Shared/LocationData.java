@@ -20,12 +20,12 @@ public class LocationData {
         locations.put(address, distance);
     }
 
-    public void setTime(long currentMilliseconds) {
-        time = new Date(currentMilliseconds);
-    }
-
     public Date getTime() {
         return time;
+    }
+
+    public void setTime(long currentMilliseconds) {
+        time = new Date(currentMilliseconds);
     }
 
     public double getDistance(String address) {

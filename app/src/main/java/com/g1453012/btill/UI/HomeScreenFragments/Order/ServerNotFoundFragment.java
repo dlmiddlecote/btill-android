@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.g1453012.btill.BTillController;
 import com.g1453012.btill.PersistentParameters;
 import com.g1453012.btill.R;
+import com.g1453012.btill.UI.HomeScreenFragments.Receipts.ReceiptFragment;
 
 import org.bitcoinj.core.Wallet;
 
@@ -23,6 +25,7 @@ import org.bitcoinj.core.Wallet;
  */
 public class ServerNotFoundFragment extends Fragment implements View.OnClickListener {
 
+    private static final int LOADING = 1;
     private PersistentParameters params;
 
     public static ServerNotFoundFragment newInstance(PersistentParameters params) {
@@ -58,8 +61,7 @@ public class ServerNotFoundFragment extends Fragment implements View.OnClickList
             mBalanceQR.setVisibility(View.VISIBLE);
 
             mWalletAddress.setText(params.getWallet().currentReceiveAddress().toString());
-        }
-        else {
+        } else {
             TextView mTitle = (TextView) getActivity().findViewById(R.id.serverNotFoundTitle);
             mTitle.setText(R.string.walletError);
 
@@ -71,6 +73,9 @@ public class ServerNotFoundFragment extends Fragment implements View.OnClickList
         Button mServerNotFoundButton = (Button) getActivity().findViewById(R.id.serverNotFoundRetryButton);
         mServerNotFoundButton.setOnClickListener(this);
 
+        Button mReceiptsButton = (Button) getActivity().findViewById(R.id.serverNotFoundReceiptButton);
+        mReceiptsButton.setOnClickListener(this);
+
     }
 
     @Override
@@ -78,6 +83,20 @@ public class ServerNotFoundFragment extends Fragment implements View.OnClickList
         switch (v.getId()) {
             case R.id.serverNotFoundRetryButton:
                 BluetoothAdapter.getDefaultAdapter().startDiscovery();
+                /*getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DialogFragment loadingFragment = LoadingDialogFragment.newInstance();
+                        loadingFragment.show(getFragmentManager().beginTransaction(), "LOADING_DIALOG");
+                    }
+                });*/
+                break;
+            case R.id.serverNotFoundReceiptButton:
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                Fragment fragment = ReceiptFragment.newInstance(params, true);
+                fragment.setTargetFragment(this, LOADING);
+                transaction.replace(R.id.appStartupFragmentFrame, fragment);
+                transaction.commit();
                 break;
             default:
                 break;

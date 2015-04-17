@@ -1,20 +1,14 @@
 package com.g1453012.btill.UI.HomeScreenFragments.Order;
 
-import android.app.Activity;
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.Menu;
-
-import java.util.ArrayList;
 
 /**
  * Created by dlmiddlecote on 18/02/15.
@@ -48,14 +42,13 @@ public class OrderDialogAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
 
-        if (rowView == null)
-        {
+        if (rowView == null) {
 
             rowView = mLayoutInflater.inflate(R.layout.order_dialog_item, parent, false);
-            TextView mDialogTitle = (TextView)rowView.findViewById(R.id.orderDialogTitle);
+            TextView mDialogTitle = (TextView) rowView.findViewById(R.id.orderDialogTitle);
             mDialogTitle.setText(mMenu.get(position).getName());
 
-            TextView mDialogQuantity = (TextView)rowView.findViewById(R.id.orderDialogQuantity);
+            TextView mDialogQuantity = (TextView) rowView.findViewById(R.id.orderDialogQuantity);
             mDialogQuantity.setText("x" + mMenu.get(position).getQuantity());
         }
 

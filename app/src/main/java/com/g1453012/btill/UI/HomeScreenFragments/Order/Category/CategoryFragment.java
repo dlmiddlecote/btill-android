@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.g1453012.btill.R;
 import com.g1453012.btill.Shared.MenuItem;
@@ -16,9 +15,10 @@ import java.util.ArrayList;
 
 public class CategoryFragment extends Fragment {
 
+    private ArrayList<MenuItem> mItems;
+
     public CategoryFragment() {
     }
-    private ArrayList<MenuItem> mItems;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

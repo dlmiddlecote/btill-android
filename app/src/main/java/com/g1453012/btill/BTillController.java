@@ -45,20 +45,20 @@ public class BTillController {
         return pool.submit(new Callable<Menu>() {
             @Override
             public Menu call() throws Exception {
-                while (!sendMenuRequest(socket)){};
+                while (!sendMenuRequest(socket)) {
+                }
+                ;
                 Log.d(TAG, "Sends Menu Request in Future");
                 return receiveMenu(socket);
             }
         });
     }
 
-
     private static boolean sendMenuRequest(BluetoothSocket socket) {
         Future<Boolean> writeFuture = writeBT(new BTMessageBuilder("REQUEST_MENU").build(), socket);
         try {
             return writeFuture.get();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             Log.e(TAG, "Sending the Menu Request was interrupted");
         } catch (ExecutionException e) {
             Log.e(TAG, "Sending the Menu Request had an Execution Exception");
@@ -104,8 +104,7 @@ public class BTillController {
         PaymentSession mPaymentSession = new PaymentSession(request, false);
         if (mPaymentSession.isExpired()) {
             return mPayment;
-        }
-        else {
+        } else {
             Wallet.SendRequest mSendRequest = mPaymentSession.getSendRequest();
             //mWallet.signTransaction(Wallet.SendRequest.forTx(mSendRequest.tx));
             //try {
@@ -140,7 +139,8 @@ public class BTillController {
         return pool.submit(new Callable<Bill>() {
             @Override
             public Bill call() throws Exception {
-                while (!sendOrders(menu, socket)) {}
+                while (!sendOrders(menu, socket)) {
+                }
                 return receiveBill(socket);
             }
         });
@@ -150,8 +150,7 @@ public class BTillController {
         Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(menu).build(), socket);
         try {
             return writeFuture.get().booleanValue();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             Log.e(TAG, "Sending the Payment was interrupted");
         } catch (ExecutionException e) {
             Log.e(TAG, "Sending the Payment had an Execution Exception");
@@ -179,18 +178,17 @@ public class BTillController {
         }
         if (billMessage != null && billMessage.getHeader().equals(Status.OK.toString())) {
             return new Gson().fromJson(billMessage.getBodyString(), Bill.class);
-        }
-        else {
+        } else {
             return null;
         }
     }
-
 
     public static Future<OrderConfirmation> processPayment(final int orderId, final Protos.Payment payment, final GBP gbpAmount, final Coin btcAmount, final LocationData locationData, final BluetoothSocket socket) {
         return pool.submit(new Callable<OrderConfirmation>() {
             @Override
             public OrderConfirmation call() throws Exception {
-                while (!sendPayment(orderId, payment, gbpAmount, btcAmount, locationData, socket)) {}
+                while (!sendPayment(orderId, payment, gbpAmount, btcAmount, locationData, socket)) {
+                }
                 return getOrderConfirmation(socket);
             }
         });
@@ -200,8 +198,7 @@ public class BTillController {
         Future<Boolean> writeFuture = writeBT(new BTMessageBuilder(orderId, payment, gbpAmount, btcAmount, locationData).build(), socket);
         try {
             return writeFuture.get().booleanValue();
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             Log.e(TAG, "Sending the Payment was interrupted");
         } catch (ExecutionException e) {
             Log.e(TAG, "Sending the Payment had an Execution Exception");
@@ -282,6 +279,5 @@ public class BTillController {
         }
         return mapToReturn;
     }
-
 
 }

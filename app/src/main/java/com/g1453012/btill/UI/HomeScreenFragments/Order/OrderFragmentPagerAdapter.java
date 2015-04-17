@@ -11,12 +11,12 @@ import java.util.ArrayList;
 
 public class OrderFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
-    private ArrayList<CategoryFragment> categoryFragments = new ArrayList<CategoryFragment>();
     private static final String TAG = "CategoryPageAdapter";
+    private ArrayList<CategoryFragment> categoryFragments = new ArrayList<CategoryFragment>();
 
     public OrderFragmentPagerAdapter(FragmentManager fragmentManager, Menu menu) {
         super(fragmentManager);
-        for (String category: menu.getCategories()) {
+        for (String category : menu.getCategories()) {
             CategoryFragment fragment = new CategoryFragment();
             Log.d(TAG, "Creating fragment for category: " + category);
             //Create a new fragment and get the items that fit into that category

@@ -36,6 +36,19 @@ public class Bill implements Serializable {
     private int orderId = 0;
     private Date orderIdDate;
 
+    public Bill(String memo, String paymentURL, byte[] merchantData,
+                Coin amount, GBP gbpAmount, Wallet wallet) {
+        this.memo = memo;
+        this.paymentURL = paymentURL;
+        this.merchantData = merchantData;
+        this.coinAmount = amount;
+        this.gbpAmount = gbpAmount;
+        this.wallet = wallet;
+        orderId = setOrderId();
+        orderIdDate = setOrderIdDate();
+        buildPaymentRequest();
+    }
+
     @Override
     public String toString() {
         return String.format("Bill for " + coinAmount.toFriendlyString());
@@ -51,20 +64,6 @@ public class Bill implements Serializable {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    public Bill(String memo, String paymentURL, byte[] merchantData,
-                Coin amount, GBP gbpAmount, Wallet wallet) {
-        this.memo = memo;
-        this.paymentURL = paymentURL;
-        this.merchantData = merchantData;
-        this.coinAmount = amount;
-        this.gbpAmount = gbpAmount;
-        this.wallet = wallet;
-        orderId = setOrderId();
-        orderIdDate = setOrderIdDate();
-        buildPaymentRequest();
-    }
-
-
     public GBP getGbpAmount() {
         return gbpAmount;
     }
@@ -78,7 +77,7 @@ public class Bill implements Serializable {
             return Protos.PaymentRequest.parseFrom(request);
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
-            return  null;
+            return null;
         }
     }
 

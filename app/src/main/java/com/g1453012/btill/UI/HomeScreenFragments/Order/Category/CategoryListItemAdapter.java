@@ -13,18 +13,18 @@ import com.g1453012.btill.Shared.MenuItem;
 
 import java.util.ArrayList;
 
-public class CategoryListItemAdapter extends BaseAdapter{
+public class CategoryListItemAdapter extends BaseAdapter {
+    private static final String TAG = "MenuAdapter";
     private LayoutInflater mLayoutInflater;
     private ArrayList<MenuItem> mItems;
-    private static final String TAG = "MenuAdapter";
-
-    public ArrayList<MenuItem> getItems() {
-        return mItems;
-    }
 
     public CategoryListItemAdapter(Context context, ArrayList<MenuItem> items) {
         mLayoutInflater = LayoutInflater.from(context);
         mItems = items;
+    }
+
+    public ArrayList<MenuItem> getItems() {
+        return mItems;
     }
 
     @Override
@@ -46,17 +46,16 @@ public class CategoryListItemAdapter extends BaseAdapter{
     public View getView(final int position, View convertView, final ViewGroup parent) {
         View rowView = convertView;
 
-        if (rowView == null)
-        {
+        if (rowView == null) {
             rowView = mLayoutInflater.inflate(R.layout.menu_list_item, parent, false);
 
-            TextView title = (TextView)rowView.findViewById(R.id.itemTitle);
+            TextView title = (TextView) rowView.findViewById(R.id.itemTitle);
             title.setText(mItems.get(position).getName());
 
-            final TextView quantity = (TextView)rowView.findViewById(R.id.quantity);
+            final TextView quantity = (TextView) rowView.findViewById(R.id.quantity);
             quantity.setText(String.valueOf(mItems.get(position).getQuantity()));
 
-            Button plusButton = (Button)rowView.findViewById(R.id.plusButton);
+            Button plusButton = (Button) rowView.findViewById(R.id.plusButton);
             plusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -68,7 +67,7 @@ public class CategoryListItemAdapter extends BaseAdapter{
                 }
             });
 
-            Button minusButton = (Button)rowView.findViewById(R.id.minusButton);
+            Button minusButton = (Button) rowView.findViewById(R.id.minusButton);
             minusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,7 +76,7 @@ public class CategoryListItemAdapter extends BaseAdapter{
                 }
             });
 
-            TextView price = (TextView)rowView.findViewById(R.id.price);
+            TextView price = (TextView) rowView.findViewById(R.id.price);
             price.setText(mItems.get(position).getPrice().toString());
         }
 

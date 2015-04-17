@@ -33,19 +33,19 @@ public class MainScreen extends Fragment implements View.OnClickListener {
 
     private PersistentParameters params;
 
+    public static MainScreen newInstance(PersistentParameters params) {
+        MainScreen mainScreen = new MainScreen();
+        params.setMainScreen(mainScreen);
+        mainScreen.setParams(params);
+        return mainScreen;
+    }
+
     public PersistentParameters getParams() {
         return params;
     }
 
     public void setParams(PersistentParameters params) {
         this.params = params;
-    }
-
-    public static MainScreen newInstance(PersistentParameters params) {
-        MainScreen mainScreen = new MainScreen();
-        params.setMainScreen(mainScreen);
-        mainScreen.setParams(params);
-        return mainScreen;
     }
 
     @Override
@@ -73,7 +73,36 @@ public class MainScreen extends Fragment implements View.OnClickListener {
         pager.setAdapter(new MainTabViewPagerAdapter(getFragmentManager(), params));
         final PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) getActivity().findViewById(R.id.tabs);
         tabStrip.setViewPager(pager);
-        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        tabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                //pager.setCurrentItem(position, true);
+                tabStrip.notifyDataSetChanged();
+                if (position == 1) {
+                    params.getReceiptStore().refreshReceipts();
+                    params.getReceiptFragment().refreshAdapter();
+
+                }else if (position == 2) {
+                    params.getBalanceFragment().refresh();
+                    //pager.setOffscreenPageLimit();
+                }
+                pager.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        tabStrip.setIndicatorColorResource(R.color.myDarkerBlue);
+
+        /*pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -83,24 +112,23 @@ public class MainScreen extends Fragment implements View.OnClickListener {
             public void onPageSelected(int position) {
                 pager.setCurrentItem(position, true);
                 tabStrip.notifyDataSetChanged();
-                if (position == 1) {
-                    //params.getReceiptStore().refreshReceipts();
-                    params.getNewReceiptStore().refreshReceipts();
+                if (position != 1) {
+                    params.getReceiptStore().refreshReceipts();
                     params.getReceiptFragment().refreshAdapter();
 
-                    pager.getAdapter().notifyDataSetChanged();
-                } else if (position == 2) {
+                }
+                if (position != 2) {
                     params.getBalanceFragment().refresh();
-                    pager.getAdapter().notifyDataSetChanged();
                     //pager.setOffscreenPageLimit();
                 }
+                pager.getAdapter().notifyDataSetChanged();
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        });*/
     }
 
     @Override
@@ -156,7 +184,6 @@ public class MainScreen extends Fragment implements View.OnClickListener {
                         loadingFragment.dismiss();
                     }
                 }).start();
-
 
                 break;
             default:

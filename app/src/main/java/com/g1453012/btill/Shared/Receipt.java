@@ -1,6 +1,5 @@
 package com.g1453012.btill.Shared;
 
-
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import org.bitcoin.protocols.payments.Protos;
